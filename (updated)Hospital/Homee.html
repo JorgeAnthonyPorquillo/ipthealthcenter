@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Custom class to hide scrollbars on carousels */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        body.modal-active {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800 pt-[72px]"> <!-- Add padding-top to body to offset fixed header -->
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Updated Logo Section -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <!-- Logo Image -->
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                
+                <!-- Patient Login Button (Visible on Desktop) -->
+                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Patient Login
+                </a>
+
+                <!-- Book Now Button (Triggers Auth Gate Modal) -->
+                <button class="open-auth-gate-modal bg-gradient-to-r from-teal-600 to-teal-700 text-white px-5 py-2 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 text-sm md:text-base shadow-md">
+                    Book Now
+                </button>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                
+                <hr class="my-2">
+                
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                    Patient Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="flex flex-col md:flex-row bg-teal-50">
+        <!-- Left Content -->
+        <div class="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-12 lg:p-16 z-10">
+            <span class="text-teal-700 font-semibold">BARANGAY BAHAY TORO SERVICES</span>
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mt-2">
+                Welcome to Your Barangay Bahay Toro Health Center
+            </h1>
+            <p class="text-xl font-semibold text-gray-800 mt-4">
+                Free Checkups & Consultations
+            </p>
+            <p class="text-lg text-gray-700 mt-2">
+                Serving our community daily.
+            </p>
+            <!-- Gradient Button (opens Auth Gate Modal) -->
+            <button class="open-auth-gate-modal bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-3 rounded-full font-semibold text-center w-full sm:w-auto max-w-xs mt-6 hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-xl">
+                Book Appointment
+            </button>
+            <p class="text-xs text-gray-500 mt-2">*Services are free for all Barangay Bahay Toro residents.</p>
+        </div>
+        <!-- Right Image Slideshow -->
+        <div class="w-full md:w-1/2 relative mt-2 md:mt-8">
+            <!-- Slideshow Image URLs -->
+            <img src="Images/torohills.png" alt="Health Center" class="hero-slide w-full h-64 md:h-full object-cover rounded-lg absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100" onerror="this.src='https://placehold.co/800x600/ef4444/ffffff?text=Image+Failed+to+Load'">
+            <img src="Images/bahaytoro1.jpg" alt="Community" class="hero-slide w-full h-64 md:h-full object-cover absolute inset-0 transition-opacity rounded-lg duration-1000 ease-in-out opacity-0" onerror="this.src='https://placehold.co/800x600/ef4444/ffffff?text=Image+Failed+to+Load'">
+            <img src="Images/torohc2.jpg" alt="Health Worker" class="hero-slide rounded-lg w-full h-64 md:h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" onerror="this.src='https://placehold.co/800x600/ef4444/ffffff?text=Image+Failed+to+Load'">
+        </div>
+    </section>
+
+    <!-- Your Health, Our Priority Section -->
+    <section class="container mx-auto px-4 py-12 lg:py-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <!-- Image -->
+            <div>
+                <img src="https://www.geklaw.com/images/california-nurse-injuries.jpg" alt="Health Worker with Patient" class="rounded-lg shadow-lg w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x450/a5f3fc/083344?text=Health+Worker+with+Patient'">
+            </div>
+            <!-- Text Content -->
+            <div>
+                <h2 class="text-3xl font-bold text-teal-800">Your Health, Our Priority</h2>
+                <p class="text-gray-600 mt-4 leading-relaxed">
+                    Our Barangay Bahay Toro Health Center provides accessible and quality healthcare for every resident. From general checkups to specialized care, our team is dedicated to your well-being.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-semibold mt-2">General Checkups</h4>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-semibold mt-2">Vaccinations</h4>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-semibold mt-2">Prenatal Care</h4>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-semibold mt-2">Dental Services</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Services Carousel -->
+    <section class="bg-gradient-to-r from-teal-700 to-teal-800 text-white py-12 lg:py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Our Services</h2>
+                <!-- Carousel Arrows -->
+                <div class="flex gap-2">
+                    <button class="carousel-prev-team bg-white/20 hover:bg-white/40 text-white rounded-full p-2 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button class="carousel-next-team bg-white/20 hover:bg-white/40 text-white rounded-full p-2 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="team-carousel-container" class="relative carousel-container">
+                <div class="carousel-rail flex overflow-x-auto gap-6 no-scrollbar pb-4">
+                    <!-- Service Card 1 -->
+                    <div class="flex-shrink-0 w-80 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://theheartspecialistsclinic.com/assets/img/about/about2.jpg" alt="Consultation" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/ffffff/083344?text=Consultation'">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl">Medical Consultation</h3>
+                            <p class="text-gray-600 mt-1">Free checkups with our nurses and doctors.</p>
+                            <p class="text-gray-700 mt-4 text-sm">Available Mon-Fri, 8am-5pm.</p>
+                        </div>
+                    </div>
+                    <!-- Service Card 2 -->
+                    <div class="flex-shrink-0 w-80 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/hero_extended/public/20220818-UNICEF_WalkInColdRoom-SurigaoDS-6MP-LMP-04646.jpeg.webp?itok=hvoyHDhj" alt="Vaccination" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/ffffff/083344?text=Vaccination'">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl">Child Immunization</h3>
+                            <p class="text-gray-600 mt-1">Keep your children safe and healthy.</p>
+                            <p class="text-gray-700 mt-4 text-sm">Schedule available on the announcements board.</p>
+                        </div>
+                    </div>
+                    <!-- Service Card 3 -->
+                    <div class="flex-shrink-0 w-80 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/02/Pregnancy-Checkups-Why-Are-They-Important.jpg" alt="Prenatal" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/ffffff/083344?text=Prenatal+Care'">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl">Prenatal & Postnatal Care</h3>
+                            <p class="text-gray-600 mt-1">Supporting mothers every step of the way.</p>
+                            <p class="text-gray-700 mt-4 text-sm">Checkups with our midwives.</p>
+                        </div>
+                    </div>
+                    <!-- Service Card 4 -->
+                    <div class="flex-shrink-0 w-80 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://www.cillosmiledesign.com/wp-content/uploads/2025/06/IMG_5192_opt.jpg" alt="Dental" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/ffffff/083344?text=Dental+Services'">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl">Dental Services</h3>
+                            <p class="text-gray-600 mt-1">Free dental cleaning and extractions.</p>
+                            <p class="text-gray-700 mt-4 text-sm">Available every Wednesday.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Start Your Journey Section -->
+    <section class="container mx-auto px-4 py-12 lg:py-20">
+        <h2 class="text-3xl font-bold text-center text-teal-800 mb-12">Start your health journey</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <h3 class="font-bold text-xl mb-2">First Time Visit?</h3>
+                <p class="text-gray-600 mb-4">Find out how to register and get your record started.</p>
+                <a href="about.html" class="font-semibold text-teal-600 hover:text-teal-700">Learn More &rarr;</a>
+            </div>
+            <div class="text-center">
+                <h3 class="font-bold text-xl mb-2">Returning Resident?</h3>
+                <p class="text-gray-600 mb-4">Welcome back! Book your next checkup or follow-up.</p>
+                <!-- Opens Auth Gate Modal -->
+                <button class="open-auth-gate-modal font-semibold text-teal-600 hover:text-teal-700">Book Now &rarr;</button>
+            </div>
+            <div class="text-center">
+                <h3 class="font-bold text-xl mb-2">Find Us</h3>
+                <p class="text-gray-600 mb-4">Located at the Barangay Bahay Toro Hall Compound.</p>
+                <a href="contact.html" class="font-semibold text-teal-600 hover:text-teal-700">View Map &rarr;</a>
+            </div>
+            <div class="text-center">
+                <h3 class="font-bold text-xl mb-2">Emergency?</h3>
+                <p class="text-gray-600 mb-4">Get quick access to our emergency contacts.</p>
+                <!-- Changed to modal button -->
+                <button class="open-emergency-modal font-semibold text-teal-600 hover:text-teal-700">Contact List &rarr;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Barangay Health Team Carousel -->
+    <section id="our-team" class="bg-gray-50 py-12 lg:py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-teal-800">Our Barangay Bahay Toro Health Team</h2>
+                <!-- Carousel Arrows -->
+                <div class="flex gap-2">
+                    <button class="carousel-prev-medical bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full p-2 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button class="carousel-next-medical bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full p-2 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="medical-carousel-container" class="relative carousel-container">
+                <div class="carousel-rail flex overflow-x-auto gap-6 no-scrollbar pb-4">
+                    <!-- Doctor Card 1 -->
+                    <div class="flex-shrink-0 w-72 text-center">
+                        <img src="https://ph.hibariclinic.com/wp-content/themes/hibariclinic/images/img-page-doctor-may.jpg" alt="Doctor 1" class="w-full h-72 object-cover rounded-lg shadow-md" onerror="this.src='https://placehold.co/300x300/a5f3fc/083344?text=Dr.+May'">
+                        <h3 class="font-bold text-xl mt-4">Dr. May S. Oki</h3>
+                        <p class="text-gray-600 mt-1">Lead Midwife, MD</p>
+                        <button class="open-doctor-modal font-semibold text-teal-600 hover:text-teal-700 mt-2 inline-block" data-name="Dr. May S. Oki" data-role="Lead Midwife, MD" data-bio="Dr. Oki has been serving Barangay Bahay Toro for over 15 years, specializing in maternal and child health. She is a dedicated midwife and a pillar of our community." data-img="https://ph.hibariclinic.com/wp-content/themes/hibariclinic/images/img-page-doctor-may.jpg">View Profile</button>
+                    </div>
+                    <!-- Doctor Card 2 -->
+                    <div class="flex-shrink-0 w-72 text-center">
+                        <img src="https://maniladoctors.sgp1.digitaloceanspaces.com/doctors_image/4n3iup7mjhyaEWoxhEOCvIVKEuL8dtxpVMlZ8EOl.jpg" alt="Nurse 1" class="w-full h-72 object-cover rounded-lg shadow-md" onerror="this.src='https://placehold.co/300x300/a5f3fc/083344?text=Josefa+R.'">
+                        <h3 class="font-bold text-xl mt-4">Josefa Reyes</h3>
+                        <p class="text-gray-600 mt-1">Head Nurse, RN</p>
+                        <button class="open-doctor-modal font-semibold text-teal-600 hover:text-teal-700 mt-2 inline-block" data-name="Josefa Reyes" data-role="Head Nurse, RN" data-bio="Nurse Josefa 'Josie' Reyes manages our daily clinic operations and leads our team of nurses and health workers. Her expertise in community health is unmatched." data-img="https://maniladoctors.sgp1.digitaloceanspaces.com/doctors_image/4n3iup7mjhyaEWoxhEOCvIVKEuL8dtxpVMlZ8EOl.jpg">View Profile</button>
+                    </div>
+                    <!-- Doctor Card 3 -->
+                    <div class="flex-shrink-0 w-72 text-center">
+                        <img src="https://peregrineeye.com/wp-content/uploads/2023/05/Richard-Nepomuceno.jpg" alt="Midwife 1" class="w-full h-72 object-cover rounded-lg shadow-md" onerror="this.src='https://placehold.co/300x300/a5f3fc/083344?text=Richard+N.'">
+                        <h3 class="font-bold text-xl mt-4">Richard Nepomuceno</h3>
+                        <p class="text-gray-600 mt-1">Barangay Doctor</p>
+                        <button class="open-doctor-modal font-semibold text-teal-600 hover:text-teal-700 mt-2 inline-block" data-name="Richard Nepomuceno" data-role="Barangay Doctor" data-bio="Dr. Nepomuceno provides general medical consultations every weekday. He has a passion for preventive medicine and community wellness." data-img="https://peregrineeye.com/wp-content/uploads/2023/05/Richard-Nepomuceno.jpg">View Profile</button>
+                    </div>
+                    <!-- Doctor Card 4 -->
+                    <div class="flex-shrink-0 w-72 text-center">
+                        <img src="https://shinagawa.ph/wp-content/uploads/2024/09/doctor-image-cham.png" alt="BHW 1" class="w-full h-72 object-cover rounded-lg shadow-md" onerror="this.src='https://placehold.co/300x300/a5f3fc/083344?text=Carlos+M.'">
+                        <h3 class="font-bold text-xl mt-4">Carlos Manalo</h3>
+                        <p class="text-gray-600 mt-1">Barangay Health Worker</p>
+                        <button class="open-doctor-modal font-semibold text-teal-600 hover:text-teal-700 mt-2 inline-block" data-name="Carlos Manalo" data-role="Barangay Health Worker" data-bio="Carlos is one of our most active Barangay Health Workers (BHWs), responsible for house-to-house visits, monitoring, and assisting in health programs." data-img="https://shinagawa.ph/wp-content/uploads/2024/09/doctor-image-cham.png">View Profile</button>
+                    </div>
+                    <!-- Doctor Card 5 -->
+                    <div class="flex-shrink-0 w-72 text-center">
+                        <img src="https://elevatedental.ph/wp-content/uploads/2023/07/Diane-Yvonne-Domondone-LIFESTYLE.jpg" alt="BHW 2" class="w-full h-72 object-cover rounded-lg shadow-md" onerror="this.src='https://placehold.co/300x300/a5f3fc/083344?text=Diane+D.'">
+                        <h3 class="font-bold text-xl mt-4">Dr. Diane Domondone</h3>
+                        <p class="text-gray-600 mt-1">Barangay Dentist</p>
+                        <button class="open-doctor-modal font-semibold text-teal-600 hover:text-teal-700 mt-2 inline-block" data-name="Dr. Diane Domondone" data-role="Barangay Dentist" data-bio="Dr. Domondone leads our weekly dental missions, providing free cleaning and extractions to residents. She is available every Wednesday." data-img="https://elevatedental.ph/wp-content/uploads/2023/07/Diane-Yvonne-Domondone-LIFESTYLE.jpg">View Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcements & Promos (MOVED UP) -->
+    <section id="announcements" class="bg-gray-50 py-10 lg:py-15">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-teal-800 mb-12">Announcements & Health News</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Promo 1: Vaccine Drive -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://www.reuters.com/resizer/v2/QDYOKJEFTNPZXMX5PWFGAG2Q2Q.jpg?auth=d70e30211af52a29f2f486602f9961bbad8a907404d07a290b5abc1b1de42131" alt="Vaccination Drive" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Vaccine+Drive'">
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl">Free Flu Vaccine Drive</h3>
+                        <p class="text-gray-600 mt-2">This Saturday, 9AM at the Barangay Bahay Toro court. Open for all seniors and children.</p>
+                        <a href="announcements.html" class="font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block">Learn More &rarr;</a>
+                    </div>
+                </div>
+                <!-- Promo 2: Dental Mission -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://tzuchi-en-backend.storage.googleapis.com/content/images/2023/06/1-PHO.jpg" alt="Dental Mission" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Dental+Mission'">
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl">Dental Cleaning Mission</h3>
+                        <p class="text-gray-600 mt-2">Free dental checkups and cleaning. First come, first served.</p>
+                        <a href="announcements.html" class="font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block">Learn More &rarr;</a>
+                    </div>
+                </div>
+                <!-- Promo 3: Health Seminar -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://punto.com.ph/wp-content/uploads/2023/09/received_150305088123714.jpeg" alt="Health Seminar" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Health+Seminar'">
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl">Dengue Awareness Seminar</h3>
+                        <p class="text-gray-600 mt-2">Learn how to prevent dengue in your homes. All are invited.</p>
+                        <a href="announcements.html" class="font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block">Learn More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners (MOVED DOWN) -->
+    <section class="container mx-auto px-4 py-10 lg:py-30">
+        <h2 class="text-3xl font-bold text-center text-teal-800 mb-12">Our Partners</h2>
+        <!-- Real Logos, in full color (removed grayscale) -->
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-8 items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/DOH_Logo.png" alt="DOH Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=DOH'">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Philippine_Health_Insurance_Corporation_%28PhilHealth%29.svg" alt="PhilHealth Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=PhilHealth'">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Philippine_Red_Cross_logo.jpg/1200px-Philippine_Red_Cross_logo.jpg" alt="Philippine Red Cross Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=Red+Cross'">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCzrO3_oP7y6pLHolIlAb_-1ohrNhq5MYD5Q&s" alt="LGU Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=LGU'">
+            <img src="https://1000logos.net/wp-content/uploads/2019/03/DSWD-Logo.png" alt="DSWD Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=DSWD'">
+            <img src="https://png.pngtree.com/png-vector/20220821/ourmid/pngtree-ngo-cure-happiness-freedom-human-love-heart-bird-pigeon-logo-png-image_6118040.png" alt="NGO Logo" class="mx-auto h-16 w-auto object-contain" onerror="this.src='https://placehold.co/150x80/e0e0e0/555555?text=Partner+NGO'">
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="#" class="text-3xl font-bold text-white">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> <!-- Facebook Icon -->
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links: About Us -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="#our-team" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Bahay Toro Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Services -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Residents -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button class="open-auth-gate-modal text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- NEW: Auth Gate Modal (Prompts user to log in or register before booking) -->
+    <div id="auth-gate-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-70"></div>
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-[110] w-11/12 md:max-w-md mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">
+                    To book an appointment or check your records, please sign in or register as a resident first.
+                </p>
+                
+                <a href="patien" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">
+                    I am a Registered Patient (Login)
+                </a>
+
+                <!-- Use query parameter to signal the login page to open the registration modal automatically -->
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">
+                    I am a New Resident (Register)
+                </a>
+
+                <button class="modal-close w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">
+                    &larr; Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Doctor Profile Modal -->
+    <div id="doctor-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        
+        <div class="modal-content bg-white rounded-lg shadow-lg z-[110] w-11/12 md:max-w-lg mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Team Member Profile</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <img id="doctor-modal-img" src="https://placehold.co/300x300/a5f3fc/083344?text=Doctor" alt="Doctor" class="w-full sm:w-48 h-48 object-cover rounded-lg shadow-md">
+                    <div class="flex-1">
+                        <h4 id="doctor-modal-name" class="text-2xl font-bold">Doctor Name</h4>
+                        <p id="doctor-modal-role" class="text-teal-600 font-semibold text-lg">Doctor Role</p>
+                        <p id="doctor-modal-bio" class="text-gray-600 mt-4">Doctor biography will go here, providing more details about their experience and specialization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="emergency-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        
+        <div class="modal-content bg-white rounded-lg shadow-lg z-[110] w-11/12 md:max-w-lg mx-auto transform -translate-y-10 scale-95 border-t-4 border-red-600">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-red-600">Emergency Hotlines</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <p class="text-gray-600 mb-6">In case of a medical emergency, please contact the following numbers immediately.</p>
+                <ul class="space-y-4">
+                    <li class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">Barangay Bahay Toro Health Center</span>
+                        <a href="tel:09171234567" class="font-bold text-teal-600 text-lg">0917-123-4567</a>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">Barangay Bahay Toro Hall (24/7)</span>
+                        <a href="tel:0288887777" class="font-bold text-teal-600 text-lg">(02) 8888-7777</a>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">Local Police</span>
+                        <a href="tel:117" class="font-bold text-teal-600 text-lg">117</a>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">City Ambulance</span>
+                        <a href="tel:911" class="font-bold text-teal-600 text-lg">911</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript for Carousels & Modals -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Hero Slideshow
+            setupHeroSlideshow();
+
+            // Setup Carousels
+            setupCarousel(
+                document.querySelector('#team-carousel-container'),
+                document.querySelector('.carousel-prev-team'),
+                document.querySelector('.carousel-next-team')
+            );
+            setupCarousel(
+                document.querySelector('#medical-carousel-container'),
+                document.querySelector('.carousel-prev-medical'),
+                document.querySelector('.carousel-next-medical')
+            );
+
+            // Setup Hiding Header & Mobile Menu
+            setupHidingHeader();
+            setupMobileMenu();
+
+            // --- Modal Logic ---
+            const body = document.querySelector('body');
+
+            // Define all modals and their trigger buttons
+            const modals = [
+                { id: 'auth-gate-modal', openClass: '.open-auth-gate-modal' },
+                { id: 'doctor-modal', openClass: '.open-doctor-modal' },
+                { id: 'emergency-modal', openClass: '.open-emergency-modal' },
+            ];
+
+            modals.forEach(m => {
+                const modal = document.getElementById(m.id);
+                if (modal) {
+                    const openButtons = document.querySelectorAll(m.openClass);
+                    const closeButtons = modal.querySelectorAll('.modal-close, .modal-overlay');
+
+                    openButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, true);
+                            // Populate doctor modal data if applicable
+                            if (m.id === 'doctor-modal') {
+                                const name = button.dataset.name || 'N/A';
+                                const role = button.dataset.role || 'N/A';
+                                const bio = button.dataset.bio || 'No biography available.';
+                                const img = button.dataset.img || 'https://placehold.co/300x300/a5f3fc/083344?text=Doctor';
+                                
+                                document.getElementById('doctor-modal-img').src = img;
+                                document.getElementById('doctor-modal-name').textContent = name;
+                                document.getElementById('doctor-modal-role').textContent = role;
+                                document.getElementById('doctor-modal-bio').textContent = bio;
+                            }
+                        });
+                    });
+                    closeButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, false);
+                        });
+                    });
+                }
+            });
+
+
+            // General Modal Toggle Function
+            function toggleModal(modal, show) {
+                if (!modal) return;
+                
+                const modalContent = modal.querySelector('.modal-content');
+                if (!modalContent) return;
+
+                if (show) {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('-translate-y-10', 'scale-95');
+                    body.classList.add('modal-active');
+                } else {
+                    modal.classList.add('opacity-0');
+                    modalContent.classList.add('-translate-y-10', 'scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('pointer-events-none');
+                        // Only remove modal-active if no other modals are open
+                        if (document.querySelectorAll('.modal:not(.opacity-0)').length === 0) {
+                            body.classList.remove('modal-active');
+                        }
+                    }, 250); // Match transition duration
+                }
+            }
+
+            // Close modals with Escape key
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        toggleModal(modal, false);
+                    });
+                }
+            });
+
+        });
+
+        function setupHeroSlideshow() {
+            const slides = document.querySelectorAll('.hero-slide');
+            if (slides.length === 0) return;
+
+            let currentSlide = 0;
+            
+            setInterval(() => {
+                // Fade out current slide
+                slides[currentSlide].classList.remove('opacity-100');
+                slides[currentSlide].classList.add('opacity-0');
+                
+                // Move to next slide
+                currentSlide = (currentSlide + 1) % slides.length;
+                
+                // Fade in next slide
+                slides[currentSlide].classList.remove('opacity-0');
+                slides[currentSlide].classList.add('opacity-100');
+            }, 3000); // 3 seconds
+        }
+
+        function setupCarousel(container, prevButton, nextButton) {
+            if (!container) return;
+            const rail = container.querySelector('.carousel-rail');
+            if (!rail || !prevButton || !nextButton) return;
+
+            const card = rail.querySelector('div[class*="flex-shrink-0"]');
+            if (!card) return;
+
+            // Calculate card width + gap
+            const cardStyle = window.getComputedStyle(card);
+            const gapStyle = window.getComputedStyle(rail);
+            const gap = parseFloat(gapStyle.gap) || 24; // Default to 24px (gap-6)
+            
+            // Use scrollWidth of the card as a base
+            const scrollAmount = card.offsetWidth + gap;
+
+            prevButton.addEventListener('click', () => {
+                rail.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            nextButton.addEventListener('click', () => {
+                rail.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+        }
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    // Scrolling Down
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    // Scrolling Up
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    // Toggle icon between 'menu' and 'close'
+                    if (isHidden) {
+                        // Show menu icon (3 bars)
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                    } else {
+                        // Show close icon (X)
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                    }
+                });
+
+                // Close menu when a link is clicked
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                    });
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>

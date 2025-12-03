@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Services - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Collapsible Sidebar Styles --- */
+        #sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #sidebar-nav::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 3px;
+        }
+
+        #sidebar-nav::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+
+        #sidebar-nav {
+            scrollbar-width: thin;
+            scrollbar-color: #4a5568 #2d3748;
+        }
+
+        #sidebar {
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+
+            /* Collapsed "mini" state (DEFAULT) */
+            #sidebar {
+                width: 5rem;
+                z-index: 50;
+            }
+
+            #main-content {
+                margin-left: 5rem;
+            }
+
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: none;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+            }
+
+            .sidebar-link-container,
+            .sidebar-header {
+                justify-content: center;
+            }
+
+            /* Show dropdowns on hover if parent is hovered (Desktop behavior) */
+            #sidebar:hover {
+                width: 16rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            #sidebar:hover~#main-content {
+                margin-left: 5rem;
+            }
+
+            #sidebar:hover .sidebar-text,
+            #sidebar:hover .sidebar-header-text,
+            #sidebar:hover .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+                transition-delay: 0.1s;
+            }
+
+            #sidebar:hover .sidebar-link-container,
+            #sidebar:hover .sidebar-header {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                width: 16rem;
+                transform: translateX(-100%);
+                z-index: 60;
+            }
+
+            body.sidebar-open #sidebar {
+                transform: translateX(0);
+            }
+
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+            }
+        }
+
+        /* --- Modal System --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 150;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            border-radius: 0 0 12px 12px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+            <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+                <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                    </svg>
+                    <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">Admin</span>
+                </a>
+                <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <ul class="py-4">
+                    <li><a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">Dashboard</span></span></a></li>
+                    <li><a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" /><path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" /></svg><span class="sidebar-text whitespace-nowrap">Appointments</span></span></a></li>
+                    <li><a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" /><path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">Patient Records</span></span></a></li>
+                    <li><a href="MedicalInventory.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">Inventory</span></span></a></li>
+                    <li><a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" /></svg><span class="sidebar-text whitespace-nowrap">Reports</span></span></a></li>
+                    <li><a href="Inquiries.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6-.82c.046-.28.076-.564.076-.858 0-2.24-1.99-4.05-4.442-4.05-2.452 0-4.442 1.81-4.442 4.05 0 .294.03.578.076.858a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">Inquiries</span></span></a></li>
+                    <li>
+                <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Health Statistics</span>
+                    </span>
+                </a>
+            </li>
+                    <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">Management</li>
+                    
+                    <li>
+                        <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 bg-gray-700 text-white font-semibold"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">Site Content</span></span><svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow rotate-180"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg></button>
+                        <ul id="content-menu" class="bg-gray-700">
+                            <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                            <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-teal-400 bg-gray-600 font-semibold sidebar-text">Services</a></li>
+                            <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white"><span class="sidebar-link-container flex items-center w-full"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 0 1 7.5 0z" clip-rule="evenodd" /></svg><span class="sidebar-text whitespace-nowrap">User Management</span></span><svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg></button>
+                        <ul id="user-menu" class="hidden bg-gray-700">
+                            <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                            <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            <header
+                class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                <div class="">
+                    <h1 class="text-xl font-semibold text-gray-800">Manage Services</h1>
+                </div>
+                <div class="flex items-center space-x-4 ml-auto">
+                    <button
+                        class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin"
+                                class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                        </button>
+                        <div id="profile-menu"
+                            class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <div class="px-4 py-2 border-b"><span class="font-semibold text-sm text-gray-700">Admin
+                                    User</span><span class="block text-xs text-gray-500">Administrator</span></div>
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Services List</h1>
+                        <p class="text-sm text-gray-600 mt-1">Manage the public-facing services shown on the website.
+                        </p>
+                    </div>
+                    <button data-modal-target="addServiceModal"
+                        class="mt-4 md:mt-0 flex items-center justify-center py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            class="w-5 h-5 mr-2">
+                            <path
+                                d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                        </svg>
+                        Add New Service
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <!-- Filters -->
+                    <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row gap-4 items-center bg-gray-50">
+                        <div class="relative flex-grow w-full sm:w-auto">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="text" id="searchService"
+                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                                placeholder="Search services...">
+                        </div>
+                        <div class="w-full sm:w-auto">
+                            <select id="filterCategory"
+                                class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md">
+                                <option value="all">All Categories</option>
+                                <option value="primary">Primary Care</option>
+                                <option value="maternal">Maternal & Child</option>
+                                <option value="preventive">Preventive Care</option>
+                                <option value="education">Health Education</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Service Name</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Category</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Last Updated</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="servicesTableBody">
+                                <!-- Row 1 -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-lg object-cover"
+                                                    src="https://www.themedicalcityclinic.com/wp-content/uploads/2019/05/adult-consultation.jpg"
+                                                    alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">General Medical
+                                                    Consultation</div>
+                                                <div class="text-sm text-gray-500">Daily walk-in checkups</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Primary
+                                            Care</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 24, 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-teal-600 hover:text-teal-900 mr-3 edit-btn">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-lg object-cover"
+                                                    src="https://assets.thenewhumanitarian.org/s3fs-public/styles/social_large/public/images/201207020945500677.jpg?itok=vba4rpf9"
+                                                    alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Maternal & Child Health
+                                                </div>
+                                                <div class="text-sm text-gray-500">Prenatal & Postnatal</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100 text-pink-800">Maternal
+                                            & Child</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 20, 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-teal-600 hover:text-teal-900 mr-3 edit-btn">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-lg object-cover"
+                                                    src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/hero_extended/public/20220818-UNICEF_WalkInColdRoom-SurigaoDS-6MP-LMP-04646.jpeg.webp?itok=hvoyHDhj"
+                                                    alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Immunization Drives</div>
+                                                <div class="text-sm text-gray-500">Pediatric vaccines</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Preventive
+                                            Care</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 15, 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-teal-600 hover:text-teal-900 mr-3 edit-btn">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                                <!-- Row 4 -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <img class="h-10 w-10 rounded-lg object-cover"
+                                                    src="https://sloganshub.org/wp-content/uploads/2018/10/Best-World-Diabetes-Day-Slogans.jpg"
+                                                    alt="">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">Diabetes Counseling</div>
+                                                <div class="text-sm text-gray-500">Support group sessions</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Health
+                                            Education</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Draft</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 01, 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-teal-600 hover:text-teal-900 mr-3 edit-btn">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- === Add/Edit Service Modal === -->
+    <div class="modal-overlay" id="addServiceModal">
+        <div class="modal-container">
+            <div class="modal-header flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Add New Service</h3>
+                <button class="text-gray-400 hover:text-gray-600 p-1" data-modal-close="addServiceModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm" class="space-y-4">
+                    <div>
+                        <label for="serviceName" class="block text-sm font-medium text-gray-700">Service Name</label>
+                        <input type="text" id="serviceName"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                            placeholder="e.g., General Checkup">
+                    </div>
+                    <div>
+                        <label for="serviceCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="serviceCategory"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                            <option value="primary">Primary Care</option>
+                            <option value="maternal">Maternal & Child</option>
+                            <option value="preventive">Preventive Care</option>
+                            <option value="education">Health Education</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="shortDescription" class="block text-sm font-medium text-gray-700">Short
+                            Description</label>
+                        <input type="text" id="shortDescription"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                            placeholder="Brief summary for list view">
+                    </div>
+                    <div>
+                        <label for="fullDescription" class="block text-sm font-medium text-gray-700">Full
+                            Description</label>
+                        <textarea id="fullDescription" rows="3"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                            placeholder="Detailed description..."></textarea>
+                    </div>
+                    <div>
+                        <label for="imageUrl" class="block text-sm font-medium text-gray-700">Image URL</label>
+                        <input type="text" id="imageUrl"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+                            placeholder="https://...">
+                    </div>
+                    <div class="flex items-center">
+                        <input id="serviceStatus" type="checkbox"
+                            class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                        <label for="serviceStatus" class="ml-2 block text-sm text-gray-900"> Set as Active (Visible to
+                            public) </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                    class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                    data-modal-close="addServiceModal">Cancel</button>
+                <button type="submit" form="serviceForm"
+                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">Save
+                    Service</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === Delete Confirmation Modal === -->
+    <div class="modal-overlay" id="deleteConfirmModal">
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header flex justify-between items-center">
+                <h3 class="text-lg font-bold text-red-600">Delete Service</h3>
+                <button class="text-gray-400 hover:text-gray-600 p-1" data-modal-close="deleteConfirmModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-gray-700">Are you sure you want to delete this service? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                    class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    data-modal-close="deleteConfirmModal">Cancel</button>
+                <button type="button"
+                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // --- Sidebar Toggle Logic ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) sidebarOpenBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+            if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+
+            // --- Dropdown Logic ---
+            const contentToggle = document.getElementById('content-toggle');
+            const contentMenu = document.getElementById('content-menu');
+            const contentArrow = document.getElementById('content-arrow');
+            if (contentToggle) {
+                contentToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    contentMenu.classList.toggle('hidden');
+                    if (contentArrow) contentArrow.classList.toggle('rotate-180');
+                });
+            }
+
+            const userToggle = document.getElementById('user-toggle');
+            const userMenu = document.getElementById('user-menu');
+            const userArrow = document.getElementById('user-arrow');
+            if (userToggle) {
+                userToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    userMenu.classList.toggle('hidden');
+                    if (userArrow) userArrow.classList.toggle('rotate-180');
+                });
+            }
+
+            // --- Profile Dropdown ---
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => profileMenu.classList.toggle('hidden'));
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) profileMenu.classList.add('hidden');
+                });
+            }
+
+            // --- Modal Handling ---
+            const modals = {};
+            document.querySelectorAll('.modal-overlay').forEach(modal => modals[modal.id] = modal);
+
+            function openModal(modalId) {
+                const modal = modals[modalId];
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal(modalId) {
+                const modal = modals[modalId];
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            // Add Service
+            const addBtn = document.querySelector('[data-modal-target="addServiceModal"]');
+            if (addBtn) addBtn.addEventListener('click', () => {
+                document.getElementById('modalTitle').textContent = "Add New Service";
+                document.getElementById('serviceForm').reset();
+                openModal('addServiceModal');
+            });
+
+            // Edit Buttons (Simulation)
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('modalTitle').textContent = "Edit Service";
+                    // Simulate filling form
+                    document.getElementById('serviceName').value = "General Medical Consultation";
+                    document.getElementById('serviceCategory').value = "primary";
+                    document.getElementById('shortDescription').value = "Daily walk-in checkups";
+                    openModal('addServiceModal');
+                });
+            });
+
+            // Delete Buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    openModal('deleteConfirmModal');
+                });
+            });
+
+            // Close buttons
+            document.querySelectorAll('[data-modal-close]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    closeModal(btn.getAttribute('data-modal-close'));
+                });
+            });
+
+            // Close on backdrop
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal.id);
+                });
+            });
+
+            // Form Submit
+            const form = document.getElementById('serviceForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Logic to save would go here
+                    closeModal('addServiceModal');
+                    // alert("Service saved successfully!"); 
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

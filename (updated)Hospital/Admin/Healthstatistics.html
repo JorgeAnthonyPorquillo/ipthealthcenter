@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Health Statistics - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Collapsible Sidebar Styles (Matches Admin Dashboard) --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar {
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+            /* Collapsed "mini" state */
+            #sidebar { width: 5rem; z-index: 50; }
+            #main-content { margin-left: 5rem; }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow {
+                display: none; opacity: 0; transition: opacity 0.2s ease-in-out;
+            }
+            .sidebar-link-container, .sidebar-header { justify-content: center; }
+            #content-menu, #user-menu { display: none !important; }
+            
+            /* Expanded "hover" state */
+            #sidebar:hover { width: 16rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+            #sidebar:hover ~ #main-content { margin-left: 5rem; }
+            #sidebar:hover .sidebar-text, 
+            #sidebar:hover .sidebar-header-text, 
+            #sidebar:hover .sidebar-dropdown-arrow {
+                display: inline-block; opacity: 1; transition-delay: 0.1s;
+            }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header { justify-content: flex-start; }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu { display: block !important; }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar { width: 16rem; transform: translateX(-100%); z-index: 60; }
+            #main-content { margin-left: 0; }
+            body.sidebar-open #sidebar { transform: translateX(0); }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: inline-block; opacity: 1; }
+            .sidebar-link-container, .sidebar-header { justify-content: flex-start; }
+            #sidebar-backdrop { transition: opacity 0.3s ease-in-out; }
+            body:not(.sidebar-open) #sidebar-backdrop { opacity: 0; pointer-events: none; }
+            body.sidebar-open #sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+    
+    <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+        <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+            <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">
+                Admin
+            </span>
+        </a>
+        <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+        <ul class="py-4">
+            
+            <li>
+                <a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" />
+                            <path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" />
+                            <path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Patient Records</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="MedicalInventory.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Reports</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Inquiries.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6-.82c.046-.28.076-.564.076-.858 0-2.24-1.99-4.05-4.442-4.05-2.452 0-4.442 1.81-4.442 4.05 0 .294.03.578.076.858a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inquiries</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Health Statistics</span>
+                    </span>
+                </a>
+            </li>
+            
+            <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">
+                Management
+            </li>
+            
+            <li>
+                <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                    </span>
+                    <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="content-menu" class="hidden bg-gray-700">
+                    <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                    <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                    <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">User Management</span>
+                    </span>
+                    <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="user-menu" class="hidden bg-gray-700">
+                    <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                    <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- 2. Header -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">Health Statistics</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Notifications -->
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- User Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            <div class="hidden md:block text-left">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-500 hidden md:block">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 4. Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                <!-- Page Title & Filters -->
+                <div class="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Overview</h2>
+                        <p class="text-sm text-gray-500">Key health data and trends in Barangay Commonwealth.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex gap-2">
+                        <select class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm p-2 bg-white border">
+                            <option>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>Year to Date</option>
+                        </select>
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-teal-700">
+                            Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-teal-500">
+                        <div class="bg-teal-50 text-teal-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5m10 0v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5m10 0h-5m-5 0v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Total Population</p>
+                            <p class="text-3xl font-bold text-gray-800">8,450</p>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-blue-500">
+                        <div class="bg-blue-50 text-blue-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-8 w-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.158.79.44 1.076l.01.008.01.01.01.007.004.002.003.001.002.001.001.001A2.25 2.25 0 015.25 6h1.5a2.25 2.25 0 012.25 2.25c0 .231-.035.454-.1.664M6.75 6h10.5M6.75 9h10.5m-10.5 3h10.5m-10.5 3h10.5m-10.5 3h10.5M6.75 21v-1.133c0-.98-.832-1.785-1.841-1.834m-2.083.082a2.25 2.25 0 01-2.242-2.242V6.108c0-1.135.845-2.098 1.976-2.192a48.424 48.424 0 011.123-.08m5.801 0c.065.21.1.433.1.664 0 .414-.158.79-.44 1.076l-.01.008-.01.01-.01.007-.004.002-.003.001-.002.001-.001.001A2.25 2.25 0 0018.75 6h-1.5a2.25 2.25 0 00-2.25 2.25c0 .231.035.454.1.664m-6.75 0V21" />
+                            </svg>                      
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Consultations</p>
+                            <p class="text-3xl font-bold text-gray-800">3,120</p>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-green-500">
+                        <div class="bg-green-50 text-green-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Vaccinations</p>
+                            <p class="text-3xl font-bold text-gray-800">4,502</p>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-purple-500">
+                        <div class="bg-purple-50 text-purple-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.84 6.988 6 7.632 6 8.5v3.5c0 .868.84 1.512 1.976 1.634 1.327.11 2.669.166 4.024.166m0 0c1.355 0 2.697-.056 4.024-.166C17.16 13.512 18 12.868 18 12V8.5c0-.868-.84-1.512-1.976-1.634A48.421 48.421 0 0012 6.75m0 5.25v-1.5" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Prenatal Checkups</p>
+                            <p class="text-3xl font-bold text-gray-800">231</p>
+                        </div>
+                    </div>
+                    <!-- Card 5 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-yellow-500">
+                        <div class="bg-yellow-50 text-yellow-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Dengue Cases (Qtr)</p>
+                            <p class="text-3xl font-bold text-gray-800">42</p>
+                        </div>
+                    </div>
+                    <!-- Card 6 -->
+                    <div class="bg-white rounded-lg shadow p-6 flex items-center space-x-4 border-l-4 border-gray-500">
+                        <div class="bg-gray-50 text-gray-600 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-8 w-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium uppercase">Patients Served</p>
+                            <p class="text-3xl font-bold text-gray-800">1,284</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Insights (Charts) -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Visual Insights</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        <!-- Bar Chart: Common Illnesses -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="text-lg font-semibold mb-4 text-gray-700">Common Illnesses (Last 30 Days)</h4>
+                            <div class="h-80 w-full relative">
+                                <canvas id="commonIllnessesChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Doughnut Chart: Vaccination Rate -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="text-lg font-semibold mb-4 text-gray-700">Vaccination Demographics</h4>
+                            <div class="h-80 w-full relative">
+                                <canvas id="vaccinationRateChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Pie Chart: Patient Demographics -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="text-lg font-semibold mb-4 text-gray-700">Patient Demographics (Age)</h4>
+                            <div class="h-80 w-full relative">
+                                <canvas id="demographicsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Line Chart: Consultations -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="text-lg font-semibold mb-4 text-gray-700">Consultations per Month</h4>
+                            <div class="h-80 w-full relative">
+                                <canvas id="consultationsChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown Table -->
+                <div class="bg-white rounded-lg shadow mb-8">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">Detailed Breakdown (Q3)</h3>
+                        <p class="text-sm text-gray-500">A granular view of reported cases over the last quarter.</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left min-w-max">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Illness</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">June</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">July</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">August</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Flu</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">45</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">60</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">55</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-bold text-right">160</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Common Cold</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">70</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">85</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">90</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-bold text-right">245</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Dengue</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">10</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">17</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-bold text-right">42</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Diarrhea</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">25</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">30</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-bold text-right">75</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Hypertension</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">30</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">28</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 text-right">32</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-bold text-right">90</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Sidebar Toggle Logic ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) {
+                sidebarOpenBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+            }
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            }
+            if (sidebarBackdrop) {
+                sidebarBackdrop.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            }
+
+            // --- Dropdown Logic ---
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => profileMenu.classList.toggle('hidden'));
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+            // Sidebar Content Toggle
+            const contentToggle = document.getElementById('content-toggle');
+            const contentMenu = document.getElementById('content-menu');
+            const contentArrow = document.getElementById('content-arrow');
+            if (contentToggle && contentMenu) {
+                contentToggle.addEventListener('click', () => {
+                    if (window.innerWidth < 1024) {
+                        contentMenu.classList.toggle('hidden');
+                        if (contentArrow) contentArrow.classList.toggle('rotate-180');
+                    }
+                });
+            }
+
+            // --- Chart.js Initialization ---
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.responsive = true;
+            Chart.defaults.maintainAspectRatio = false;
+
+            // Common Illnesses Bar Chart (Teal)
+            const illnessesCtx = document.getElementById('commonIllnessesChart');
+            if (illnessesCtx) {
+                new Chart(illnessesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Flu', 'Common Cold', 'Dengue', 'Diarrhea', 'Hypertension'],
+                        datasets: [{
+                            label: 'Cases',
+                            data: [120, 185, 42, 75, 90],
+                            backgroundColor: 'rgba(13, 148, 136, 0.6)', // teal-600 with opacity
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Vaccination Rate Doughnut Chart
+            const vaccinationCtx = document.getElementById('vaccinationRateChart');
+            if (vaccinationCtx) {
+                new Chart(vaccinationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Children (0-5y)', 'Seniors (60+y)', 'General Population'],
+                        datasets: [{
+                            data: [1240, 850, 2412],
+                            backgroundColor: [
+                                'rgba(13, 148, 136, 0.8)', // teal-600
+                                'rgba(15, 118, 110, 0.8)', // teal-700
+                                'rgba(16, 185, 129, 0.8)'  // green-500
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: { plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
+            // Demographics Pie Chart
+            const demographicsCtx = document.getElementById('demographicsChart');
+            if (demographicsCtx) {
+                new Chart(demographicsCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['0-10 yrs', '11-20 yrs', '21-40 yrs', '41-60 yrs', '60+ yrs'],
+                        datasets: [{
+                            data: [250, 150, 400, 300, 184],
+                            backgroundColor: [
+                                'rgba(13, 148, 136, 0.8)', // teal-600
+                                'rgba(15, 118, 110, 0.8)', // teal-700
+                                'rgba(6, 78, 59, 0.8)',   // green-900
+                                'rgba(16, 185, 129, 0.8)', // green-500
+                                'rgba(5, 150, 105, 0.8)'  // green-600
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: { plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
+            // Consultations Line Chart
+            const consultationsCtx = document.getElementById('consultationsChart');
+            if (consultationsCtx) {
+                new Chart(consultationsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [{
+                            label: 'Consultations',
+                            data: [110, 120, 150, 140, 160, 130, 170, 190],
+                            fill: true,
+                            backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: false } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
