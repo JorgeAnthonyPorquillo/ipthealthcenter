@@ -39,7 +39,7 @@
     <header id="main-header" class="bg-white shadow-md">
         <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
 
-            <!-- Updated Logo Section -->
+            <!-- Logo -->
             <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
                 <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
                 <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
@@ -60,11 +60,9 @@
             <!-- Action Buttons -->
             <div class="flex-shrink-0 flex gap-4 items-center">
                 <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
-                    Patient Login
+                    Login
                 </a>
-                <button data-modal-target="auth-gate-modal" class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-5 py-2 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 text-sm md:text-base shadow-md">
-                    Book Now
-                </button>
+                
                 <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -84,7 +82,7 @@
                 <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
                 <hr class="my-2">
                 <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
-                    Patient Login
+                   Login 
                 </a>
             </div>
         </div>
@@ -211,15 +209,22 @@
     <!-- Map Section -->
     <div class="container mx-auto px-4 pb-16">
         <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Location</h2>
-        <div class="w-full h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative">
-            <!-- Using the previously provided map image placeholder -->
-            <img src="https://miro.medium.com/v2/resize:fit:1400/1*CKP9RflsD65ojtvP3nDNNg.png"
-                 alt="Map indicating Barangay Bahay Toro location"
-                 class="w-full h-full object-cover"
-                 onerror="this.onerror=null; this.src='https://placehold.co/800x400/cccccc/333333?text=Map+of+Barangay+Bahay+Toro'">
-            <div class="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg max-w-xs hidden md:block">
-                <p class="font-semibold text-gray-800">Barangay Bahay Toro</p>
-                <p class="text-sm text-gray-600">Project 8, Quezon City</p>
+        <div class="w-full h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative border border-gray-300">
+            
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.106886367894!2d121.0315263153516!3d14.664879989762694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b71900000001%3A0x6335191845873995!2sBarangay%20Bahay%20Toro%20Hall!5e0!3m2!1sen!2sph!4v1678123456789!5m2!1sen!2sph" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            
+            <!-- Optional Info Overlay for better UX on mobile -->
+            <div class="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg max-w-xs hidden md:block border border-gray-100">
+                <p class="font-bold text-teal-800">Barangay Bahay Toro Hall</p>
+                <p class="text-sm text-gray-600">Road 3, Project 8, Quezon City</p>
             </div>
         </div>
     </div>

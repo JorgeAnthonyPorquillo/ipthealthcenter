@@ -67,35 +67,33 @@
 
     <!-- Main Header -->
     <header id="main-header" class="bg-white shadow-md">
-        <nav class="w-full px-10 py-5 flex justify-between items-center">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
 
             <!-- Logo -->
-            <a href="user_logged.html" class="text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
-                Barangay Bahay Toro Health Center
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
             </a>
             
-            <!-- Navigation Links - Centered and Aligned -->
+            <!-- Navigation Links -->
             <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
-                <!-- Public-Facing Pages -->
-                <a href="user_logged.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
                 <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
                 <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
                 <!-- Current Page -->
-                <a href="Announcements.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">News & Announcements</a>
-                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact Us</a>
+                <a href="announcements.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
                 <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
             </div>
             
             <!-- Action Buttons -->
-            <div class="flex-shrink-0 flex gap-2 items-center">
+            <div class="flex-shrink-0 flex gap-4 items-center">
                 <!-- Patient Login Button -->
                 <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
-                    Patient Login
+                    Login
                 </a>
-                <!-- Book Now Button (Auth Gate Modal) -->
-                <button data-modal-target="auth-gate-modal" class="bg-teal-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-teal-700 transition duration-300 text-sm md:text-base shadow-md">
-                    Book Now
-                </button>
+                
                 <!-- Mobile Menu Toggle -->
                 <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -108,25 +106,25 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
             <div class="flex flex-col p-4 gap-2">
-                <a href="user_logged.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
                 <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
                 <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
-                <a href="Announcements.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="announcements.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">News & Announcements</a>
                 <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
                 <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
                 
                 <hr class="my-2">
                 
                 <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
-                    Patient Login
+                    Login
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Page Header (Hero Section) - UPDATED with Image Background -->
+    <!-- Page Header (Hero Section) -->
     <section class="relative bg-teal-800 text-white">
-        <!-- Background Image (Same as Services.html) -->
+        <!-- Background Image -->
         <div class="absolute inset-0">
             <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" 
                  alt="Health News Header" 
@@ -134,20 +132,20 @@
                  onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Health+News'">
         </div>
         
-        <!-- Text Content with Overlay (Kept py-16 for same size) -->
+        <!-- Text Content with Overlay -->
         <div class="container mx-auto px-4 py-16 relative z-10">
             <h1 class="text-4xl font-extrabold">Health News & Updates</h1>
             <p class="text-lg text-teal-100 mt-2">Stay updated with the latest news, programs, and advisories from your Barangay Bahay Toro Health Center.</p>
         </div>
     </section>
 
-    <!-- Slogan Section (Clean Quotation Block) -->
+    <!-- Slogan Section -->
     <section class="container mx-auto px-4 pt-8">
         <div class="bg-teal-50 border-l-4 border-teal-600 rounded-lg shadow-md p-6 flex items-center transition duration-300">
             <span class="text-4xl text-teal-500 mr-4 font-extrabold">“</span>
             <div class="flex-grow">
                 <p class="text-xl md:text-2xl font-extrabold text-teal-800 tracking-tight">
-                    Kalusugan ng Bayan, Sagot ng Barangay!
+                    Kalusugan ng Bayan, Sagot ng Barangay Bahay Toro!
                 </p>
                 <p class="text-teal-600 mt-1 text-sm italic">
                     — Community Health Slogan
@@ -181,7 +179,7 @@
         </div>
     </section>
 
-    <!-- Announcements Grid (Adjusted Padding) -->
+    <!-- Announcements Grid -->
     <section class="container mx-auto px-4 pt-8 pb-16">
         <div id="announcement-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
@@ -190,11 +188,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://www.reuters.com/resizer/v2/QDYOKJEFTNPZXMX5PWFGAG2Q2Q.jpg?auth=d70e30211af52a29f2f486602f9961bbad8a907404d07a290b5abc1b1de42131" alt="Vaccination Drive" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Vaccine+Drive'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Events (Teal) -->
                         <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Free Flu Vaccine Drive</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">This Saturday, 9AM at the barangay court. Open for all seniors and children. Protect yourself before the cold season begins!</p>
-                        <!-- Announcement Modal Trigger -->
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">This Saturday, 9AM at the Barangay Bahay Toro court. Open for all seniors and children. Protect yourself before the cold season begins!</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             Read More
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -208,10 +204,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://tzuchi-en-backend.storage.googleapis.com/content/images/2023/06/1-PHO.jpg" alt="Dental Mission" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Dental+Mission'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Events (Teal) -->
                         <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Dental Cleaning Mission</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Free dental checkups and cleaning available this Friday. Limited slots, first come, first served. Don't forget to maintain your oral health!</p>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Free dental checkups and cleaning available this Friday at the Barangay Bahay Toro Health Center. Limited slots, first come, first served.</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             Read More
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -225,10 +220,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://punto.com.ph/wp-content/uploads/2023/09/received_150305088123714.jpeg" alt="Health Seminar" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Health+Seminar'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Events (Teal) -->
                         <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Dengue Awareness Seminar</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Learn how to prevent dengue in your homes and community this coming Saturday. All residents are invited to attend and learn life-saving tips.</p>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Learn how to prevent dengue in your homes and community this coming Saturday. All Barangay Bahay Toro residents are invited to attend.</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             Read More
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -242,10 +236,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://oldwebsite.bayambang.gov.ph/wp-content/uploads/2017/05/IMG_4851.jpg" alt="Oplan Timbang" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Nutrition+Program'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Program (Indigo) -->
                         <span class="announcement-category text-sm font-semibold text-indigo-600 uppercase mb-1">Health Program</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Oplan Timbang (Nutrition Program)</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">We are conducting our monthly monitoring of children aged 0-5. Please bring your child's health book. Early detection is key to good nutrition!</p>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">We are conducting our monthly monitoring of children aged 0-5 in Barangay Bahay Toro. Please bring your child's health book.</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             View Schedule
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -259,11 +252,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://binangonan.gov.ph/wp-content/uploads/2025/08/MAINLAND-BARANGAY-EMERGENCY-HOTLINES.png" alt="Emergency Hotlines" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/fca5a5/b91c1c?text=Emergency'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Emergency (Red) -->
                         <span class="announcement-category text-sm font-semibold text-red-600 uppercase mb-1">Emergency Info</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Updated Emergency Hotlines</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Please save the new emergency contact numbers for the Barangay Hall and Health Center. Always be prepared for medical emergencies.</p>
-                        <!-- Emergency Modal Trigger -->
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Please save the new emergency contact numbers for the Barangay Bahay Toro Hall and Health Center. Always be prepared.</p>
                         <button data-modal-target="emergency-modal" class="font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             See Numbers
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -277,10 +268,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdauzncrdzN0DgeDHAjDnGBeBsD5ofH2MBXg&s" alt="Health Advisory" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Health+Advisory'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Advisory (Yellow) -->
                         <span class="announcement-category text-sm font-semibold text-yellow-600 uppercase mb-1">Advisory</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Health Advisory: Rainy Season</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Tips to stay healthy and avoid common illnesses during the rainy season. Remember to clean your surroundings to prevent dengue.</p>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Tips to stay healthy and avoid common illnesses during the rainy season in Barangay Bahay Toro. Clean your surroundings to prevent dengue.</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             Read Tips
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -294,10 +284,9 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://assets.thenewhumanitarian.org/s3fs-public/styles/social_large/public/images/201207020945500677.jpg?itok=vba4rpf9" alt="Maternal Health" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Maternal+Health'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Program (Indigo) -->
                         <span class="announcement-category text-sm font-semibold text-indigo-600 uppercase mb-1">Health Program</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Free Maternal Checkups</h3>
-                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Expectant mothers are invited for free prenatal consultations every Tuesday and Thursday. Schedule your checkup today!</p>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Expectant mothers are invited for free prenatal consultations every Tuesday and Thursday at the Barangay Bahay Toro Health Center.</p>
                         <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
                             View Details
                             <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -311,7 +300,6 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://files01.pna.gov.ph/source/2021/06/28/img0360.jpg" alt="Blood Pressure" class="w-full h-48 object-cover" onerror="this.src='https://images.gmanews.tv/v3/webpics/v3/2014/08/2014_08_18_10_46_50.jpg'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Events (Teal) -->
                         <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Free Blood Pressure Screening</h3>
                         <p class="announcement-description text-gray-600 mt-2 flex-grow">Get your blood pressure checked for free this Wednesday from 9 AM to 12 NN. Early detection saves lives!</p>
@@ -328,7 +316,6 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                     <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/01/1000-51.jpg" alt="Breastfeeding Advisory" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Breastfeeding+Advisory'">
                     <div class="p-6 flex flex-col flex-grow">
-                        <!-- Category Color Key: Advisory (Yellow) -->
                         <span class="announcement-category text-sm font-semibold text-yellow-600 uppercase mb-1">Advisory</span>
                         <h3 class="announcement-title font-bold text-xl text-gray-900">Exclusive Breastfeeding Advisory</h3>
                         <p class="announcement-description text-gray-600 mt-2 flex-grow">Mothers are strongly encouraged to exclusively breastfeed their babies for the first six months. It's the best defense for your baby!</p>
@@ -347,22 +334,15 @@
     <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16 mt-12">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-                <!-- Logo & Socials -->
                 <div class="md:col-span-2">
-                    <a href="user_logged.html" class="text-3xl font-extrabold text-white mb-4 block">
+                    <a href="Homee.html" class="text-3xl font-extrabold text-white mb-4 block">
                         Barangay Bahay Toro Health Center
                     </a>
                     <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
                     <div class="flex gap-4 mt-6">
-                        <a href="#" class="text-gray-300 hover:text-white">
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> <!-- Facebook Icon -->
-                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-                            </svg>
-                        </a>
+                         <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
                     </div>
                 </div>
-                
-                <!-- Links: About Us -->
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
                     <ul class="space-y-2">
@@ -371,8 +351,6 @@
                         <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
                     </ul>
                 </div>
-                
-                <!-- Links: Services -->
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
                     <ul class="space-y-2">
@@ -382,8 +360,6 @@
                         <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
                     </ul>
                 </div>
-                
-                <!-- Links: Residents -->
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
                     <ul class="space-y-2">
@@ -393,8 +369,6 @@
                     </ul>
                 </div>
             </div>
-
-            <!-- Footer Bottom -->
             <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
                 <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
                 <div class="flex gap-4 mt-4 md:mt-0">
@@ -405,115 +379,27 @@
         </div>
     </footer>
 
-    <!-- MODALS -->
-
-    <!-- Announcement Detail Modal -->
-    <div id="announcement-detail-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
-        <div class="modal-panel w-full max-w-2xl bg-white rounded-lg shadow-2xl overflow-hidden border-t-4 border-teal-600">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center p-4 border-b">
-                <h3 id="modal-category" class="text-sm font-semibold text-teal-600 uppercase">Category</h3>
-                <button data-modal-close="announcement-detail-modal" class="text-gray-400 hover:text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+    <!-- Auth Gate Modal -->
+    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-            <!-- Modal Content -->
-            <div class="p-6 max-h-[80vh] overflow-y-auto">
-                <img id="modal-image" src="" alt="Announcement Image" class="w-full h-64 object-cover rounded-md mb-4" onerror="this.src='https://placehold.co/600x400/a5f3fc/083344?text=Image+Not+Available'">
-                <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-2">Modal Title</h2>
-                <p class="text-xs text-gray-400 mb-4">Posted: October 25, 2025</p>
-                <p id="modal-description" class="text-gray-700 leading-relaxed">
-                    This is the full detail text for the announcement. It will contain all necessary information, dates, locations, and requirements for the service or event. For example, for the Flu Vaccine Drive, this section would list the exact date, time, documents needed (e.g., resident ID), and who is eligible.
-                </p>
-                <div class="mt-6 p-4 border-l-4 border-teal-500 bg-teal-50">
-                    <p class="font-semibold text-teal-800">Key Takeaway:</p>
-                    <p class="text-teal-700 text-sm">Please remember to check the registration requirements before attending the event.</p>
-                </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
+                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
             </div>
         </div>
     </div>
 
-
-    <!-- Contact Us Modal (Used from header/footer) -->
-    <div id="contact-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
-        <div class="modal-panel w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden border-t-4 border-teal-600">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center p-5 border-b">
-                <h2 class="text-2xl font-bold text-gray-900">Contact Us</h2>
-                <button data-modal-close="contact-modal" class="text-gray-400 hover:text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <!-- Modal Content -->
-            <div class="grid grid-cols-1 md:grid-cols-2 max-h-[70vh] overflow-y-auto">
-                <!-- Left Side: Form -->
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Send us a Message</h3>
-                    <form id="contact-form" class="space-y-4">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" id="name" name="name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                            <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                        </div>
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
-                            <textarea id="message" name="message" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
-                        </div>
-                        <div>
-                            <button type="submit" class="w-full bg-teal-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-700 transition duration-300">
-                                Send Message
-                            </button>
-                        </div>
-                        <div id="form-success" class="text-green-600 font-medium text-center hidden">
-                            Message sent successfully! We'll get back to you soon.
-                        </div>
-                    </form>
-                </div>
-                <!-- Right Side: Info -->
-                <div class="bg-gray-50 p-6 border-l border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
-                    <div class="space-y-4 text-gray-700">
-                        <p>
-                            <strong class="block">Address:</strong>
-                            123 Health Center St., Brgy. Malusog, Quezon City, 1101
-                        </p>
-                        <p>
-                            <strong class="block">Phone:</strong>
-                            (02) 8-123-4567
-                        </p>
-                        <p>
-                            <strong class="block">Email:</strong>
-                            info@brgyhealthcenter.gov
-                        </p>
-                        <p>
-                            <strong class="block">Hours:</strong>
-                            Mon - Fri: 8:00 AM - 5:00 PM<br>
-                            Sat: 8:00 AM - 12:00 PM<br>
-                            Sun: Closed
-                        </p>
-                    </div>
-                    
-                    <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-4">Our Location</h3>
-                    <div class="w-full h-48 bg-gray-300 rounded-md flex items-center justify-center text-gray-500">
-                        <!-- Placeholder for an embedded map -->
-                        (Google Maps Placeholder)
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Emergency Contacts Modal (Used from header/footer) -->
+    <!-- Emergency Contacts Modal -->
     <div id="emergency-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
         <div class="modal-panel w-full max-w-lg bg-white rounded-lg shadow-xl border-t-4 border-red-600">
-            <!-- Modal Header -->
             <div class="flex justify-between items-center p-5 border-b">
                 <h2 class="text-2xl font-bold text-red-600">Emergency Hotlines</h2>
                 <button data-modal-close="emergency-modal" class="text-gray-400 hover:text-gray-600">
@@ -522,13 +408,12 @@
                     </svg>
                 </button>
             </div>
-            <!-- Modal Content -->
             <div class="p-6 space-y-4">
                 <p class="text-gray-700">In case of emergency, please contact the following numbers immediately.</p>
                 <ul class="space-y-3">
                     <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
-                        <span class="font-semibold text-gray-800">Barangay Hall</span>
-                        <a href="tel:0281112222" class="font-bold text-teal-700 text-lg">(02) 8-111-2222</a>
+                        <span class="font-semibold text-gray-800">Barangay Bahay Toro Hall</span>
+                        <a href="tel:0289268898" class="font-bold text-teal-700 text-lg">(02) 8926-8898</a>
                     </li>
                     <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
                         <span class="font-semibold text-gray-800">Health Center (24/7)</span>
@@ -546,108 +431,80 @@
             </div>
         </div>
     </div>
-    
-    <!-- Auth Gate Modal (For Book Now button) -->
-    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
-        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
-            <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
-                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+
+    <!-- Announcement Detail Modal -->
+    <div id="announcement-detail-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-2xl bg-white rounded-lg shadow-2xl overflow-hidden border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 id="modal-category" class="text-sm font-semibold text-teal-600 uppercase">Category</h3>
+                <button data-modal-close="announcement-detail-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <div class="p-8 space-y-6">
-                <p class="text-gray-600">
-                    To book an appointment, please sign in or register as a resident first.
+            <div class="p-6 max-h-[80vh] overflow-y-auto">
+                <img id="modal-image" src="" alt="Announcement Image" class="w-full h-64 object-cover rounded-md mb-4" onerror="this.src='https://placehold.co/600x400/a5f3fc/083344?text=Image+Not+Available'">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-2">Modal Title</h2>
+                <p class="text-xs text-gray-400 mb-4">Posted: October 25, 2025</p>
+                <p id="modal-description" class="text-gray-700 leading-relaxed">
+                    <!-- Content injected via JS -->
                 </p>
-                
-                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">
-                    I am a Registered Patient (Login)
-                </a>
-
-                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">
-                    I am a New Resident (Register)
-                </a>
-
-                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">
-                    &larr; Cancel
-                </button>
+                <div class="mt-6 p-4 border-l-4 border-teal-500 bg-teal-50">
+                    <p class="font-semibold text-teal-800">Key Takeaway:</p>
+                    <p class="text-teal-700 text-sm">Please remember to check the registration requirements before attending the event.</p>
+                </div>
             </div>
         </div>
     </div>
 
-
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Setup mobile menu and hiding header
             setupHidingHeader();
-            setupMobileMenu(); 
-            
-            // Setup page functionality
+            setupMobileMenu();
             setupFiltering();
             setupModals();
             setupAnnouncementModal();
-            setupContactForm();
         });
 
-        // 1. Hiding Header Function
         function setupHidingHeader() {
             const header = document.getElementById('main-header');
             const filterBar = document.getElementById('filter-bar-wrapper');
             if (!header || !filterBar) return;
-
             let lastScrollTop = 0;
             const headerHeight = header.offsetHeight;
-
             window.addEventListener('scroll', function() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
-                    // Scrolling Down: Hide header and move filter bar up
                     header.style.top = `-${headerHeight}px`;
-                    filterBar.style.top = `0px`; // Filter bar sticks to the top edge now
+                    filterBar.style.top = `0px`;
                 } else {
-                    // Scrolling Up: Show header and move filter bar down
                     header.style.top = '0';
-                    filterBar.style.top = `${headerHeight}px`; // Filter bar sticks below the header
+                    filterBar.style.top = `${headerHeight}px`;
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }, false);
         }
-        
-        // 2. Mobile Menu Function
+
         function setupMobileMenu() {
             const menuToggle = document.getElementById('mobile-menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuIconPath = document.getElementById('menu-icon-path');
-
             if (menuToggle && mobileMenu) {
                 menuToggle.addEventListener('click', () => {
                     const isHidden = mobileMenu.classList.toggle('hidden');
-                    // Toggle icon between 'menu' and 'close'
                     if (isHidden) {
                         menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
                         document.body.classList.remove('overflow-hidden');
                     } else {
-                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12'); 
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
                         document.body.classList.add('overflow-hidden');
                     }
-                });
-
-                // Close menu when a link is clicked
-                mobileMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.add('hidden');
-                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
-                        document.body.classList.remove('overflow-hidden');
-                    });
                 });
             }
         }
 
-        // 3. Filter Function (Updated for Pill/Chip Style)
         function setupFiltering() {
             const filterContainer = document.getElementById('filter-container');
             const grid = document.getElementById('announcement-grid');
@@ -656,47 +513,29 @@
             const filterButtons = filterContainer.querySelectorAll('.filter-btn');
             const cards = grid.querySelectorAll('.announcement-card');
 
-            // Apply Tailwind classes for clean pill/chip style
             filterButtons.forEach(btn => {
-                 btn.classList.add(
-                     'px-4', 'py-2', 'rounded-full', 'font-medium', 'text-sm', 
-                     'transition', 'duration-200', 'flex-shrink-0'
-                 );
+                btn.classList.add('px-4', 'py-2', 'rounded-full', 'font-medium', 'text-sm', 'transition', 'duration-200', 'flex-shrink-0');
             });
             
-            // Initialize active button style
             function setActiveButton(targetButton) {
                  filterButtons.forEach(btn => {
-                    // Remove active styles (Teal BG, White Text, Active class)
                     btn.classList.remove('active', 'bg-teal-600', 'text-white', 'shadow-md');
-                    // Add default styles (Gray BG, Gray Text, Hover effect)
                     btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-teal-100');
                  });
-                 // Apply active styles to the target button
                  targetButton.classList.add('active', 'bg-teal-600', 'text-white', 'shadow-md');
-                 // Remove default/inactive styles
                  targetButton.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-teal-100');
             }
 
-            // Initial state: set 'All Posts' as active
             const initialActive = filterContainer.querySelector('[data-filter="all"]');
-            if (initialActive) {
-                // Initialize default state by simulating a click
-                setActiveButton(initialActive);
-            }
+            if (initialActive) setActiveButton(initialActive);
 
             filterContainer.addEventListener('click', function(e) {
                 const targetButton = e.target.closest('.filter-btn');
                 if (targetButton) {
                     const filterValue = targetButton.getAttribute('data-filter');
-                    
                     setActiveButton(targetButton);
-
-                    // Filter the cards
                     cards.forEach(card => {
                         const cardCategory = card.getAttribute('data-category');
-                        
-                        // Handle visibility
                         if (filterValue === 'all' || cardCategory === filterValue) {
                             card.style.display = 'block';
                         } else {
@@ -707,13 +546,11 @@
             });
         }
 
-        // 4. General Modal Handling Function
         function setupModals() {
             const modalTriggers = document.querySelectorAll('[data-modal-target]');
             const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
             const allModals = document.querySelectorAll('.modal');
 
-            // Open Modals
             modalTriggers.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -721,18 +558,16 @@
                     const modal = document.getElementById(modalId);
                     if (modal) {
                         modal.classList.remove('hidden');
-                        modal.classList.add('flex'); // Use flex for centering
+                        modal.classList.add('flex');
                         document.body.classList.add('overflow-hidden');
                     }
                 });
             });
 
-            // Close Modals with 'X' button or secondary close buttons
             modalCloseButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Find the closest modal parent element
-                    const modal = button.closest('.modal'); 
+                    const modal = button.closest('.modal');
                     if (modal) {
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
@@ -741,10 +576,8 @@
                 });
             });
 
-            // Close Modals by clicking backdrop
             allModals.forEach(modal => {
                 modal.addEventListener('click', (e) => {
-                    // Check if the click is directly on the modal backdrop
                     if (e.target === modal) {
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
@@ -753,7 +586,6 @@
                 });
             });
             
-            // Close modals with Escape key
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     allModals.forEach(modal => {
@@ -767,7 +599,6 @@
             });
         }
 
-        // 5. Dynamic Announcement Modal Function
         function setupAnnouncementModal() {
             const modal = document.getElementById('announcement-detail-modal');
             if (!modal) return;
@@ -776,9 +607,8 @@
             const modalCategory = modal.querySelector('#modal-category');
             const modalTitle = modal.querySelector('#modal-title');
             const modalDescription = modal.querySelector('#modal-description');
-            const modalBorder = modal.querySelector('.modal-panel'); // Target modal-panel for border color
+            const modalBorder = modal.querySelector('.modal-panel');
 
-            // Helper to clean and apply styles/content
             function updateModalContent(card) {
                 const image = card.querySelector('img');
                 const categorySpan = card.querySelector('.announcement-category');
@@ -786,86 +616,45 @@
                 const description = card.querySelector('.announcement-description');
                 const categoryText = categorySpan.textContent.trim();
                 
-                // Content
                 if (modalImage && image) modalImage.src = image.src;
                 if (modalTitle && title) modalTitle.textContent = title.textContent;
-                // Use innerHTML to grab the content and remove unnecessary breaks, adding placeholder text
                 if (modalDescription && description) modalDescription.innerHTML = description.innerHTML.replace(/<br>/g, '') + " This section contains the full details regarding registration, schedule, and venue. For more information, please contact the Barangay Bahay Toro Health Worker.";
 
-                // Styling
                 modalCategory.textContent = categoryText;
                 modalCategory.classList.remove('text-teal-600', 'text-indigo-600', 'text-red-600', 'text-yellow-600');
                 modalBorder.classList.remove('border-teal-600', 'border-indigo-600', 'border-red-600', 'border-yellow-600');
 
-                if (categoryText.includes('EVENT') || categoryText.includes('MISSIONS')) {
+                if (categoryText.includes('Event')) {
                     modalCategory.classList.add('text-teal-600');
-                    modalBorder.classList.add('border-teal-600'); // Ensure border color matches
-                } else if (categoryText.includes('PROGRAM')) {
+                    modalBorder.classList.add('border-teal-600');
+                } else if (categoryText.includes('Program')) {
                     modalCategory.classList.add('text-indigo-600');
                     modalBorder.classList.add('border-indigo-600');
-                } else if (categoryText.includes('EMERGENCY')) {
+                } else if (categoryText.includes('Emergency')) {
                     modalCategory.classList.add('text-red-600');
                     modalBorder.classList.add('border-red-600');
-                } else if (categoryText.includes('ADVISORY')) {
+                } else if (categoryText.includes('Advisory')) {
                     modalCategory.classList.add('text-yellow-600');
                     modalBorder.classList.add('border-yellow-600');
                 }
             }
 
-
             document.querySelectorAll('.announcement-button').forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (e) => {
                     const card = button.closest('.announcement-card');
                     if (card) {
                         updateModalContent(card);
-                        // Open the modal
-                        const detailModal = document.getElementById('announcement-detail-modal');
-                        if (detailModal) {
-                            detailModal.classList.remove('hidden');
-                            detailModal.classList.add('flex');
+                        // Manually trigger modal open since the button is inside the card
+                        const modal = document.getElementById('announcement-detail-modal');
+                         if (modal) {
+                            modal.classList.remove('hidden');
+                            modal.classList.add('flex');
                             document.body.classList.add('overflow-hidden');
                         }
                     }
                 });
             });
         }
-
-        // 6. Contact Form Submission (Placeholder functionality)
-        function setupContactForm() {
-            const form = document.getElementById('contact-form');
-            const successMessage = document.getElementById('form-success');
-            const contactModal = document.getElementById('contact-modal');
-            if (!form || !successMessage || !contactModal) return;
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); 
-                
-                successMessage.classList.remove('hidden');
-                form.reset();
-
-                setTimeout(() => {
-                    // Close modal using general modal logic
-                    const modalCloseButton = contactModal.querySelector('[data-modal-close]');
-                    if (modalCloseButton) modalCloseButton.click();
-                    successMessage.classList.add('hidden');
-                }, 1500); 
-            });
-        }
-
-        // 7. Auto-open Auth Gate Modal if redirected from Home Page with ?action=book
-        window.addEventListener('load', () => {
-             const urlParams = new URLSearchParams(window.location.search);
-             const authGateModal = document.getElementById('auth-gate-modal');
-             if (urlParams.get('action') === 'book' && authGateModal) {
-                 // Remove the parameter from the URL bar to prevent re-opening on refresh
-                 history.replaceState(null, '', window.location.pathname); 
-                 // Open the Auth Gate modal
-                 authGateModal.classList.remove('hidden');
-                 authGateModal.classList.add('flex');
-                 document.body.classList.add('overflow-hidden');
-             }
-        });
     </script>
-
 </body>
 </html>
