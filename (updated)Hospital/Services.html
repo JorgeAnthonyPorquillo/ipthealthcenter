@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
+
         /* Style for the hiding header */
         #main-header {
             position: fixed;
@@ -24,23 +26,27 @@
             transition: top 0.3s ease-in-out;
             z-index: 50;
         }
+
         /* Modal styles */
         .modal {
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+
         .modal-panel {
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
-        
+
         /* Image containers */
         .service-img {
             transition: transform 0.5s ease;
         }
+
         .service-card:hover .service-img {
             transform: scale(1.05);
         }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800 pt-[72px]">
 
     <!-- Main Header -->
@@ -48,48 +54,67 @@
         <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
 
             <!-- Logo -->
-            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
-                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+            <a href="Homee.html"
+                class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo"
+                    class="h-12 w-auto object-contain">
                 <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
                 <span class="sm:hidden">Bahay Toro HC</span>
             </a>
-            
+
             <!-- Navigation Links -->
             <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
-                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
-                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="Homee.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About
+                    Us</a>
                 <!-- Current Page -->
-                <a href="services.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Services</a>
-                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
-                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
-                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+                <a href="services.html"
+                    class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Services</a>
+                <a href="announcements.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="flex-shrink-0 flex gap-4 items-center">
-                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                <a href="patient_login.html"
+                    class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
                     Login
                 </a>
-                
+
                 <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
             </div>
         </nav>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+        <div id="mobile-menu"
+            class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
             <div class="flex flex-col p-4 gap-2">
-                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
-                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
-                <a href="services.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Services</a>
-                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
-                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
-                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <a href="Homee.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About
+                    Us</a>
+                <a href="services.html"
+                    class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News &
+                    Announcements</a>
+                <a href="contact.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
                 <hr class="my-2">
-                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                <a href="patient_login.html"
+                    class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
                     Login
                 </a>
             </div>
@@ -99,15 +124,15 @@
     <!-- Page Header -->
     <section class="relative bg-teal-800 text-white py-16">
         <div class="absolute inset-0">
-            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" 
-                 alt="Services Header" 
-                 class="w-full h-full object-cover opacity-20"
-                 onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Our+Services'">
+            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" alt="Services Header"
+                class="w-full h-full object-cover opacity-20"
+                onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Our+Services'">
         </div>
         <div class="container mx-auto px-4 text-center relative z-10">
             <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Comprehensive Health Services</h1>
             <p class="text-lg text-teal-100 max-w-2xl mx-auto">
-                We provide a wide range of free medical services to ensure the well-being of every resident in Barangay Bahay Toro.
+                We provide a wide range of free medical services to ensure the well-being of every resident in Barangay
+                Bahay Toro.
             </p>
         </div>
     </section>
@@ -117,138 +142,174 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
             <!-- 1. General Consultation -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://www.themedicalcityclinic.com/wp-content/uploads/2019/05/adult-consultation.jpg" alt="Consultation" class="service-img w-full h-full object-cover">
+                    <img src="https://www.themedicalcityclinic.com/wp-content/uploads/2019/05/adult-consultation.jpg"
+                        alt="Consultation" class="service-img w-full h-full object-cover">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">General Consultation</h3>
-                    <p class="text-gray-600 text-sm mb-4">Primary care checkups, diagnosis, and treatment for common illnesses for adults and children.</p>
+                    <p class="text-gray-600 text-sm mb-4">Primary care checkups, diagnosis, and treatment for common
+                        illnesses for adults and children.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Medical Clearance</li>
                         <li>Prescription refills</li>
                         <li>Referral System</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Appointment &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Appointment &rarr;</button>
                 </div>
             </div>
 
             <!-- 2. Immunization -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/hero_extended/public/20220818-UNICEF_WalkInColdRoom-SurigaoDS-6MP-LMP-04646.jpeg.webp?itok=hvoyHDhj" alt="Immunization" class="service-img w-full h-full object-cover">
+                    <img src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/hero_extended/public/20220818-UNICEF_WalkInColdRoom-SurigaoDS-6MP-LMP-04646.jpeg.webp?itok=hvoyHDhj"
+                        alt="Immunization" class="service-img w-full h-full object-cover">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Immunization</h3>
-                    <p class="text-gray-600 text-sm mb-4">Free vaccines for infants, children, and senior citizens (Flu, Pneumonia) based on DOH schedule.</p>
+                    <p class="text-gray-600 text-sm mb-4">Free vaccines for infants, children, and senior citizens (Flu,
+                        Pneumonia) based on DOH schedule.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Routine EPI Vaccines</li>
                         <li>Flu & Pneumonia Shots</li>
                         <li>Tetanus Toxoid</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">View Schedule &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">View Schedule &rarr;</button>
                 </div>
             </div>
 
             <!-- 3. Dental Care -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://www.cillosmiledesign.com/wp-content/uploads/2025/06/IMG_5192_opt.jpg" alt="Dental" class="service-img w-full h-full object-cover">
+                    <img src="https://www.cillosmiledesign.com/wp-content/uploads/2025/06/IMG_5192_opt.jpg" alt="Dental"
+                        class="service-img w-full h-full object-cover">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Dental Services</h3>
-                    <p class="text-gray-600 text-sm mb-4">Basic oral health care including tooth extraction, cleaning, and gum treatment.</p>
+                    <p class="text-gray-600 text-sm mb-4">Basic oral health care including tooth extraction, cleaning,
+                        and gum treatment.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Tooth Extraction</li>
                         <li>Oral Prophylaxis</li>
                         <li>Dental Education</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Dental &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Dental &rarr;</button>
                 </div>
             </div>
 
             <!-- 4. Maternal Care -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/02/Pregnancy-Checkups-Why-Are-They-Important.jpg" alt="Maternal" class="service-img w-full h-full object-cover">
+                    <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/02/Pregnancy-Checkups-Why-Are-They-Important.jpg"
+                        alt="Maternal" class="service-img w-full h-full object-cover">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Maternal Care</h3>
-                    <p class="text-gray-600 text-sm mb-4">Comprehensive care for expectant mothers from pregnancy to postpartum.</p>
+                    <p class="text-gray-600 text-sm mb-4">Comprehensive care for expectant mothers from pregnancy to
+                        postpartum.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Prenatal Checkups</li>
                         <li>Postnatal Care</li>
                         <li>Micronutrient Supplementation</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Prenatal &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Book Prenatal &rarr;</button>
                 </div>
             </div>
 
             <!-- 5. Family Planning (UPDATED IMAGE) -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1576091160550-217358c7b818?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Family Planning" class="service-img w-full h-full object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Family+Planning'">
+                    <img src="https://images.unsplash.com/photo-1576091160550-217358c7b818?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Family Planning" class="service-img w-full h-full object-cover"
+                        onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Family+Planning'">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Family Planning</h3>
-                    <p class="text-gray-600 text-sm mb-4">Counseling on reproductive health and free provision of modern family planning methods.</p>
+                    <p class="text-gray-600 text-sm mb-4">Counseling on reproductive health and free provision of modern
+                        family planning methods.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Pills & Condoms</li>
                         <li>Injectables</li>
                         <li>Reproductive Counseling</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Learn More &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Learn More &rarr;</button>
                 </div>
             </div>
 
             <!-- 6. TB-DOTS Clinic (UPDATED IMAGE) -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="TB DOTS" class="service-img w-full h-full object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=TB+DOTS'">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="TB DOTS" class="service-img w-full h-full object-cover"
+                        onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=TB+DOTS'">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">TB-DOTS Clinic</h3>
-                    <p class="text-gray-600 text-sm mb-4">Directly Observed Treatment, Short-course (DOTS) for Tuberculosis patients.</p>
+                    <p class="text-gray-600 text-sm mb-4">Directly Observed Treatment, Short-course (DOTS) for
+                        Tuberculosis patients.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Sputum Microscopy</li>
                         <li>Free TB Medication</li>
                         <li>Patient Monitoring</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Visit Clinic &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Visit Clinic &rarr;</button>
                 </div>
             </div>
 
             <!-- 7. Laboratory Services (UPDATED IMAGE) -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Laboratory" class="service-img w-full h-full object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Laboratory'">
+                    <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Laboratory" class="service-img w-full h-full object-cover"
+                        onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Laboratory'">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Laboratory Services</h3>
-                    <p class="text-gray-600 text-sm mb-4">Basic diagnostic laboratory tests to aid in medical assessment and diagnosis.</p>
+                    <p class="text-gray-600 text-sm mb-4">Basic diagnostic laboratory tests to aid in medical assessment
+                        and diagnosis.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Urinalysis</li>
                         <li>Blood Sugar Screening</li>
                         <li>Pregnancy Test</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Check Availability &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Check Availability
+                        &rarr;</button>
                 </div>
             </div>
 
             <!-- 8. Nutrition & Wellness -->
-            <div class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
+            <div
+                class="service-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
                 <div class="h-48 overflow-hidden">
-                    <img src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/media_large_image/public/JanaJimenez_NutritionInCamSur_24-28062024_01192.webp?itok=lH6b3mrL" alt="Nutrition" class="service-img w-full h-full object-cover">
+                    <img src="https://www.unicef.org/philippines/sites/unicef.org.philippines/files/styles/media_large_image/public/JanaJimenez_NutritionInCamSur_24-28062024_01192.webp?itok=lH6b3mrL"
+                        alt="Nutrition" class="service-img w-full h-full object-cover">
                 </div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-teal-800 mb-2">Nutrition & Wellness</h3>
-                    <p class="text-gray-600 text-sm mb-4">Programs designed to fight malnutrition and promote healthy lifestyles in the community.</p>
+                    <p class="text-gray-600 text-sm mb-4">Programs designed to fight malnutrition and promote healthy
+                        lifestyles in the community.</p>
                     <ul class="text-xs text-gray-500 list-disc list-inside mb-4 space-y-1">
                         <li>Operation Timbang</li>
                         <li>Feeding Programs</li>
                         <li>Dietary Counseling</li>
                     </ul>
-                    <button data-modal-target="auth-gate-modal" class="text-teal-600 font-semibold text-sm hover:text-teal-800">Learn More &rarr;</button>
+                    <button data-modal-target="auth-gate-modal"
+                        class="text-teal-600 font-semibold text-sm hover:text-teal-800">Learn More &rarr;</button>
                 </div>
             </div>
 
@@ -259,13 +320,16 @@
     <section class="bg-white py-16">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-teal-800 mb-12">Our Facilities</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
+
                 <!-- Facility 1 -->
                 <div class="relative group overflow-hidden rounded-xl shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Triage Area" class="w-full h-64 object-cover transition duration-300 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Triage+Area'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
+                    <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Triage Area" class="w-full h-64 object-cover transition duration-300 group-hover:scale-110"
+                        onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Triage+Area'">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                         <h3 class="text-xl font-bold text-white">Triage Area</h3>
                         <p class="text-gray-200 text-sm">Initial assessment and vital signs monitoring.</p>
                     </div>
@@ -273,8 +337,11 @@
 
                 <!-- Facility 2 -->
                 <div class="relative group overflow-hidden rounded-xl shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Pharmacy" class="w-full h-64 object-cover transition duration-300 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Barangay+Pharmacy'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
+                    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Pharmacy" class="w-full h-64 object-cover transition duration-300 group-hover:scale-110"
+                        onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Barangay+Pharmacy'">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                         <h3 class="text-xl font-bold text-white">Barangay Pharmacy</h3>
                         <p class="text-gray-200 text-sm">Dispensing free basic medicines and vitamins.</p>
                     </div>
@@ -282,8 +349,12 @@
 
                 <!-- Facility 3 -->
                 <div class="relative group overflow-hidden rounded-xl shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Treatment Room" class="w-full h-64 object-cover transition duration-300 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Treatment+Room'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
+                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Treatment Room"
+                        class="w-full h-64 object-cover transition duration-300 group-hover:scale-110"
+                        onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Treatment+Room'">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                         <h3 class="text-xl font-bold text-white">Treatment Room</h3>
                         <p class="text-gray-200 text-sm">For minor surgeries, wound care, and nebulization.</p>
                     </div>
@@ -301,11 +372,14 @@
                     <a href="Homee.html" class="text-3xl font-bold text-white">
                         Barangay Bahay Toro Health Center
                     </a>
-                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and
+                        accessible service for all residents.</p>
                     <div class="flex gap-4 mt-6">
-                        <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white">
+                        <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank"
+                            class="text-gray-300 hover:text-white">
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                         </a>
                     </div>
@@ -330,13 +404,15 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
                     <ul class="space-y-2">
-                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><button data-modal-target="auth-gate-modal"
+                                class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
                         <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
                         <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+            <div
+                class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
                 <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
                 <div class="flex gap-4 mt-4 md:mt-0">
                     <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
@@ -349,26 +425,37 @@
     <!-- MODALS -->
 
     <!-- Auth Gate Modal -->
-    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+    <div id="auth-gate-modal"
+        class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
         <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
             <div class="flex justify-between items-center p-6 border-b border-gray-200">
                 <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
-                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <button data-modal-close="auth-gate-modal"
+                    class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             <div class="p-8 space-y-6">
                 <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
-                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
-                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
-                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+                <a href="patient_login.html"
+                    class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I
+                    am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register"
+                    class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I
+                    am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal"
+                    class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr;
+                    Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setupHidingHeader();
             setupMobileMenu();
             setupModals();
@@ -378,7 +465,7 @@
             const header = document.getElementById('main-header');
             if (!header) return;
             let lastScrollTop = 0;
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
                     header.style.top = `-${header.offsetHeight}px`;
@@ -446,7 +533,7 @@
                     }
                 });
             });
-            
+
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     allModals.forEach(modal => {
@@ -459,17 +546,202 @@
                 }
             });
         }
-        
+
         window.addEventListener('load', () => {
-             const urlParams = new URLSearchParams(window.location.search);
-             const authGateModal = document.getElementById('auth-gate-modal');
-             if (urlParams.get('action') === 'book' && authGateModal) {
-                 history.replaceState(null, '', window.location.pathname); 
-                 authGateModal.classList.remove('hidden');
-                 authGateModal.classList.add('flex');
-                 document.body.classList.add('overflow-hidden');
-             }
+            const urlParams = new URLSearchParams(window.location.search);
+            const authGateModal = document.getElementById('auth-gate-modal');
+            if (urlParams.get('action') === 'book' && authGateModal) {
+                history.replaceState(null, '', window.location.pathname);
+                authGateModal.classList.remove('hidden');
+                authGateModal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            }
         });
     </script>
+    <!-- Chatbot Styles -->
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animation-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+
+    <!-- Chatbot Floating Button -->
+    <button id="chatbotBtn"
+        class="fixed bottom-6 right-6 bg-white hover:bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 z-50 border-2 border-teal-600 overflow-hidden">
+        <img src="Images/aiavatar.png" alt="Chat with us" class="w-full h-full object-cover">
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbotModal"
+        class="hidden fixed bottom-24 right-6 w-96 bg-white shadow-2xl rounded-2xl border flex flex-col z-[100]"
+        style="height: 600px; max-height: 80vh;">
+
+        <div class="p-4 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-bold">Barangay Chatbot</h2>
+
+                <!-- Toggle language -->
+                <button id="toggleLangBtn" class="bg-gray-200 px-3 py-1 rounded text-sm">
+                    🇺🇸 English
+                </button>
+            </div>
+
+
+            <!-- Chat Box -->
+            <div id="chatBox" class="flex-1 overflow-y-auto bg-gray-50 rounded p-3 space-y-3 min-h-0 border mb-3">
+                <!-- Welcome Message -->
+                <div class="flex justify-start items-start gap-2">
+                    <div
+                        class="md-avatar flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                        <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div
+                        class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                        Hello! I am your Barangay Health Assistant. Please select a question below.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden text-teal-600 text-xs italic mb-2 ml-2">
+                Health Assistant is typing...
+            </div>
+
+            <!-- Predefined Questions Dropdown (Bottom) -->
+            <div class="relative">
+                <select id="presetSelect"
+                    class="appearance-none w-full border border-teal-300 rounded-lg p-3 pr-8 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent cursor-pointer shadow-sm">
+                    <option value="">Select a question to ask...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-teal-600">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot JS -->
+    <script>
+        const data = {
+            en: [
+                { q: "What are the health center hours?", a: "We are open from 8AM to 5PM." },
+                { q: "How to get a medical certificate?", a: "Request at the front desk. Bring a valid ID." },
+                { q: "Do you offer free checkups?", a: "Yes, free checkups are available daily." },
+                { q: "Is vaccination available?", a: "Vaccines are available depending on schedule." },
+                { q: "Where is the health center located?", a: "Beside the barangay hall." },
+                { q: "Do you accept emergencies?", a: "Minor emergencies only." },
+                { q: "How to get immunization record?", a: "Go to records section and bring old card." },
+                { q: "What services are offered?", a: "Checkups, vaccines, prenatal and consultation." },
+                { q: "Is a midwife on duty?", a: "Yes, every day." },
+                { q: "Do I need an appointment?", a: "Walk-ins are accepted." }
+            ],
+
+            fil: [
+                { q: "Ano ang oras ng health center?", a: "Bukas kami 8AM hanggang 5PM." },
+                { q: "Paano kumuha ng medical certificate?", a: "Humingi sa front desk. Magdala ng valid ID." },
+                { q: "May libre bang checkup?", a: "Oo, araw-araw meron." },
+                { q: "Available ba ang bakuna?", a: "Depende sa iskedyul ang bakuna." },
+                { q: "Saan ang health center?", a: "Katabi ng barangay hall." },
+                { q: "Tumatanggap ba ng emergency?", a: "Minor emergencies lang." },
+                { q: "Paano kunin ang immunization record?", a: "Pumunta sa records section at dalhin ang lumang card." },
+                { q: "Anong serbisyo ang meron?", a: "Checkup, bakuna, prenatal, konsultasyon." },
+                { q: "May midwife ba?", a: "Oo, araw-araw." },
+                { q: "Kailangan ba ng appointment?", a: "Pwede ang walk-in." }
+            ]
+        };
+
+        let lang = "en";
+
+        const chatbotBtn = document.getElementById("chatbotBtn");
+        const chatbotModal = document.getElementById("chatbotModal");
+        const toggleLangBtn = document.getElementById("toggleLangBtn");
+        const presetSelect = document.getElementById("presetSelect");
+        const chatBox = document.getElementById("chatBox");
+        const typingIndicator = document.getElementById("typingIndicator");
+
+        chatbotBtn.onclick = () => {
+            chatbotModal.classList.toggle("hidden");
+            loadPresetQuestions();
+            loadChatHistory();
+        };
+
+        function loadPresetQuestions() {
+            presetSelect.innerHTML = '<option value="">Select a common question...</option>';
+            data[lang].forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.q;
+                option.textContent = item.q;
+                presetSelect.appendChild(option);
+            });
+        }
+
+        presetSelect.onchange = () => {
+            const val = presetSelect.value;
+            if (!val) return;
+            const item = data[lang].find(i => i.q === val);
+            if (item) {
+                addMessage(item.q, item.a);
+            }
+            presetSelect.value = "";
+        };
+
+        function addMessage(userMsg, botMsg) {
+            chatBox.innerHTML += `
+        <div class="flex justify-end animation-fade-in">
+            <div class="bg-teal-600 text-white p-3 rounded-lg rounded-tr-none max-w-[80%] shadow-sm text-sm">
+                ${userMsg}
+            </div>
+        </div>
+    `;
+            typingIndicator.classList.remove("hidden");
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                typingIndicator.classList.add("hidden");
+                chatBox.innerHTML += `
+            <div class="flex justify-start items-start gap-2 animation-fade-in">
+                <div class="flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                    <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                </div>
+                <div class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                    ${botMsg}
+                </div>
+            </div>
+        `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                saveChatHistory();
+            }, 600);
+        }
+
+        toggleLangBtn.onclick = () => {
+            lang = lang === "en" ? "fil" : "en";
+            toggleLangBtn.textContent = lang === "en" ? "🇺🇸 English" : "🇵🇭 Filipino";
+            loadPresetQuestions();
+        };
+
+        function saveChatHistory() {
+            localStorage.setItem("chat_history", chatBox.innerHTML);
+        }
+
+        function loadChatHistory() {
+            const history = localStorage.getItem("chat_history");
+            if (history) chatBox.innerHTML = history;
+        }
+    </script>
 </body>
+
 </html>

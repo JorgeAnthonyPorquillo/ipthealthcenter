@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
+
         /* Style for the hiding header */
         #main-header {
             position: fixed;
@@ -24,15 +26,18 @@
             transition: top 0.3s ease-in-out;
             z-index: 50;
         }
+
         /* Styles for modal transition */
         .modal {
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+
         .modal-panel {
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800 pt-[72px]"> <!-- Add padding-top to body to offset fixed header -->
 
     <!-- Main Header -->
@@ -40,47 +45,68 @@
         <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
 
             <!-- Updated Logo Section -->
-            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
-                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+            <a href="Homee.html"
+                class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo"
+                    class="h-12 w-auto object-contain">
                 <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
                 <span class="sm:hidden">Bahay Toro HC</span>
             </a>
-            
+
             <!-- Navigation Links -->
             <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
-                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
-                <a href="about.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">About Us</a>
-                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
-                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
-                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
-                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+                <a href="Homee.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html"
+                    class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">About
+                    Us</a>
+                <a href="services.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html"
+                    class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="flex-shrink-0 flex gap-4 items-center">
-                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                <a href="patient_login.html"
+                    class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
                     Login
                 </a>
-                
+
                 <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
             </div>
         </nav>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+        <div id="mobile-menu"
+            class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
             <div class="flex flex-col p-4 gap-2">
-                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
-                <a href="about.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">About Us</a>
-                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
-                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
-                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
-                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <a href="Homee.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">About
+                    Us</a>
+                <a href="services.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News &
+                    Announcements</a>
+                <a href="contact.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html"
+                    class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
                 <hr class="my-2">
-                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                <a href="patient_login.html"
+                    class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
                     Login
                 </a>
             </div>
@@ -90,14 +116,14 @@
     <!-- Page Header (Hero Section) -->
     <section class="relative bg-teal-800 text-white">
         <div class="absolute inset-0">
-            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" 
-                 alt="Community Health Visit" 
-                 class="w-full h-full object-cover opacity-20"
-                 onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Barangay+Bahay+Toro'">
+            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" alt="Community Health Visit"
+                class="w-full h-full object-cover opacity-20"
+                onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Barangay+Bahay+Toro'">
         </div>
         <div class="container mx-auto px-4 py-16 relative z-10">
             <h1 class="text-4xl font-extrabold">About Us</h1>
-            <p class="text-lg text-teal-100 mt-2">Serving the Barangay Bahay Toro community with dedication and care.</p>
+            <p class="text-lg text-teal-100 mt-2">Serving the Barangay Bahay Toro community with dedication and care.
+            </p>
         </div>
     </section>
 
@@ -105,33 +131,43 @@
     <section class="bg-teal-50 py-16 lg:py-24">
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center text-teal-800 mb-12">Our Purpose and Direction</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
+
                 <!-- Mission Card -->
-                <div class="p-8 bg-white rounded-xl shadow-xl border-l-8 border-teal-600 flex flex-col hover:shadow-2xl transition duration-300">
+                <div
+                    class="p-8 bg-white rounded-xl shadow-xl border-l-8 border-teal-600 flex flex-col hover:shadow-2xl transition duration-300">
                     <h3 class="text-3xl font-bold text-teal-800 mb-4 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 15.546c-.524 0-1.02-.1-1.485-.275V2.798a1.001 1.001 0 00-1.001-1.001h-5.003a1.001 1.001 0 00-1.001 1.001v12.47c-.465.175-.961.275-1.485.275-2.28 0-4.14-1.86-4.14-4.14 0-2.28 1.86-4.14 4.14-4.14.45 0 .895.076 1.315.228a1.001 1.001 0 001.19-.982 1.001 1.001 0 00-.982-1.19 6.134 6.134 0 00-2.733-.518c-3.375 0-6.14 2.765-6.14 6.14 0 3.375 2.765 6.14 6.14 6.14 2.115 0 4.01-.98 5.25-2.585a1.001 1.001 0 00-1.57-.008 1.001 1.001 0 00-.008 1.57c1.375 1.76 3.42 2.795 5.565 2.795 3.375 0 6.14-2.765 6.14-6.14s-2.765-6.14-6.14-6.14z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600 mr-3" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 15.546c-.524 0-1.02-.1-1.485-.275V2.798a1.001 1.001 0 00-1.001-1.001h-5.003a1.001 1.001 0 00-1.001 1.001v12.47c-.465.175-.961.275-1.485.275-2.28 0-4.14-1.86-4.14-4.14 0-2.28 1.86-4.14 4.14-4.14.45 0 .895.076 1.315.228a1.001 1.001 0 001.19-.982 1.001 1.001 0 00-.982-1.19 6.134 6.134 0 00-2.733-.518c-3.375 0-6.14 2.765-6.14 6.14 0 3.375 2.765 6.14 6.14 6.14 2.115 0 4.01-.98 5.25-2.585a1.001 1.001 0 00-1.57-.008 1.001 1.001 0 00-.008 1.57c1.375 1.76 3.42 2.795 5.565 2.795 3.375 0 6.14-2.765 6.14-6.14s-2.765-6.14-6.14-6.14z" />
                         </svg>
                         Our Mission
                     </h3>
                     <p class="text-gray-600 leading-relaxed text-lg">
-                        Our mission is to deliver accessible, reliable, and community‑driven healthcare through a modern digital platform. By combining technology with compassion, we aim to make essential health services easier to reach, more transparent, and more efficient for every resident.
-                    </p> 
+                        Our mission is to deliver accessible, reliable, and community‑driven healthcare through a modern
+                        digital platform. By combining technology with compassion, we aim to make essential health
+                        services easier to reach, more transparent, and more efficient for every resident.
+                    </p>
                 </div>
-                
+
                 <!-- Vision Card -->
-                <div class="p-8 bg-white rounded-xl shadow-xl border-l-8 border-teal-600 flex flex-col hover:shadow-2xl transition duration-300">
+                <div
+                    class="p-8 bg-white rounded-xl shadow-xl border-l-8 border-teal-600 flex flex-col hover:shadow-2xl transition duration-300">
                     <h3 class="text-3xl font-bold text-teal-800 mb-4 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600 mr-3" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                         Our Vision
                     </h3>
                     <p class="text-gray-600 leading-relaxed text-lg">
-                        We envision a barangay where healthcare is not only available but also seamless, where patients and health workers are connected through a system that empowers both sides. Our vision is a healthier, more informed community supported by technology that adapts to local needs.
+                        We envision a barangay where healthcare is not only available but also seamless, where patients
+                        and health workers are connected through a system that empowers both sides. Our vision is a
+                        healthier, more informed community supported by technology that adapts to local needs.
                     </p>
                 </div>
             </div>
@@ -142,39 +178,50 @@
     <section class="bg-gray-100 py-16 lg:py-24">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-teal-800 mb-12">Our Core Values in Action</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Value 1 -->
-                <div class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                <div
+                    class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
                     <div class="mx-auto bg-teal-100 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Compassion</h3>
-                    <p class="text-gray-600 text-base">Treating every resident of Bahay Toro with <strong>empathy, dignity, and respect</strong>. Health is a right for all.</p>
+                    <p class="text-gray-600 text-base">Treating every resident of Bahay Toro with <strong>empathy,
+                            dignity, and respect</strong>. Health is a right for all.</p>
                 </div>
-                
+
                 <!-- Value 2 -->
-                <div class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                <div
+                    class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
                     <div class="mx-auto bg-teal-100 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Accessibility</h3>
-                    <p class="text-gray-600 text-base">Ensuring that <strong>essential medical care</strong> is easily reachable for all community members through our center and digital portal.</p>
+                    <p class="text-gray-600 text-base">Ensuring that <strong>essential medical care</strong> is easily
+                        reachable for all community members through our center and digital portal.</p>
                 </div>
-                
+
                 <!-- Value 3 -->
-                <div class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                <div
+                    class="text-center p-8 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
                     <div class="mx-auto bg-teal-100 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-9.618 3.042 12.004 12.004 0 001.215 15.228A12.004 12.004 0 0012 21.056a12.004 12.004 0 007.962-4.823 11.955 11.955 0 01-1.215-15.228z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-9.618 3.042 12.004 12.004 0 001.215 15.228A12.004 12.004 0 0012 21.056a12.004 12.004 0 007.962-4.823 11.955 11.955 0 01-1.215-15.228z" />
                         </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Integrity</h3>
-                    <p class="text-gray-600 text-base">Upholding the <strong>highest standards of ethics</strong> in all our actions, especially regarding patient data security.</p>
+                    <p class="text-gray-600 text-base">Upholding the <strong>highest standards of ethics</strong> in all
+                        our actions, especially regarding patient data security.</p>
                 </div>
             </div>
         </div>
@@ -185,16 +232,22 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
                 <span class="text-sm font-semibold text-teal-600 uppercase">Commitment to Barangay Bahay Toro</span>
-                <h2 class="text-4xl font-bold text-teal-800 mt-2 mb-6">Built for the Community, Powered by Dedication</h2>
+                <h2 class="text-4xl font-bold text-teal-800 mt-2 mb-6">Built for the Community, Powered by Dedication
+                </h2>
                 <p class="text-gray-600 text-lg leading-relaxed mb-6">
-                    The Barangay Bahay Toro Health Center System is designed to make healthcare services easier and more convenient for every member of the community. Residents can now book appointments and view records securely.
+                    The Barangay Bahay Toro Health Center System is designed to make healthcare services easier and more
+                    convenient for every member of the community. Residents can now book appointments and view records
+                    securely.
                 </p>
-                <a href="Homee.html" class="inline-flex items-center text-lg font-semibold text-white bg-teal-600 px-6 py-3 rounded-full hover:bg-teal-700 transition duration-300 shadow-lg">
+                <a href="Homee.html"
+                    class="inline-flex items-center text-lg font-semibold text-white bg-teal-600 px-6 py-3 rounded-full hover:bg-teal-700 transition duration-300 shadow-lg">
                     Meet Our Team &rarr;
                 </a>
             </div>
             <div class="rounded-xl shadow-2xl overflow-hidden">
-                <img src="https://belisonantique.gov.ph/wp-content/uploads/2020/08/IMG20200705081303-1024x768.jpg" alt="Health Center Building" class="w-full h-96 object-cover" onerror="this.src='https://placehold.co/800x600/a5f3fc/083344?text=Health+Center'">
+                <img src="https://belisonantique.gov.ph/wp-content/uploads/2020/08/IMG20200705081303-1024x768.jpg"
+                    alt="Health Center Building" class="w-full h-96 object-cover"
+                    onerror="this.src='https://placehold.co/800x600/a5f3fc/083344?text=Health+Center'">
             </div>
         </div>
     </section>
@@ -229,13 +282,15 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
                     <ul class="space-y-2">
-                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><button data-modal-target="auth-gate-modal"
+                                class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
                         <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
                         <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+            <div
+                class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
                 <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
                 <div class="flex gap-4 mt-4 md:mt-0">
                     <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
@@ -246,26 +301,95 @@
     </footer>
 
     <!-- Auth Gate Modal -->
-    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+    <div id="auth-gate-modal"
+        class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
         <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
             <div class="flex justify-between items-center p-6 border-b border-gray-200">
                 <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
-                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <button data-modal-close="auth-gate-modal"
+                    class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             <div class="p-8 space-y-6">
                 <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
-                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
-                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
-                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+                <a href="patient_login.html"
+                    class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I
+                    am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register"
+                    class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I
+                    am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal"
+                    class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr;
+                    Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Floating Button -->
+    <!-- Chatbot Floating Button -->
+    <button id="chatbotBtn"
+        class="fixed bottom-6 right-6 bg-white hover:bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 z-50 border-2 border-teal-600 overflow-hidden">
+        <img src="Images/aiavatar.png" alt="Chat with us" class="w-full h-full object-cover">
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbotModal"
+        class="hidden fixed bottom-24 right-6 w-96 bg-white shadow-2xl rounded-2xl border flex flex-col z-[100]"
+        style="height: 600px; max-height: 80vh;">
+
+        <div class="p-4 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-bold">Barangay Chatbot</h2>
+
+                <!-- Toggle language -->
+                <button id="toggleLangBtn" class="bg-gray-200 px-3 py-1 rounded text-sm">
+                    🇺🇸 English
+                </button>
+            </div>
+
+
+            <!-- Chat Box -->
+            <div id="chatBox" class="flex-1 overflow-y-auto bg-gray-50 rounded p-3 space-y-3 min-h-0 border mb-3">
+                <!-- Welcome Message -->
+                <div class="flex justify-start items-start gap-2">
+                    <div
+                        class="md-avatar flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                        <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div
+                        class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                        Hello! I am your Barangay Health Assistant. Please select a question below.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden text-teal-600 text-xs italic mb-2 ml-2">
+                Health Assistant is typing...
+            </div>
+
+            <!-- Predefined Questions Dropdown (Bottom) -->
+            <div class="relative">
+                <select id="presetSelect"
+                    class="appearance-none w-full border border-teal-300 rounded-lg p-3 pr-8 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent cursor-pointer shadow-sm">
+                    <option value="">Select a question to ask...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-teal-600">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setupHidingHeader();
             setupMobileMenu();
             setupModals();
@@ -275,7 +399,7 @@
             const header = document.getElementById('main-header');
             if (!header) return;
             let lastScrollTop = 0;
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
                     header.style.top = `-${header.offsetHeight}px`;
@@ -344,6 +468,156 @@
                 });
             });
         }
+
+        // ===============================================
+        //  DATA (English + Filipino)
+        // ===============================================
+        const data = {
+            en: [
+                { q: "What are the health center hours?", a: "We are open from 8AM to 5PM." },
+                { q: "How to get a medical certificate?", a: "Request at the front desk. Bring a valid ID." },
+                { q: "Do you offer free checkups?", a: "Yes, free checkups are available daily." },
+                { q: "Is vaccination available?", a: "Vaccines are available depending on schedule." },
+                { q: "Where is the health center located?", a: "Beside the barangay hall." },
+                { q: "Do you accept emergencies?", a: "Minor emergencies only." },
+                { q: "How to get immunization record?", a: "Go to records section and bring old card." },
+                { q: "What services are offered?", a: "Checkups, vaccines, prenatal and consultation." },
+                { q: "Is a midwife on duty?", a: "Yes, every day." },
+                { q: "Do I need an appointment?", a: "Walk-ins are accepted." }
+            ],
+
+            fil: [
+                { q: "Ano ang oras ng health center?", a: "Bukas kami 8AM hanggang 5PM." },
+                { q: "Paano kumuha ng medical certificate?", a: "Humingi sa front desk. Magdala ng valid ID." },
+                { q: "May libre bang checkup?", a: "Oo, araw-araw meron." },
+                { q: "Available ba ang bakuna?", a: "Depende sa iskedyul ang bakuna." },
+                { q: "Saan ang health center?", a: "Katabi ng barangay hall." },
+                { q: "Tumatanggap ba ng emergency?", a: "Minor emergencies lang." },
+                { q: "Paano kunin ang immunization record?", a: "Pumunta sa records section at dalhin ang lumang card." },
+                { q: "Anong serbisyo ang meron?", a: "Checkup, bakuna, prenatal, konsultasyon." },
+                { q: "May midwife ba?", a: "Oo, araw-araw." },
+                { q: "Kailangan ba ng appointment?", a: "Pwede ang walk-in." }
+            ]
+        };
+
+        let lang = "en"; // default language
+
+        // ===============================================
+        //  UI ELEMENTS
+        // ===============================================
+        const chatbotBtn = document.getElementById("chatbotBtn");
+        const chatbotModal = document.getElementById("chatbotModal");
+        const toggleLangBtn = document.getElementById("toggleLangBtn");
+        const presetSelect = document.getElementById("presetSelect");
+        const chatBox = document.getElementById("chatBox");
+        const typingIndicator = document.getElementById("typingIndicator");
+
+        // ===============================================
+        //  OPEN/CLOSE CHATBOT
+        // ===============================================
+        chatbotBtn.onclick = () => {
+            chatbotModal.classList.toggle("hidden");
+            loadPresetQuestions();
+            loadChatHistory();
+        };
+
+        // ===============================================
+        //  LOAD PREDEFINED QUESTIONS (DROPDOWN)
+        // ===============================================
+        function loadPresetQuestions() {
+            presetSelect.innerHTML = '<option value="">Select a common question...</option>';
+
+            data[lang].forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.q;
+                option.textContent = item.q;
+                presetSelect.appendChild(option);
+            });
+        }
+
+        // Handle dropdown selection
+        presetSelect.onchange = () => {
+            const val = presetSelect.value;
+            if (!val) return;
+
+            const item = data[lang].find(i => i.q === val);
+            if (item) {
+                addMessage(item.q, item.a);
+            }
+            presetSelect.value = ""; // Reset
+        };
+
+        // ===============================================
+        //  CHAT BUBBLES + SAVE HISTORY
+        // ===============================================
+        // ===============================================
+        //  CHAT BUBBLES + SAVE HISTORY
+        // ===============================================
+        function addMessage(userMsg, botMsg) {
+            // Append user bubble
+            chatBox.innerHTML += `
+        <div class="flex justify-end animation-fade-in">
+            <div class="bg-teal-600 text-white p-3 rounded-lg rounded-tr-none max-w-[80%] shadow-sm text-sm">
+                ${userMsg}
+            </div>
+        </div>
+    `;
+
+            // Typing animation
+            typingIndicator.classList.remove("hidden");
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                typingIndicator.classList.add("hidden");
+
+                // Append bot bubble
+                chatBox.innerHTML += `
+            <div class="flex justify-start items-start gap-2 animation-fade-in">
+                <div class="flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                    <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                </div>
+                <div class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                    ${botMsg}
+                </div>
+            </div>
+        `;
+
+                chatBox.scrollTop = chatBox.scrollHeight;
+                saveChatHistory();
+
+            }, 600);
+        }
+
+        // ===============================================
+        //  USER SEND MESSAGE
+        // ===============================================
+
+
+        // Add Enter key support
+
+
+        // ===============================================
+        //  LANGUAGE TOGGLE
+        // ===============================================
+        toggleLangBtn.onclick = () => {
+            lang = lang === "en" ? "fil" : "en";
+            toggleLangBtn.textContent = lang === "en" ? "🇺🇸 English" : "🇵🇭 Filipino";
+            loadPresetQuestions();
+        };
+
+        // ===============================================
+        //  SAVE + LOAD CHAT HISTORY
+        // ===============================================
+        function saveChatHistory() {
+            localStorage.setItem("chat_history", chatBox.innerHTML);
+        }
+
+        function loadChatHistory() {
+            const history = localStorage.getItem("chat_history");
+            if (history) chatBox.innerHTML = history;
+        }
+
     </script>
 </body>
+
 </html>
