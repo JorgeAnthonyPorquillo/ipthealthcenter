@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Styles for modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px]"> <!-- Add padding-top to body to offset fixed header -->
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <!-- Current Page -->
+                <a href="contact.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Login
+                </a>
+                
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <hr class="my-2">
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                   Login 
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header (Hero Section) -->
+    <section class="relative bg-teal-800 text-white">
+        <div class="absolute inset-0">
+            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" 
+                 alt="Contact Us Header" 
+                 class="w-full h-full object-cover opacity-20"
+                 onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Contact+Us'">
+        </div>
+        <div class="container mx-auto px-4 py-16 relative z-10">
+            <h1 class="text-4xl font-extrabold tracking-tight">Get In Touch</h1>
+            <p class="text-lg text-teal-100 mt-2">We're here to answer your questions and assist you with your health needs in Barangay Bahay Toro.</p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="bg-white rounded-xl shadow-2xl p-6 md:p-12 border-t-4 border-teal-600">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                
+                <!-- COLUMN 1: Contact Form -->
+                <div class="lg:col-span-2">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Send Us an Inquiry</h2>
+                    <form id="contact-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition duration-150">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition duration-150">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message / Details</label>
+                            <textarea id="message" name="message" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition duration-150"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full md:w-auto bg-teal-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-teal-700 transition duration-300 shadow-md">
+                                Submit Inquiry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- COLUMN 2: Contact Info & Emergency -->
+                <div class="lg:col-span-1 border-t pt-8 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-10 border-gray-200">
+                    
+                    <h3 class="text-2xl font-bold text-teal-700 mb-4">Office Information</h3>
+                    <div class="space-y-6 text-gray-700">
+                        <div class="flex items-start">
+                            <!-- Icon: Location -->
+                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657A8 8 0 1117.657 16.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <div>
+                                <strong class="block font-semibold">Address:</strong>
+                                Road 3, Project 8, Quezon City<br>
+                                Metro Manila, Philippines
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                             <!-- Icon: Phone -->
+                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <div>
+                                <strong class="block font-semibold">Barangay Hall:</strong>
+                                (02) 8926-8898
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <!-- Icon: Email -->
+                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-17 4v7a2 2 0 002 2h14a2 2 0 002-2v-7"></path></svg>
+                            <div>
+                                <strong class="block font-semibold">Email:</strong>
+                                info@barangaybahaytoro.gov.ph
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <!-- Icon: Facebook -->
+                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            <div>
+                                <strong class="block font-semibold">Facebook:</strong>
+                                <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-teal-600 hover:underline">MTA Bahay Toro</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                             <!-- Icon: Clock -->
+                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div>
+                                <strong class="block font-semibold">Hours:</strong>
+                                Mon - Fri: 8:00 AM - 5:00 PM<br>
+                                Sat: 8:00 AM - 12:00 PM
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-200">
+                            <h4 class="text-xl font-bold text-red-600 mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                Emergency
+                            </h4>
+                            <p class="text-sm">For immediate medical emergencies, please call:</p>
+                            <button data-modal-target="emergency-modal" class="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition duration-300 shadow-md">
+                                View Emergency Hotlines
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <div class="container mx-auto px-4 pb-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Location</h2>
+        <div class="w-full h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative border border-gray-300">
+            
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.106886367894!2d121.0315263153516!3d14.664879989762694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b71900000001%3A0x6335191845873995!2sBarangay%20Bahay%20Toro%20Hall!5e0!3m2!1sen!2sph!4v1678123456789!5m2!1sen!2sph" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            
+            <!-- Optional Info Overlay for better UX on mobile -->
+            <div class="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg max-w-xs hidden md:block border border-gray-100">
+                <p class="font-bold text-teal-800">Barangay Bahay Toro Hall</p>
+                <p class="text-sm text-gray-600">Road 3, Project 8, Quezon City</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="Homee.html" class="text-3xl font-extrabold text-white mb-4 block">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white transition">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> <!-- Facebook Icon -->
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links Sections (Same as other pages) -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="Homee.html" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Auth Gate Modal -->
+    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
+                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="emergency-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-lg shadow-xl border-t-4 border-red-600">
+            <div class="flex justify-between items-center p-5 border-b">
+                <h2 class="text-2xl font-bold text-red-600">Emergency Hotlines</h2>
+                <button data-modal-close="emergency-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-gray-700">In case of emergency, please contact the following numbers immediately.</p>
+                <ul class="space-y-3">
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Barangay Bahay Toro Hall</span>
+                        <a href="tel:0289268898" class="font-bold text-teal-700 text-lg">(02) 8926-8898</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Health Center</span>
+                        <a href="tel:0281234567" class="font-bold text-teal-700 text-lg">(02) 8-123-4567</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Local Police (QC)</span>
+                        <a href="tel:122" class="font-bold text-teal-700 text-lg">122 / (02) 8921-5267</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Fire Department</span>
+                        <a href="tel:911" class="font-bold text-teal-700 text-lg">911</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Submission Success Modal -->
+    <div id="submission-success-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-sm bg-white rounded-xl shadow-2xl border-t-4 border-green-600 text-center">
+            <div class="flex flex-col items-center p-8 space-y-4">
+                <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h3 class="text-2xl font-bold text-gray-800">Inquiry Submitted!</h3>
+                <p class="text-gray-600">Thank you for reaching out. We will review your message shortly.</p>
+                <button data-modal-close="submission-success-modal" class="w-full mt-4 py-2 px-4 rounded-full font-semibold text-white bg-green-600 hover:bg-green-700 transition duration-300">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHidingHeader();
+            setupMobileMenu();
+            setupModals();
+            setupContactForm();
+        });
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            const headerHeight = header.offsetHeight;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                    header.style.top = `-${headerHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    if (isHidden) {
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                        document.body.classList.remove('overflow-hidden');
+                    } else {
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            }
+        }
+
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal-target]');
+            const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+            const allModals = document.querySelectorAll('.modal');
+
+            modalTriggers.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = button.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            });
+
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = button.closest('.modal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+        }
+
+        function setupContactForm() {
+            const form = document.getElementById('contact-form');
+            const successModal = document.getElementById('submission-success-modal');
+            if (!form || !successModal) return;
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                form.reset();
+                successModal.classList.remove('hidden');
+                successModal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            });
+        }
+        
+        window.addEventListener('load', () => {
+             const urlParams = new URLSearchParams(window.location.search);
+             const authGateModal = document.getElementById('auth-gate-modal');
+             if (urlParams.get('action') === 'book' && authGateModal) {
+                 history.replaceState(null, '', window.location.pathname); 
+                 authGateModal.classList.remove('hidden');
+                 authGateModal.classList.add('flex');
+                 document.body.classList.add('overflow-hidden');
+             }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Styles for modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        /* Custom list style for legal text */
+        .legal-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .legal-list li {
+            margin-bottom: 0.25rem;
+        }
+        .legal-section {
+            margin-bottom: 2rem;
+        }
+        .legal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f766e; /* teal-700 */
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        .legal-content {
+            color: #374151; /* gray-700 */
+            line-height: 1.75;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px]">
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Login
+                </a>
+                <!--
+                <button data-modal-target="auth-gate-modal" class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-5 py-2 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 text-sm md:text-base shadow-md">
+                    Book Now
+                </button>
+                -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <hr class="my-2">
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                    Patient Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="bg-teal-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Privacy Policy</h1>
+            <p class="text-teal-100">How we use and share your personal health information.</p>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="bg-white rounded-xl shadow-lg p-8 md:p-12 border-t-4 border-teal-600">
+            
+            <div class="mb-8 text-center border-b border-gray-200 pb-8">
+                <p class="text-lg text-gray-600 italic">This notice explains how we may use and share your personal health information. Please take a moment to read it carefully.</p>
+            </div>
+
+            <!-- I. Background -->
+            <div class="legal-section">
+                <h2 class="legal-title">I. Background</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        In compliance with the <strong>Data Privacy Act of 2012 (Republic Act No. 10173)</strong>, we are fully committed to protecting the privacy and confidentiality of your personal and health information. This law establishes the legal framework for the collection, storage, use, and disclosure of personal data, ensuring that individuals’ information is handled responsibly, securely, and with respect for their rights.
+                    </p>
+                    <p class="mb-2">Under this law, all personal data must be:</p>
+                    <ul class="legal-list">
+                        <li>Collected for legitimate purposes and with consent where applicable</li>
+                        <li>Accurate, relevant, and kept up to date</li>
+                        <li>Protected against unauthorized access, disclosure, or misuse</li>
+                    </ul>
+                    <p>
+                        Our health center adheres strictly to these principles to safeguard your health information, maintain your trust, and ensure compliance with national standards for data protection.
+                    </p>
+                </div>
+            </div>
+
+            <!-- II. Introduction -->
+            <div class="legal-section">
+                <h2 class="legal-title">II. Introduction</h2>
+                <div class="legal-content">
+                    <p>
+                        Your privacy and the protection of your personal health information (PHI) are extremely important to us. This notice is designed to inform you about how we collect, store, use, and disclose your health information. It also explains your rights regarding the access and control of your information. By understanding this policy, you can make informed decisions about your care and be assured that your personal health data is handled responsibly and securely. We encourage you to read this notice carefully and reach out if you have any questions or concerns about your information.
+                    </p>
+                </div>
+            </div>
+
+            <!-- III. Information We Collect -->
+            <div class="legal-section">
+                <h2 class="legal-title">III. Information We Collect</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        To provide you with safe, effective, and high-quality healthcare, we collect a variety of personal and health-related information. This information helps our healthcare team understand your needs, provide appropriate treatment, and ensure continuity of care. The types of information we collect include, but are not limited to:
+                    </p>
+                    <ul class="list-none space-y-4">
+                        <li><strong>a. Basic Personal Information:</strong> This includes details such as your full name, home and mailing address, date of birth, sex, religious affiliation, contact numbers, email address, occupation, marital status, and citizenship. Collecting this information allows us to accurately identify you, maintain records, and communicate effectively regarding your care.</li>
+                        <li><strong>b. Emergency or Contact Information:</strong> We may collect the names, addresses, and contact numbers of your relatives, guardian, or next of kin. This information ensures that we can reach a trusted person if you require urgent medical attention, or if there are important updates regarding your treatment or care plan.</li>
+                        <li><strong>c. Chief Complaints and Medical History:</strong> This includes your current symptoms, reasons for seeking care, past medical conditions, previous hospital admissions, allergies, chronic illnesses, medications you are taking, and other relevant health history. Gathering this information allows healthcare providers to make accurate diagnoses, plan appropriate treatment, and monitor your progress over time.</li>
+                        <li><strong>d. Vital Signs and Clinical Measurements:</strong> We record measurements such as blood pressure, temperature, pulse rate, and respiratory rate. These vital signs help assess your current health status, detect abnormalities early, and guide medical interventions.</li>
+                        <li><strong>e. Diagnostic Results:</strong> This includes laboratory tests, imaging results (such as x-rays and scans), and other diagnostic procedures. These results help confirm diagnoses, monitor treatment effectiveness, and guide clinical decisions.</li>
+                        <li><strong>f. Other Relevant Information:</strong> Depending on your condition and the services you receive, additional information may be collected as necessary. This may include lifestyle details, dietary habits, or social and environmental factors that can influence your health.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- IV. How Do We Collect Your Information -->
+            <div class="legal-section">
+                <h2 class="legal-title">IV. How Do We Collect Your Information</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        It is important that we collect accurate and up-to-date information about you to ensure the delivery of safe and effective healthcare services. We collect your information through various means, including both electronic systems and paper-based forms, depending on the service you are availing of.
+                    </p>
+                    <ul class="list-none space-y-4 mb-4">
+                        <li><strong>a. Electronic Methods:</strong> This includes information entered into our secure electronic health record (EHR) systems, online appointment forms, patient portals, or other digital platforms. These systems allow us to access your information quickly and coordinate care among different healthcare providers efficiently.</li>
+                        <li><strong>b. Paper-Based Methods:</strong> Information may also be collected using paper registration forms, medical questionnaires, consent forms, and other documentation. These documents are securely stored and handled according to strict privacy and security protocols.</li>
+                    </ul>
+                    <p>
+                        We understand that some patients may have questions or concerns about the information being collected. If you feel that certain information we request is not necessary, you are encouraged to ask any of our healthcare staff. They will gladly explain why the information is required and how it helps provide you with the best possible care.
+                    </p>
+                </div>
+            </div>
+
+            <!-- V. How We Use and Disclose Your Information -->
+            <div class="legal-section">
+                <h2 class="legal-title">V. How We Use and Disclose Your Information</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        The information we collect is used to provide you with safe, high-quality care and to comply with legal and professional standards. While it is not possible to list every potential use or disclosure, your information may generally be used in the following ways:
+                    </p>
+                    <ul class="list-none space-y-4 mb-4">
+                        <li><strong>A. Treatment and Communication:</strong> Your health information may be shared among healthcare providers involved in your care, including physicians, nurses, specialists, and therapists. This ensures that everyone involved has the information needed to provide coordinated and effective care. We may also use your information to communicate with you about your treatment, follow-up care, or health-related instructions.</li>
+                        <li><strong>B. Billing and Collection:</strong> Health information may be used to process your billing, submit claims to insurance providers, verify eligibility, and maintain accurate financial records. This ensures that services are properly documented and that payment processes are handled efficiently.</li>
+                        <li><strong>C. Healthcare Operations and Professional Services:</strong> Your information may be used internally to improve the quality of care, conduct audits, train staff, or support accreditation and certification processes. Using de-identified or anonymized data helps us enhance our services while maintaining patient confidentiality.</li>
+                        <li><strong>D. Legal Compliance and Health-Related Services:</strong> We may disclose your health information when required by law, such as reporting communicable diseases, responding to court orders, or complying with public health regulations. We may also share information when necessary to protect public safety or respond to emergencies.</li>
+                        <li><strong>E. Research and Training:</strong> Health information may be used for medical research, teaching, or professional training. Whenever possible, this information is de-identified to ensure your privacy. Research helps advance medical knowledge and improve care for all patients.</li>
+                    </ul>
+                    <p>
+                        All uses and disclosures are conducted in accordance with the Data Privacy Act of 2012 and other applicable laws, ensuring that your information is handled responsibly and securely.
+                    </p>
+                </div>
+            </div>
+
+            <!-- VI. How We Share Your Information -->
+            <div class="legal-section">
+                <h2 class="legal-title">VI. How We Share Your Information</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        We take your privacy seriously and only share your personal and health information under specific, carefully controlled circumstances. The ways your information may be shared include:
+                    </p>
+                    <ul class="list-none space-y-4 mb-4">
+                        <li><strong>a. With other healthcare providers:</strong> To ensure proper coordination and continuity of your care, we may share your information with specialists, laboratories, pharmacies, or other healthcare professionals involved in your treatment. This allows us to provide safe, effective, and timely care.</li>
+                        <li><strong>b. With insurance companies:</strong> We may provide the necessary information to process claims, confirm coverage, and secure payment for services rendered. This ensures accurate billing and financial documentation while minimizing delays in care.</li>
+                        <li><strong>c. As required by law:</strong> There are instances where we must share your personal information to comply with legal obligations. For example:
+                            <ul class="legal-list mt-2">
+                                <li>Government agencies, such as the Department of Health, may require the submission of relevant information for patients with certain communicable or non-communicable diseases, injuries, or other conditions. This is done for purposes of disease surveillance, monitoring, and public health protection.</li>
+                                <li>Courts, public authorities, or other government entities may lawfully request access to your information as part of legal proceedings or mandates.</li>
+                            </ul>
+                        </li>
+                        <li><strong>d. With our service providers and partners:</strong> We may share your personal information with trusted service providers, affiliates, partners, or related entities who assist the health center in delivering healthcare services. These entities are bound to use your information only for purposes consistent with your care, operational needs, and legal requirements.</li>
+                    </ul>
+                    <p>
+                        We do not share your information for purposes unrelated to your care or business operations without your explicit written consent. Access to your information is strictly limited to those who genuinely need it, and every measure is taken to maintain confidentiality.
+                    </p>
+                </div>
+            </div>
+
+            <!-- VII. Your Rights -->
+            <div class="legal-section">
+                <h2 class="legal-title">VII. Your Rights</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        As a patient, you have several important rights regarding your personal and health information. These rights are designed to ensure transparency, control, and protection over your data:
+                    </p>
+                    <ul class="list-none space-y-4">
+                        <li><strong>a. Right to Be Informed:</strong> You have the right to be informed that your personal and health information is being, has been, or will be collected and processed. You also have the right to know the purposes for which your information will be, is being, or has been used, as well as the duration for which it will be retained.</li>
+                        <li><strong>b. Right to Access and Obtain Copies:</strong> You may request a copy of your personal and health information held by the center. Access allows you to review the information to ensure its accuracy and completeness. Requests can be submitted in writing or electronically through our Health Information Department. Fees may apply for copies of records.</li>
+                        <li><strong>c. Right to Correction:</strong> If you believe that your personal or health information is inaccurate, incomplete, or outdated, you have the right to request corrections. Requests must be made in writing and clearly describe the items to be corrected, along with supporting documentation if required. If we deny your request, you will receive a written explanation.</li>
+                        <li><strong>d. Right to Object or Withdraw Consent:</strong> You may object to or withdraw consent previously given for certain processing of your data, such as for direct marketing, research, or training purposes. Withdrawal of consent does not affect your access to healthcare services.</li>
+                        <li><strong>e. Right to Restrict or Limit Use and Disclosure:</strong> You may request reasonable restrictions on the use or disclosure of your personal and health information. While the center is not required to agree to all restriction requests, any approved restrictions will be honored unless the information is needed for emergency care or required by law.</li>
+                        <li><strong>f. Right to Suspend, Block, Remove, or Destroy Data:</strong> You have the right to request the suspension, withdrawal, blocking, removal, or destruction of your personal data if there is substantial proof that your rights were violated, your data are incomplete, false, unlawfully obtained, or processed for unauthorized purposes.</li>
+                        <li><strong>g. Right to an Accounting of Disclosures:</strong> You may request a list of how your personal information has been shared for purposes other than treatment, payment, healthcare operations, or legal compliance. Health information will not be shared with third parties without your consent, except as required by law.</li>
+                        <li><strong>h. Right to Indemnification:</strong> You have the right to be compensated for damages arising from the inaccurate, incomplete, false, or unauthorized use of your personal data.</li>
+                        <li><strong>i. Right to Receive a Copy of This Privacy Policy:</strong> You are entitled to receive a copy of the center's Privacy Policy, which explains how your information is collected, used, disclosed, and protected.</li>
+                        <li><strong>j. Transmissibility of Rights:</strong> Upon death or incapacity, your rights may be transferred to your lawful heirs or authorized representatives, who may exercise these rights on your behalf.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- VIII. How We Protect Your Information -->
+            <div class="legal-section">
+                <h2 class="legal-title">VIII. How We Protect Your Information</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        The privacy and security of your personal and health information is one of our highest priorities. We have implemented a comprehensive set of safeguards designed to protect your information from unauthorized access, misuse, or accidental loss. These safeguards include:
+                    </p>
+                    <ul class="list-none space-y-4 mb-4">
+                        <li><strong>a. Physical Safeguards:</strong> All paper-based records, such as medical charts, consent forms, and registration documents, are stored in secure, locked cabinets. Access is strictly limited to authorized personnel who need the information to provide care or manage operations. Access logs and internal procedures are in place to ensure accountability and prevent unauthorized entry.</li>
+                        <li><strong>b. Technical Safeguards:</strong> Our electronic systems, including electronic health records (EHR) and digital patient portals, are protected using multiple layers of security. These include password-protected accounts, role-based access controls, encryption of sensitive data, secure servers, and regular system monitoring.</li>
+                        <li><strong>c. Administrative Safeguards:</strong> We have established policies and procedures for managing and protecting patient information. All staff members receive regular training on privacy laws, data protection principles, and the correct handling of sensitive information.</li>
+                    </ul>
+                    <p>
+                        We continuously review and update our privacy and security measures to adapt to evolving technology, legal requirements, and best practices in healthcare data protection.
+                    </p>
+                </div>
+            </div>
+
+            <!-- IX. Inquiries and Complaints -->
+            <div class="legal-section">
+                <h2 class="legal-title">IX. Inquiries and Complaints</h2>
+                <div class="legal-content">
+                    <p class="mb-4">
+                        The confidentiality of your personal and health information is a cornerstone of the care we provide. We take any concerns regarding the processing, handling, or disclosure of your information seriously and are committed to addressing them promptly and fairly.
+                    </p>
+                    <p class="mb-4">
+                        If you have questions, concerns, or believe that your privacy rights have been violated, you have the right to file a written complaint with our Data Privacy Management Department. Your complaint will be handled confidentially and investigated thoroughly. Filing a complaint will not affect your access to care or services in any way.
+                    </p>
+                    <p class="mb-4">You may submit your complaint through the following channels:</p>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                        <p><strong>Email:</strong> dpo@barangaybahaytoro.gov.ph</p>
+                        <p><strong>Mail:</strong></p>
+                        <p class="pl-4">
+                            Data Protection Officer<br>
+                            Data Privacy Management Department<br>
+                            Barangay Bahay Toro Health Center<br>
+                            Road 3, Project 8, Quezon City
+                        </p>
+                    </div>
+                    <p>
+                        When filing a complaint, please provide as much detail as possible, including your full name, contact information, a description of the issue or concern, and any supporting documents or evidence.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="Homee.html" class="text-3xl font-extrabold text-white mb-4 block">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white transition">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> 
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links Sections -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="Homee.html" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white font-semibold text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Gate Modal -->
+    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
+                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHidingHeader();
+            setupMobileMenu();
+            setupModals();
+        });
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            const headerHeight = header.offsetHeight;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                    header.style.top = `-${headerHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    if (isHidden) {
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                        document.body.classList.remove('overflow-hidden');
+                    } else {
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            }
+        }
+
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal-target]');
+            const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+            const allModals = document.querySelectorAll('.modal');
+
+            modalTriggers.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = button.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            });
+
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = button.closest('.modal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+            
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    allModals.forEach(modal => {
+                        if (!modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            document.body.classList.remove('overflow-hidden');
+                        }
+                    });
+                }
+            });
+        }
+        
+        window.addEventListener('load', () => {
+             const urlParams = new URLSearchParams(window.location.search);
+             const authGateModal = document.getElementById('auth-gate-modal');
+             if (urlParams.get('action') === 'book' && authGateModal) {
+                 history.replaceState(null, '', window.location.pathname); 
+                 authGateModal.classList.remove('hidden');
+                 authGateModal.classList.add('flex');
+                 document.body.classList.add('overflow-hidden');
+             }
+        });
+    </script>
+</body>
+</html>

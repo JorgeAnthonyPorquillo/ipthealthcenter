@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Barangay Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        body.modal-active {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 pt-[72px]">
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-10 py-5 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                Barangay Health Center
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Announcements</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact Us</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                
+
+                <!-- 2. User Profile Dropdown -->
+                <div class="relative hidden lg:block">
+                    <button type="button" id="user-menu-button" class="flex items-center justify-center rounded-full bg-teal-100 p-1 hover:ring-2 hover:ring-teal-500 transition focus:outline-none">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="user-dropdown-menu" class="hidden absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-0 scale-95 transition ease-out duration-100">
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm text-gray-500">Signed in as</p>
+                            <p class="text-sm font-bold text-gray-900 truncate">juan.delacruz@email.com</p>
+                        </div>
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">My Profile</a>
+                        <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">Settings</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign out</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="bg-teal-50 p-4 flex items-center gap-3 border-b border-teal-100">
+                <img class="h-10 w-10 rounded-full object-cover border border-teal-200" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User">
+                <div>
+                    <p class="text-sm font-bold text-gray-800">Juan Dela Cruz</p>
+                    <p class="text-xs text-gray-600">juan.delacruz@email.com</p>
+                </div>
+            </div>
+            <div class="flex flex-col p-4 gap-2">
+                <a href="user_logged.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="profile.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">My Profile</a>
+                <a href="settings.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Settings</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="Homee.html" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Content -->
+    <main class="container mx-auto px-4 py-10 max-w-6xl">
+        
+        <!-- Profile Header Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center md:items-start gap-6">
+            <!-- Avatar -->
+            <div class="flex-shrink-0">
+                <img class="h-28 w-28 md:h-32 md:w-32 rounded-full object-cover border-4 border-teal-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+            </div>
+            
+            <!-- Details -->
+            <div class="flex-grow text-center md:text-left">
+                <h1 class="text-3xl font-bold text-gray-900">Juan Dela Cruz</h1>
+                <p class="text-gray-500 font-medium">Resident ID: <span class="text-gray-700">BRGY-2025-089</span></p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                        Active Resident
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        Senior Citizen (pending)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Edit Button -->
+            <div class="flex-shrink-0 mt-4 md:mt-0">
+                <a href="settings.html" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Patient Information -->
+            <div class="lg:col-span-1 space-y-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-900">Personal Information</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Contact</p>
+                            <p class="text-sm font-medium text-gray-900 mt-1">juan.delacruz@email.com</p>
+                            <p class="text-sm font-medium text-gray-900">0917 123 4567</p>
+                        </div>
+                        <hr class="border-gray-100">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Address</p>
+                            <p class="text-sm font-medium text-gray-900 mt-1">Block 5, Lot 2, Mabuhay Street<br>Barangay San Isidro</p>
+                        </div>
+                        <hr class="border-gray-100">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Basic Health Info</p>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div>
+                                    <span class="text-xs text-gray-500">Birthdate</span>
+                                    <p class="text-sm font-medium text-gray-900">Jan 15, 1980</p>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500">Age</span>
+                                    <p class="text-sm font-medium text-gray-900">45 yrs old</p>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500">Sex</span>
+                                    <p class="text-sm font-medium text-gray-900">Male</p>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500">Blood Type</span>
+                                    <p class="text-sm font-medium text-gray-900">O+</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Appointments & History -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Upcoming Appointments Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-900">Upcoming Appointments</h3>
+                        <!-- Opens Modal -->
+                        <button class="open-appointment-modal text-sm text-teal-600 hover:text-teal-700 font-medium">Book New</button>
+                    </div>
+                    
+                    <div class="p-6">
+                        <!-- Card: Active Appointment -->
+                        <div class="flex flex-col sm:flex-row gap-4 p-4 border border-teal-100 bg-teal-50 rounded-lg items-start sm:items-center">
+                            <div class="bg-white p-3 rounded-md shadow-sm text-center min-w-[80px]">
+                                <span class="block text-xs font-bold text-gray-500 uppercase">DEC</span>
+                                <span class="block text-2xl font-bold text-teal-600">12</span>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-gray-900">General Consultation</h4>
+                                <p class="text-sm text-gray-600">Dr. Richard Nepomuceno • 9:30 AM</p>
+                                <span class="inline-block mt-2 text-xs font-medium text-teal-800 bg-teal-200 px-2 py-0.5 rounded">Confirmed</span>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <button class="text-sm text-gray-500 hover:text-red-600 underline">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Medical History -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-900">Recent Medical History</h3>
+                        <a href="#" class="text-sm text-teal-600 hover:text-teal-700 font-medium">View All</a>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        
+                        <!-- History Item 1 -->
+                        <div class="p-6 hover:bg-gray-50 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Annual Flu Vaccination</h4>
+                                    <p class="text-sm text-gray-500 mt-1">Administered by Nurse Josefa Reyes</p>
+                                </div>
+                                <span class="text-sm text-gray-400">Nov 10, 2025</span>
+                            </div>
+                        </div>
+
+                        <!-- History Item 2 -->
+                        <div class="p-6 hover:bg-gray-50 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Dental Cleaning</h4>
+                                    <p class="text-sm text-gray-500 mt-1">Dr. Diane Domondone</p>
+                                </div>
+                                <span class="text-sm text-gray-400">Aug 24, 2025</span>
+                            </div>
+                        </div>
+
+                        <!-- History Item 3 -->
+                        <div class="p-6 hover:bg-gray-50 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Blood Pressure Check</h4>
+                                    <p class="text-sm text-gray-500 mt-1">Result: 120/80 (Normal)</p>
+                                </div>
+                                <span class="text-sm text-gray-400">Jul 05, 2025</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Book Appointment Modal (Added) -->
+    <div id="appointment-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-70"></div>
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-[110] w-11/12 md:max-w-xl mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Book an Appointment</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <form action="#" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="full-name-modal" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="full-name-modal" value="Juan Dela Cruz" readonly class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-sm p-3 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label for="phone-modal" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <input type="tel" id="phone-modal" value="0917-123-4567" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="service-modal" class="block text-sm font-medium text-gray-700">Service Needed</label>
+                            <select id="service-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select a service</option>
+                                <option>General Consultation</option>
+                                <option>Vaccination</option>
+                                <option>Prenatal Checkup</option>
+                                <option>Dental Checkup</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="date-modal" class="block text-sm font-medium text-gray-700">Preferred Date</label>
+                            <input type="date" id="date-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label for="time-modal" class="block text-sm font-medium text-gray-700">Preferred Time</label>
+                            <select id="time-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select time</option>
+                                <option>8:00 AM - 9:00 AM</option>
+                                <option>9:00 AM - 10:00 AM</option>
+                                <option>10:00 AM - 11:00 AM</option>
+                                <option>1:00 PM - 2:00 PM</option>
+                                <option>2:00 PM - 3:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-6 w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-md">
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="#" class="text-3xl font-bold text-white">
+                        Barangay Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> <!-- Facebook Icon -->
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links: About Us -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="#our-team" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Services -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Residents -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button class="open-appointment-modal text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="profile.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript (Exact logic from Index/Settings) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHeaderDropdown();
+            setupHidingHeader();
+            setupMobileMenu();
+            setupModals(); // Initialize modal logic
+        });
+
+        // Modal Logic
+        function setupModals() {
+            const body = document.querySelector('body');
+            const modals = [
+                { id: 'appointment-modal', openClass: '.open-appointment-modal' }
+            ];
+
+            modals.forEach(m => {
+                const modal = document.getElementById(m.id);
+                if (modal) {
+                    const openButtons = document.querySelectorAll(m.openClass);
+                    const closeButtons = modal.querySelectorAll('.modal-close, .modal-overlay');
+
+                    openButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, true);
+                        });
+                    });
+                    closeButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, false);
+                        });
+                    });
+                }
+            });
+
+            function toggleModal(modal, show) {
+                if (!modal) return;
+                const modalContent = modal.querySelector('.modal-content');
+                if (!modalContent) return;
+
+                if (show) {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('-translate-y-10', 'scale-95');
+                    body.classList.add('modal-active');
+                } else {
+                    modal.classList.add('opacity-0');
+                    modalContent.classList.add('-translate-y-10', 'scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('pointer-events-none');
+                        if (document.querySelectorAll('.modal:not(.opacity-0)').length === 0) {
+                            body.classList.remove('modal-active');
+                        }
+                    }, 250);
+                }
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        toggleModal(modal, false);
+                    });
+                }
+            });
+        }
+
+        function setupHeaderDropdown() {
+            const userMenuBtn = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown-menu');
+
+            if(userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = userDropdown.classList.contains('hidden');
+                    if (isHidden) {
+                        userDropdown.classList.remove('hidden');
+                        setTimeout(() => {
+                            userDropdown.classList.remove('opacity-0', 'scale-95');
+                            userDropdown.classList.add('opacity-100', 'scale-100');
+                        }, 20);
+                    } else {
+                        closeUserDropdown();
+                    }
+                });
+                window.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        closeUserDropdown();
+                    }
+                });
+            }
+            function closeUserDropdown() {
+                if(!userDropdown) return;
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => { userDropdown.classList.add('hidden'); }, 100);
+            }
+        }
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    if (isHidden) {
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                    } else {
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

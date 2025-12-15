@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    
+    <style>
+        html { font-family: 'Inter', sans-serif; }
+
+        /* --- Collapsible Sidebar Styles (Matches Dashboard) --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar { transition: width 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        #main-content { transition: margin-left 0.3s ease-in-out; }
+
+        /* Desktop Styles */
+        @media (min-width: 1024px) {
+            #sidebar { width: 5rem; z-index: 50; }
+            #main-content { margin-left: 5rem; }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: none; opacity: 0; transition: opacity 0.2s ease-in-out; }
+            .sidebar-link-container, .sidebar-header { justify-content: center; }
+            #content-menu, #user-menu { display: none !important; }
+            .sidebar-header a svg { width: 2rem; height: 2rem; }
+
+            /* Hover Expand */
+            #sidebar:hover { width: 16rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+            #sidebar:hover ~ #main-content { margin-left: 5rem; }
+            #sidebar:hover .sidebar-text, 
+            #sidebar:hover .sidebar-header-text, 
+            #sidebar:hover .sidebar-dropdown-arrow { display: inline-block; opacity: 1; transition-delay: 0.1s; }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header { justify-content: flex-start; }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu { display: block !important; }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1023px) {
+            #sidebar { width: 16rem; transform: translateX(-100%); z-index: 60; }
+            #main-content { margin-left: 0; }
+            body.sidebar-open #sidebar { transform: translateX(0); }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: inline-block; opacity: 1; }
+            .sidebar-link-container, .sidebar-header { justify-content: flex-start; }
+            #sidebar-backdrop { transition: opacity 0.3s ease-in-out; }
+            body:not(.sidebar-open) #sidebar-backdrop { opacity: 0; pointer-events: none; }
+            body.sidebar-open #sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Global Layout -->
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar - Exact match to Admin Dashboard) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+            <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+                <a href="admindashboard.html" class="flex items-center space-x-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                    </svg>
+                    <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">Admin</span>
+                </a>
+                <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <ul class="py-4">
+                    <!-- Dashboard -->
+                    <li>
+                        <a href="admindashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                            </span>
+                        </a>
+                    </li>
+                    <!-- ... Other links (Appointments, Records, Inventory, Reports) ... -->
+                    <!-- I'll just include the structure, assuming standard admin links are here -->
+                    <li>
+                        <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" /><path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <!-- Site Content (Dropdown) -->
+                    <li>
+                        <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                            </span>
+                            <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <ul id="content-menu" class="hidden bg-gray-700">
+                            <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                            <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                            <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden h-screen">
+            
+            <!-- 2. Header -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                </button>
+                
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">My Profile</h1>
+                    <p class="text-sm text-gray-500">Manage your administrator account.</p>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            <div class="hidden md:block text-left">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-500 hidden md:block"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 3. Main Content Area (Scrollable) -->
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                <!-- Profile Header Card (Based on Client Profile structure) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        <img class="h-28 w-28 md:h-32 md:w-32 rounded-full object-cover border-4 border-teal-50" src="https://placehold.co/256x256/0d9488/ffffff?text=ADMIN" alt="Admin Profile">
+                    </div>
+                    
+                    <!-- Details -->
+                    <div class="flex-grow text-center md:text-left">
+                        <h1 class="text-3xl font-bold text-gray-900">Administrator</h1>
+                        <p class="text-gray-500 font-medium">Employee ID: <span class="text-gray-700">EMP-2024-001</span></p>
+                        <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                                System Admin
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                Head Nurse
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Edit Button -->
+                    <div class="flex-shrink-0 mt-4 md:mt-0">
+                        <button class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition">
+                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2-Column Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Left Column: Personal Information -->
+                    <div class="lg:col-span-1 space-y-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                                <h3 class="font-semibold text-gray-900">Contact Information</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Email Address</p>
+                                    <p class="text-sm font-medium text-gray-900 mt-1">admin@barangay.gov.ph</p>
+                                </div>
+                                <hr class="border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Work Phone</p>
+                                    <p class="text-sm font-medium text-gray-900 mt-1">(02) 8888-1234 loc. 101</p>
+                                </div>
+                                <hr class="border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Department</p>
+                                    <p class="text-sm font-medium text-gray-900 mt-1">Information Technology / Health Records</p>
+                                </div>
+                                <hr class="border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Last Login</p>
+                                    <p class="text-sm font-medium text-gray-900 mt-1">Today, 8:30 AM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Activity Log (Replaces Appointments) -->
+                    <div class="lg:col-span-2 space-y-8">
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                                <h3 class="font-semibold text-gray-900">Recent Activity Log</h3>
+                                <button class="text-sm text-teal-600 hover:text-teal-700 font-medium">View All Logs</button>
+                            </div>
+                            
+                            <div class="divide-y divide-gray-100">
+                                
+                                <!-- Activity 1 -->
+                                <div class="p-6 hover:bg-gray-50 transition">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex gap-4">
+                                            <div class="bg-green-100 p-2 rounded-full text-green-600 h-10 w-10 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900">Approved Appointment</h4>
+                                                <p class="text-sm text-gray-500 mt-1">Confirmed consultation request for Patient ID: RES-092 (Juan Dela Cruz)</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-400 whitespace-nowrap">10 mins ago</span>
+                                    </div>
+                                </div>
+
+                                <!-- Activity 2 -->
+                                <div class="p-6 hover:bg-gray-50 transition">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex gap-4">
+                                            <div class="bg-blue-100 p-2 rounded-full text-blue-600 h-10 w-10 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900">Added Inventory</h4>
+                                                <p class="text-sm text-gray-500 mt-1">Restocked 500 units of Paracetamol 500mg</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-400 whitespace-nowrap">2 hours ago</span>
+                                    </div>
+                                </div>
+
+                                <!-- Activity 3 -->
+                                <div class="p-6 hover:bg-gray-50 transition">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex gap-4">
+                                            <div class="bg-yellow-100 p-2 rounded-full text-yellow-600 h-10 w-10 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900">Updated Announcement</h4>
+                                                <p class="text-sm text-gray-500 mt-1">Edited details for "Free Flu Vaccine Drive"</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-400 whitespace-nowrap">Yesterday</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript for Sidebar Interaction (Same as Dashboard) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Sidebar Toggle Logic
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) {
+                sidebarOpenBtn.addEventListener('click', () => {
+                    document.body.classList.add('sidebar-open');
+                });
+            }
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+            if (sidebarBackdrop) {
+                sidebarBackdrop.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+
+            // Dropdown Logic
+            function setupDropdown(toggleId, menuId, arrowId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                const arrow = document.getElementById(arrowId);
+
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (window.innerWidth < 1024) {
+                            menu.classList.toggle('hidden');
+                            if (arrow) arrow.classList.toggle('rotate-180');
+                        }
+                    });
+                    if (window.innerWidth >= 1024) {
+                        const listItem = toggle.closest('li');
+                        listItem.addEventListener('mouseenter', () => { menu.classList.remove('hidden'); });
+                        listItem.addEventListener('mouseleave', () => { menu.classList.add('hidden'); });
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu', 'content-arrow');
+            setupDropdown('user-toggle', 'user-menu', 'user-arrow');
+
+            // Profile Menu
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

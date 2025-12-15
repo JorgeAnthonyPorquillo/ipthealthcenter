@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - Barangay Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        
+        /* Custom toggle switch styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #0d9488; /* teal-600 */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #0d9488; /* teal-600 */
+        }
+        
+        /* Tab Active State */
+        .tab-btn.active {
+            background-color: #f0fdfa; /* teal-50 */
+            color: #0f766e; /* teal-700 */
+            border-left-width: 4px;
+            border-color: #0d9488; /* teal-600 */
+        }
+
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        body.modal-active {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 pt-[72px]">
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-10 py-5 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                Barangay Health Center
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Announcements</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact Us</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+
+                <!-- 2. User Profile Dropdown -->
+                <div class="relative hidden lg:block">
+                    <button type="button" id="user-menu-button" class="flex items-center justify-center rounded-full bg-teal-100 p-1 hover:ring-2 hover:ring-teal-500 transition focus:outline-none">
+                        <span class="sr-only">Open user menu</span>
+                        <img id="header-profile-img" class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="user-dropdown-menu" class="hidden absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-0 scale-95 transition ease-out duration-100">
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm text-gray-500">Signed in as</p>
+                            <p class="text-sm font-bold text-gray-900 truncate">juan.delacruz@email.com</p>
+                        </div>
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">My Profile</a>
+                        <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">Settings</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="Homee.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign out</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="bg-teal-50 p-4 flex items-center gap-3 border-b border-teal-100">
+                <img id="mobile-profile-img" class="h-10 w-10 rounded-full object-cover border border-teal-200" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User">
+                <div>
+                    <p class="text-sm font-bold text-gray-800">Juan Dela Cruz</p>
+                    <p class="text-xs text-gray-600">juan.delacruz@email.com</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col p-4 gap-2">
+                <a href="user_logged.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="profile.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">My Profile</a>
+                <a href="settings.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Settings</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="Homee.html" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Settings Container -->
+    <main class="container mx-auto px-4 py-12 max-w-6xl">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Account Settings</h1>
+            <p class="text-gray-500 mt-1">Manage your profile details and preferences.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            
+            <!-- Left Sidebar -->
+            <aside class="w-full md:w-64 flex-shrink-0">
+                <!-- Removed 'sticky top-24' so it stays static -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                    <nav class="flex flex-col">
+                        <button onclick="switchTab('general')" id="tab-general" class="tab-btn active text-left px-6 py-4 font-medium text-sm hover:bg-gray-50 transition border-l-4 border-transparent">
+                            General Information
+                        </button>
+                        <button onclick="switchTab('security')" id="tab-security" class="tab-btn text-left px-6 py-4 font-medium text-sm text-gray-600 hover:bg-gray-50 transition border-l-4 border-transparent">
+                            Login & Security
+                        </button>
+                        <button onclick="switchTab('notifications')" id="tab-notifications" class="tab-btn text-left px-6 py-4 font-medium text-sm text-gray-600 hover:bg-gray-50 transition border-l-4 border-transparent">
+                            Notifications
+                        </button>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Right Content -->
+            <div class="flex-1">
+                
+                <!-- GENERAL TAB -->
+                <div id="content-general" class="settings-content space-y-6">
+                    <!-- Profile Photo Card -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile Photo</h2>
+                        <div class="flex items-center gap-6">
+                            <img id="settings-profile-preview" class="h-20 w-20 rounded-full object-cover ring-4 ring-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Current profile photo">
+                            <div>
+                                <input type="file" id="file-upload" class="hidden" accept="image/png, image/jpeg, image/jpg">
+                                <button id="change-photo-btn" type="button" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+                                    Change Photo
+                                </button>
+                                <button type="button" class="ml-2 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition">Remove</button>
+                                <p class="text-xs text-gray-500 mt-2">JPG, GIF or PNG. Max size of 800K.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Form -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Personal Details</h2>
+                        <form class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" value="Juan" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" value="Dela Cruz" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input type="email" value="juan.delacruz@email.com" class="w-full rounded-md border-gray-300 bg-gray-50 text-gray-500 shadow-sm sm:text-sm py-2 px-3 border cursor-not-allowed" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <input type="tel" value="0917 123 4567" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Barangay Address</label>
+                                <input type="text" value="Block 5, Lot 2, Mabuhay Street" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                            </div>
+                            <div class="pt-4 flex justify-end">
+                                <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-teal-700 shadow-sm transition">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SECURITY TAB -->
+                <div id="content-security" class="settings-content hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h2>
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                            </div>
+                            <div class="pt-4 flex justify-end">
+                                <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-teal-700 shadow-sm transition">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- NOTIFICATIONS TAB -->
+                <div id="content-notifications" class="settings-content hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h2>
+                        <div class="space-y-6">
+                            <!-- Items omitted for brevity, structure same as before -->
+                            <div class="flex items-center justify-between">
+                                <div><h3 class="text-sm font-medium text-gray-900">Appointment Reminders</h3></div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                    <label for="toggle1" class="toggle-label block overflow-hidden h-6 rounded-full bg-teal-600 cursor-pointer"></label>
+                                </div>
+                            </div>
+                            <div class="pt-4 flex justify-end">
+                                <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-teal-700 shadow-sm transition">Save Preferences</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Book Appointment Modal -->
+    <div id="appointment-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-70"></div>
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-[110] w-11/12 md:max-w-xl mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Book an Appointment</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="booking-form" action="#" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" value="Juan Dela Cruz" readonly class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-sm p-3 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <input type="tel" value="0917-123-4567" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Service Needed</label>
+                            <select class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>General Consultation</option>
+                                <option>Vaccination</option>
+                                <option>Prenatal Checkup</option>
+                                <option>Dental Checkup</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Preferred Date</label>
+                            <input type="date" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Preferred Time</label>
+                            <select class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>8:00 AM - 9:00 AM</option>
+                                <option>9:00 AM - 10:00 AM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-6 w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-md">
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <a href="#" class="text-3xl font-bold text-white">
+                        Barangay Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="#our-team" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button class="open-appointment-modal text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="profile.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHeaderDropdown();
+            setupHidingHeader();
+            setupMobileMenu();
+            setupImageUpload();
+            setupModals(); // Added modal setup
+            setupBookingRedirect(); // Added booking setup
+        });
+
+        // Image Upload Logic
+        function setupImageUpload() {
+            const changePhotoBtn = document.getElementById('change-photo-btn');
+            const fileInput = document.getElementById('file-upload');
+            const previewImage = document.getElementById('settings-profile-preview');
+            const headerProfileImg = document.getElementById('header-profile-img');
+            const mobileProfileImg = document.getElementById('mobile-profile-img');
+
+            if (changePhotoBtn && fileInput && previewImage) {
+                changePhotoBtn.addEventListener('click', () => { fileInput.click(); });
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const newSrc = e.target.result;
+                            previewImage.src = newSrc;
+                            if(headerProfileImg) headerProfileImg.src = newSrc;
+                            if(mobileProfileImg) mobileProfileImg.src = newSrc;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Booking Redirect Logic
+        function setupBookingRedirect() {
+            const form = document.getElementById('booking-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = form.querySelector('button[type="submit"]');
+                    btn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Booking...';
+                    btn.disabled = true;
+                    setTimeout(() => { window.location.href = 'appointments.html'; }, 800);
+                });
+            }
+        }
+
+        // Modal Logic
+        function setupModals() {
+            const body = document.querySelector('body');
+            const modals = [{ id: 'appointment-modal', openClass: '.open-appointment-modal' }];
+
+            modals.forEach(m => {
+                const modal = document.getElementById(m.id);
+                if (modal) {
+                    const openButtons = document.querySelectorAll(m.openClass);
+                    const closeButtons = modal.querySelectorAll('.modal-close, .modal-overlay');
+                    openButtons.forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); toggleModal(modal, true); }));
+                    closeButtons.forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); toggleModal(modal, false); }));
+                }
+            });
+        }
+
+        function toggleModal(modal, show) {
+            if (!modal) return;
+            const content = modal.querySelector('.modal-content');
+            const body = document.querySelector('body');
+            if (show) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('-translate-y-10', 'scale-95');
+                body.classList.add('modal-active');
+            } else {
+                modal.classList.add('opacity-0');
+                content.classList.add('-translate-y-10', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('pointer-events-none');
+                    body.classList.remove('modal-active');
+                }, 250);
+            }
+        }
+
+        // Tab Logic
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.settings-content');
+            contents.forEach(el => el.classList.add('hidden'));
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-gray-600');
+                btn.classList.remove('text-teal-700', 'bg-teal-50');
+            });
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('text-gray-600');
+        }
+
+        // Header Logic
+        function setupHeaderDropdown() {
+            const userMenuBtn = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown-menu');
+            if(userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = userDropdown.classList.contains('hidden');
+                    if (isHidden) {
+                        userDropdown.classList.remove('hidden');
+                        setTimeout(() => {
+                            userDropdown.classList.remove('opacity-0', 'scale-95');
+                            userDropdown.classList.add('opacity-100', 'scale-100');
+                        }, 20);
+                    } else {
+                        closeUserDropdown();
+                    }
+                });
+                window.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) closeUserDropdown();
+                });
+            }
+            function closeUserDropdown() {
+                if(!userDropdown) return;
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => { userDropdown.classList.add('hidden'); }, 100);
+            }
+        }
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    const path = menuToggle.querySelector('path');
+                    if(path) path.setAttribute('d', isHidden ? 'M4 6h16M4 12h16m-7 6h7' : 'M6 18L18 6M6 6l12 12');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

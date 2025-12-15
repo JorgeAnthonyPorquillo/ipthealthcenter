@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Styles for modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* Filter Bar Styles */
+        #filter-bar-wrapper {
+            position: sticky;
+            top: 72px; /* Offset by header height */
+            z-index: 30;
+            transition: top 0.3s ease-in-out;
+            /* Hide scrollbar completely for aesthetic floating bar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #filter-bar-wrapper::-webkit-scrollbar {
+             height: 0px; 
+        }
+
+        #filter-container {
+             overflow-x: auto;
+             white-space: nowrap;
+             -ms-overflow-style: none;
+             scrollbar-width: none;
+        }
+        #filter-container::-webkit-scrollbar {
+             height: 0px;
+        }
+        
+        /* Custom style for subtle text shadow on the slogan */
+        .slogan-shadow {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px]"> <!-- Add padding-top to body to offset fixed header -->
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <!-- Current Page -->
+                <a href="announcements.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                <!-- Patient Login Button -->
+                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Login
+                </a>
+                
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                
+                <hr class="my-2">
+                
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                    Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header (Hero Section) -->
+    <section class="relative bg-teal-800 text-white">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="https://www.icrc.org/sites/default/files/wysiwyg/03icrc55.jpeg" 
+                 alt="Health News Header" 
+                 class="w-full h-full object-cover opacity-20"
+                 onerror="this.src='https://placehold.co/1920x400/134e4a/ffffff?text=Health+News'">
+        </div>
+        
+        <!-- Text Content with Overlay -->
+        <div class="container mx-auto px-4 py-16 relative z-10">
+            <h1 class="text-4xl font-extrabold">Health News & Updates</h1>
+            <p class="text-lg text-teal-100 mt-2">Stay updated with the latest news, programs, and advisories from your Barangay Bahay Toro Health Center.</p>
+        </div>
+    </section>
+
+    <!-- Slogan Section -->
+    <section class="container mx-auto px-4 pt-8">
+        <div class="bg-teal-50 border-l-4 border-teal-600 rounded-lg shadow-md p-6 flex items-center transition duration-300">
+            <span class="text-4xl text-teal-500 mr-4 font-extrabold">“</span>
+            <div class="flex-grow">
+                <p class="text-xl md:text-2xl font-extrabold text-teal-800 tracking-tight">
+                    Kalusugan ng Bayan, Sagot ng Barangay Bahay Toro!
+                </p>
+                <p class="text-teal-600 mt-1 text-sm italic">
+                    — Community Health Slogan
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Buttons (Sticky Pill/Chip Bar) -->
+    <section id="filter-bar-wrapper" class="bg-gray-100 py-4 border-b border-gray-200">
+        <div class="container mx-auto px-4">
+             <!-- Tab Container: Centers the pills, allows horizontal scroll on small screens -->
+            <div id="filter-container" class="flex gap-3">
+                <!-- Filter buttons styled with Tailwind CSS in JS below -->
+                <button class="filter-btn active" data-filter="all">
+                    All Posts
+                </button>
+                <button class="filter-btn" data-filter="events">
+                    Events & Missions
+                </button>
+                <button class="filter-btn" data-filter="programs">
+                    Health Programs
+                </button>
+                <button class="filter-btn" data-filter="advisories">
+                    Advisories
+                </button>
+                <button class="filter-btn" data-filter="emergency">
+                    Emergency Info
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcements Grid -->
+    <section class="container mx-auto px-4 pt-8 pb-16">
+        <div id="announcement-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Post 1: Vaccine Drive (Event) -->
+            <div class="announcement-card" data-category="events">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://www.reuters.com/resizer/v2/QDYOKJEFTNPZXMX5PWFGAG2Q2Q.jpg?auth=d70e30211af52a29f2f486602f9961bbad8a907404d07a290b5abc1b1de42131" alt="Vaccination Drive" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Vaccine+Drive'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Free Flu Vaccine Drive</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">This Saturday, 9AM at the Barangay Bahay Toro court. Open for all seniors and children. Protect yourself before the cold season begins!</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Read More
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 2: Dental Mission (Event) -->
+            <div class="announcement-card" data-category="events">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://tzuchi-en-backend.storage.googleapis.com/content/images/2023/06/1-PHO.jpg" alt="Dental Mission" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Dental+Mission'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Dental Cleaning Mission</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Free dental checkups and cleaning available this Friday at the Barangay Bahay Toro Health Center. Limited slots, first come, first served.</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Read More
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 3: Dengue Awareness Seminar (Event) -->
+            <div class="announcement-card" data-category="events">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://punto.com.ph/wp-content/uploads/2023/09/received_150305088123714.jpeg" alt="Health Seminar" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Health+Seminar'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Dengue Awareness Seminar</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Learn how to prevent dengue in your homes and community this coming Saturday. All Barangay Bahay Toro residents are invited to attend.</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Read More
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 4: Oplan Timbang (Program) -->
+            <div class="announcement-card" data-category="programs">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://oldwebsite.bayambang.gov.ph/wp-content/uploads/2017/05/IMG_4851.jpg" alt="Oplan Timbang" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Nutrition+Program'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-indigo-600 uppercase mb-1">Health Program</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Oplan Timbang (Nutrition Program)</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">We are conducting our monthly monitoring of children aged 0-5 in Barangay Bahay Toro. Please bring your child's health book.</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            View Schedule
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 5: Emergency Hotlines (Emergency) -->
+            <div class="announcement-card" data-category="emergency">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://binangonan.gov.ph/wp-content/uploads/2025/08/MAINLAND-BARANGAY-EMERGENCY-HOTLINES.png" alt="Emergency Hotlines" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/fca5a5/b91c1c?text=Emergency'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-red-600 uppercase mb-1">Emergency Info</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Updated Emergency Hotlines</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Please save the new emergency contact numbers for the Barangay Bahay Toro Hall and Health Center. Always be prepared.</p>
+                        <button data-modal-target="emergency-modal" class="font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            See Numbers
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 6: Rainy Season (Advisory) -->
+            <div class="announcement-card" data-category="advisories">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdauzncrdzN0DgeDHAjDnGBeBsD5ofH2MBXg&s" alt="Health Advisory" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Health+Advisory'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-yellow-600 uppercase mb-1">Advisory</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Health Advisory: Rainy Season</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Tips to stay healthy and avoid common illnesses during the rainy season in Barangay Bahay Toro. Clean your surroundings to prevent dengue.</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Read Tips
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW Post 7: Maternal Checkup (Program) -->
+            <div class="announcement-card" data-category="programs">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://assets.thenewhumanitarian.org/s3fs-public/styles/social_large/public/images/201207020945500677.jpg?itok=vba4rpf9" alt="Maternal Health" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Maternal+Health'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-indigo-600 uppercase mb-1">Health Program</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Free Maternal Checkups</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Expectant mothers are invited for free prenatal consultations every Tuesday and Thursday at the Barangay Bahay Toro Health Center.</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            View Details
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW Post 8: Blood Pressure Screening (Event) -->
+            <div class="announcement-card" data-category="events">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://files01.pna.gov.ph/source/2021/06/28/img0360.jpg" alt="Blood Pressure" class="w-full h-48 object-cover" onerror="this.src='https://images.gmanews.tv/v3/webpics/v3/2014/08/2014_08_18_10_46_50.jpg'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-teal-600 uppercase mb-1">Event</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Free Blood Pressure Screening</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Get your blood pressure checked for free this Wednesday from 9 AM to 12 NN. Early detection saves lives!</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Check Venue
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW Post 9: Exclusive Breastfeeding (Advisory) -->
+            <div class="announcement-card" data-category="advisories">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+                    <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/01/1000-51.jpg" alt="Breastfeeding Advisory" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x250/a5f3fc/083344?text=Breastfeeding+Advisory'">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="announcement-category text-sm font-semibold text-yellow-600 uppercase mb-1">Advisory</span>
+                        <h3 class="announcement-title font-bold text-xl text-gray-900">Exclusive Breastfeeding Advisory</h3>
+                        <p class="announcement-description text-gray-600 mt-2 flex-grow">Mothers are strongly encouraged to exclusively breastfeed their babies for the first six months. It's the best defense for your baby!</p>
+                        <button class="announcement-button font-semibold text-teal-600 hover:text-teal-700 mt-4 inline-block text-left text-sm flex items-center">
+                            Read Guide
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <a href="Homee.html" class="text-3xl font-extrabold text-white mb-4 block">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <div class="flex gap-4 mt-6">
+                         <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="Homee.html" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Gate Modal -->
+    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
+                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="emergency-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-lg shadow-xl border-t-4 border-red-600">
+            <div class="flex justify-between items-center p-5 border-b">
+                <h2 class="text-2xl font-bold text-red-600">Emergency Hotlines</h2>
+                <button data-modal-close="emergency-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-gray-700">In case of emergency, please contact the following numbers immediately.</p>
+                <ul class="space-y-3">
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Barangay Bahay Toro Hall</span>
+                        <a href="tel:0289268898" class="font-bold text-teal-700 text-lg">(02) 8926-8898</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Health Center (24/7)</span>
+                        <a href="tel:0281234567" class="font-bold text-teal-700 text-lg">(02) 8-123-4567</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Local Police</span>
+                        <a href="tel:911" class="font-bold text-teal-700 text-lg">911 / (02) 8-333-4444</a>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Fire Department</span>
+                        <a href="tel:0285556666" class="font-bold text-teal-700 text-lg">(02) 8-555-6666</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcement Detail Modal -->
+    <div id="announcement-detail-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-2xl bg-white rounded-lg shadow-2xl overflow-hidden border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 id="modal-category" class="text-sm font-semibold text-teal-600 uppercase">Category</h3>
+                <button data-modal-close="announcement-detail-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 max-h-[80vh] overflow-y-auto">
+                <img id="modal-image" src="" alt="Announcement Image" class="w-full h-64 object-cover rounded-md mb-4" onerror="this.src='https://placehold.co/600x400/a5f3fc/083344?text=Image+Not+Available'">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-2">Modal Title</h2>
+                <p class="text-xs text-gray-400 mb-4">Posted: October 25, 2025</p>
+                <p id="modal-description" class="text-gray-700 leading-relaxed">
+                    <!-- Content injected via JS -->
+                </p>
+                <div class="mt-6 p-4 border-l-4 border-teal-500 bg-teal-50">
+                    <p class="font-semibold text-teal-800">Key Takeaway:</p>
+                    <p class="text-teal-700 text-sm">Please remember to check the registration requirements before attending the event.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHidingHeader();
+            setupMobileMenu();
+            setupFiltering();
+            setupModals();
+            setupAnnouncementModal();
+        });
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            const filterBar = document.getElementById('filter-bar-wrapper');
+            if (!header || !filterBar) return;
+            let lastScrollTop = 0;
+            const headerHeight = header.offsetHeight;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                    header.style.top = `-${headerHeight}px`;
+                    filterBar.style.top = `0px`;
+                } else {
+                    header.style.top = '0';
+                    filterBar.style.top = `${headerHeight}px`;
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    if (isHidden) {
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                        document.body.classList.remove('overflow-hidden');
+                    } else {
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            }
+        }
+
+        function setupFiltering() {
+            const filterContainer = document.getElementById('filter-container');
+            const grid = document.getElementById('announcement-grid');
+            if (!filterContainer || !grid) return;
+
+            const filterButtons = filterContainer.querySelectorAll('.filter-btn');
+            const cards = grid.querySelectorAll('.announcement-card');
+
+            filterButtons.forEach(btn => {
+                btn.classList.add('px-4', 'py-2', 'rounded-full', 'font-medium', 'text-sm', 'transition', 'duration-200', 'flex-shrink-0');
+            });
+            
+            function setActiveButton(targetButton) {
+                 filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-teal-600', 'text-white', 'shadow-md');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-teal-100');
+                 });
+                 targetButton.classList.add('active', 'bg-teal-600', 'text-white', 'shadow-md');
+                 targetButton.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-teal-100');
+            }
+
+            const initialActive = filterContainer.querySelector('[data-filter="all"]');
+            if (initialActive) setActiveButton(initialActive);
+
+            filterContainer.addEventListener('click', function(e) {
+                const targetButton = e.target.closest('.filter-btn');
+                if (targetButton) {
+                    const filterValue = targetButton.getAttribute('data-filter');
+                    setActiveButton(targetButton);
+                    cards.forEach(card => {
+                        const cardCategory = card.getAttribute('data-category');
+                        if (filterValue === 'all' || cardCategory === filterValue) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal-target]');
+            const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+            const allModals = document.querySelectorAll('.modal');
+
+            modalTriggers.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = button.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            });
+
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = button.closest('.modal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+            
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    allModals.forEach(modal => {
+                        if (!modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            document.body.classList.remove('overflow-hidden');
+                        }
+                    });
+                }
+            });
+        }
+
+        function setupAnnouncementModal() {
+            const modal = document.getElementById('announcement-detail-modal');
+            if (!modal) return;
+
+            const modalImage = modal.querySelector('#modal-image');
+            const modalCategory = modal.querySelector('#modal-category');
+            const modalTitle = modal.querySelector('#modal-title');
+            const modalDescription = modal.querySelector('#modal-description');
+            const modalBorder = modal.querySelector('.modal-panel');
+
+            function updateModalContent(card) {
+                const image = card.querySelector('img');
+                const categorySpan = card.querySelector('.announcement-category');
+                const title = card.querySelector('.announcement-title');
+                const description = card.querySelector('.announcement-description');
+                const categoryText = categorySpan.textContent.trim();
+                
+                if (modalImage && image) modalImage.src = image.src;
+                if (modalTitle && title) modalTitle.textContent = title.textContent;
+                if (modalDescription && description) modalDescription.innerHTML = description.innerHTML.replace(/<br>/g, '') + " This section contains the full details regarding registration, schedule, and venue. For more information, please contact the Barangay Bahay Toro Health Worker.";
+
+                modalCategory.textContent = categoryText;
+                modalCategory.classList.remove('text-teal-600', 'text-indigo-600', 'text-red-600', 'text-yellow-600');
+                modalBorder.classList.remove('border-teal-600', 'border-indigo-600', 'border-red-600', 'border-yellow-600');
+
+                if (categoryText.includes('Event')) {
+                    modalCategory.classList.add('text-teal-600');
+                    modalBorder.classList.add('border-teal-600');
+                } else if (categoryText.includes('Program')) {
+                    modalCategory.classList.add('text-indigo-600');
+                    modalBorder.classList.add('border-indigo-600');
+                } else if (categoryText.includes('Emergency')) {
+                    modalCategory.classList.add('text-red-600');
+                    modalBorder.classList.add('border-red-600');
+                } else if (categoryText.includes('Advisory')) {
+                    modalCategory.classList.add('text-yellow-600');
+                    modalBorder.classList.add('border-yellow-600');
+                }
+            }
+
+            document.querySelectorAll('.announcement-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = button.closest('.announcement-card');
+                    if (card) {
+                        updateModalContent(card);
+                        // Manually trigger modal open since the button is inside the card
+                        const modal = document.getElementById('announcement-detail-modal');
+                         if (modal) {
+                            modal.classList.remove('hidden');
+                            modal.classList.add('flex');
+                            document.body.classList.add('overflow-hidden');
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
