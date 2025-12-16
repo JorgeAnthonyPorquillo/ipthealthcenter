@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Statistics - Barangay Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons for modal close button -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.4/24/outline/css/heroicons.min.css" rel="stylesheet">
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Styles for modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .modal.hidden .modal-panel {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px]"> <!-- Add padding-top to body to offset fixed header -->
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="Homee.html" class="text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                Barangay Health Center
+            </a>
+            
+            <!-- Navigation Links - Centered and Aligned -->
+            <div class="hidden lg:flex flex-grow justify-center gap-4 xl:gap-6 items-center">
+                
+                <div class="relative pb-2">
+                    <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600">Dashboard</a>
+                </div>
+
+                <!-- Patient Services Dropdown -->
+                <div class="group relative pb-2">
+                    <button class="font-medium text-gray-700 hover:text-teal-600 flex items-center gap-1">
+                        Services
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu absolute -left-4 mt-2 w-60 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100 hidden group-hover:block">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600">My Medical Records</a>
+                        <a href="barangay_health_center.html#booking" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600">Book Appointment</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600">Schedule Vaccination</a>
+                    </div>
+                </div>
+
+                <!-- Information Dropdown -->
+                <div class="group relative pb-2">
+                    <button class="font-medium text-gray-700 hover:text-teal-600 flex items-center gap-1">
+                        Information
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu absolute -right-4 mt-2 w-60 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100 hidden group-hover:block">
+                        <a href="announcements.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600">Announcements</a>
+                        <!-- Active link -->
+                        <a href="Statistics.html" class="block px-4 py-2 text-sm text-teal-600 font-semibold bg-teal-50">Health Statistics</a>
+                        <button data-modal-target="emergency-modal" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600">Emergency Contacts</button>
+                    </div>
+                </div>
+                
+                <div class="relative pb-2">
+                    <a href="barangay_health_center.html#our-team" class="font-medium text-gray-700 hover:text-teal-600">Our Team</a>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-2">
+                <a href="barangay_health_center.html#booking" class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-5 py-2 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 text-sm md:text-base">
+                    Book Now
+                </a>
+                <!-- Trigger for Contact Modal -->
+                <button data-modal-target="contact-modal" class="block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Contact Us
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header (Changed to Teal) -->
+    <section class="bg-gradient-to-r from-teal-700 to-teal-800 text-white pt-16 pb-24">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold">Health Statistics</h1>
+            <p class="text-xl text-teal-200 mt-2">Explore key health data and trends in our barangay.</p>
+        </div>
+    </section>
+
+    <!-- Key Stats Cards -->
+    <section class="container mx-auto px-4 -mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1 (Teal - unchanged) -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4">
+                <div class="bg-teal-100 text-teal-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5m10 0v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5m10 0h-5m-5 0v-2a3 3 0 00-5.356-2.13l-2.094-2.093a3 3 0 00-4.242 0l-2.094 2.093A3 3 0 002 18v2h5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-medium">Total Patients (YTD)</p>
+                    <p class="text-3xl font-bold text-gray-800">1,284</p>
+                </div>
+            </div>
+            <!-- Card 2 (Changed to Teal) -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4">
+                <div class="bg-teal-100 text-teal-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-medium">Vaccinations Given</p>
+                    <p class="text-3xl font-bold text-gray-800">4,502</p>
+                </div>
+            </div>
+            <!-- Card 3 (Green - unchanged) -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4">
+                <div class="bg-green-100 text-green-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.84 6.988 6 7.632 6 8.5v3.5c0 .868.84 1.512 1.976 1.634 1.327.11 2.669.166 4.024.166m0 0c1.355 0 2.697-.056 4.024-.166C17.16 13.512 18 12.868 18 12V8.5c0-.868-.84-1.512-1.976-1.634A48.421 48.421 0 0012 6.75m0 5.25v-1.5" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-medium">Prenatal Checkups</p>
+                    <p class="text-3xl font-bold text-gray-800">231</p>
+                </div>
+            </div>
+            <!-- Card 4 (Yellow - unchanged) -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4">
+                <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.158.79.44 1.076l.01.008.01.01.01.007.004.002.003.001.002.001.001.001A2.25 2.25 0 0113.5 7.5h1.5a2.25 2.25 0 002.25-2.25c0-.231-.035-.454-.1-.664M6.3 7.065A.75.75 0 016 6.75a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75A.75.75 0 016.758 7.5h-.008z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836l.081.02a.75.75 0 00.324 1.127 2.25 2.25 0 012.27 2.27.75.75 0 001.127.324l.02.081m-6.06 1.844c.03.118.062.235.097.35l.004.013.004.012.002.005.002.005.001.002.001.002.001.001c.219.7.51 1.35.86 1.94l.009.015c.313.52.678 1.003 1.08 1.442m5.01-6.618l-.02-.081a.75.75 0 00-1.127-.324 2.25 2.25 0 01-2.27-2.27.75.75 0 00-.324-1.127l-.081-.02m-5.462 4.152a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a.375.375 0 11-1.125-1.125l.001.001.002.002.005.004.012.009.013.004c.35-.195.706-.38 1.066-.554l.015-.007c.458-.22 1-.418 1.5-.58a.375.375 0 11.137.728 11.2 11.2 0 00-1.463.518l-.01.005c-.349.167-.7.324-1.046.47a.375.375 0 11-.32-.693zM12 18.75a.375.375 0 11-1.125-1.125M12 18.75a.375.375 0 111.125 1.125m-1.125-1.125a.375.375 0 11-1.125 1.125m1.125-1.125a.375.375 0 111.125-1.125m-1.125 1.125L12 18.75" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-medium">Dengue Cases (Qtr)</p>
+                    <p class="text-3xl font-bold text-gray-800">42</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            
+            <!-- Bar Chart: Common Illnesses (Teal) -->
+            <div class="lg:col-span-3 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Common Illnesses (Last 30 Days)</h3>
+                <div class="h-80">
+                    <canvas id="commonIllnessesChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Doughnut Chart: Vaccination Rate (Teal/Green) -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Vaccination Rate</h3>
+                <div class="h-80">
+                    <canvas id="vaccinationRateChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pie Chart: Patient Demographics (Teal/Green) -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Patient Demographics (Age)</h3>
+                <div class="h-80">
+                    <canvas id="demographicsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- More Stats (Teal) -->
+            <div class="lg:col-span-3 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Consultations per Month</h3>
+                <div class="h-80">
+                    <canvas id="consultationsChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="barangay_health_center.html" class="text-3xl font-bold text-white">
+                        Barangay Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> <!-- Facebook Icon -->
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links: About Us -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="barangay_health_center.html#our-team" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Services -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links: Residents -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><a href="barangay_health_center.html#booking" class="text-gray-300 hover:text-white">Book Appointment</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">View Records</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS (Copied from announcements.html) -->
+
+    <!-- Contact Us Modal -->
+    <div id="contact-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h2 class="text-2xl font-bold text-gray-900">Contact Us</h2>
+                <button data-modal-close="contact-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Modal Content -->
+            <div class="grid grid-cols-1 md:grid-cols-2 max-h-[70vh] overflow-y-auto">
+                <!-- Left Side: Form -->
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Send us a Message</h3>
+                    <form id="contact-form" class="space-y-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="name" name="name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                            <textarea id="message" name="message" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white px-4 py-2 rounded-md font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300">
+                                Send Message
+                            </button>
+                        </div>
+                        <div id="form-success" class="text-green-600 font-medium text-center hidden">
+                            Message sent successfully! We'll get back to you soon.
+                        </div>
+                    </form>
+                </div>
+                <!-- Right Side: Info -->
+                <div class="bg-gray-50 p-6 border-l border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
+                    <div class="space-y-4 text-gray-700">
+                        <p>
+                            <strong class="block">Address:</strong>
+                            123 Health Center St., Brgy. Malusog, Quezon City, 1101
+                        </p>
+                        <p>
+                            <strong class="block">Phone:</strong>
+                            (02) 8-123-4567
+                        </p>
+                        <p>
+                            <strong class="block">Email:</strong>
+                            info@brgyhealthcenter.gov
+                        </p>
+                        <p>
+                            <strong class="block">Hours:</strong>
+                            Mon - Fri: 8:00 AM - 5:00 PM<br>
+                            Sat: 8:00 AM - 12:00 PM<br>
+                            Sun: Closed
+                        </p>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-gray-800 mt-6 mb-4">Our Location</h3>
+                    <div class="w-full h-48 bg-gray-300 rounded-md flex items-center justify-center text-gray-500">
+                        <!-- Placeholder for an embedded map -->
+                        (Google Maps Placeholder)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="emergency-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-lg shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h2 class="text-2xl font-bold text-gray-900">Emergency Hotlines</h2>
+                <button data-modal-close="emergency-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Modal Content -->
+            <div class="p-6 space-y-4">
+                <p class="text-gray-700">In case of emergency, please contact the following numbers immediately.</p>
+                <ul class="space-y-3">
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Barangay Hall</span>
+                        <span class="font-bold text-teal-700 text-lg">(02) 8-111-2222</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Health Center (24/7)</span>
+                        <span class="font-bold text-teal-700 text-lg">(02) 8-123-4567</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Local Police</span>
+                        <span class="font-bold text-teal-700 text-lg">911 / (02) 8-333-4444</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-800">Fire Department</span>
+                        <span class="font-bold text-teal-700 text-lg">(02) 8-555-6666</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHidingHeader();
+            setupModals();
+            setupContactForm();
+            setupCharts(); // New function to initialize charts
+        });
+
+        // 1. Hiding Header Function
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    // Scrolling Down
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    // Scrolling Up
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+            }, false);
+        }
+
+        // 2. General Modal Handling Function
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal-target]');
+            const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+
+            // Open Modals
+            modalTriggers.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modalId = button.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex'); // Use flex for centering
+                    }
+                });
+            });
+
+            // Close Modals with 'X' button
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modalId = button.getAttribute('data-modal-close');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    }
+                });
+            });
+
+            // Close Modals by clicking backdrop
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    // Check if the click is on the backdrop itself (not the panel)
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    }
+                });
+            });
+        }
+
+        // 3. Contact Form Submission Function
+        function setupContactForm() {
+            const form = document.getElementById('contact-form');
+            const successMessage = document.getElementById('form-success');
+            if (!form || !successMessage) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent actual form submission
+                
+                // Show success message
+                successMessage.classList.remove('hidden');
+                
+                // Clear the form
+                form.reset();
+
+                // Hide the success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                }, 3000);
+            });
+        }
+
+        // 4. Chart.js Initialization (with updated Green/Teal palette)
+        function setupCharts() {
+            // Chart.js global defaults
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.responsive = true;
+            Chart.defaults.maintainAspectRatio = false;
+
+            // Common Illnesses Bar Chart (Teal)
+            const illnessesCtx = document.getElementById('commonIllnessesChart');
+            if (illnessesCtx) {
+                new Chart(illnessesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Flu', 'Common Cold', 'Dengue', 'Diarrhea', 'Hypertension'],
+                        datasets: [{
+                            label: 'Cases',
+                            data: [120, 185, 42, 75, 90],
+                            backgroundColor: 'rgba(13, 148, 136, 0.6)', // teal-600 with opacity
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Vaccination Rate Doughnut Chart (Teal/Green shades)
+            const vaccinationCtx = document.getElementById('vaccinationRateChart');
+            if (vaccinationCtx) {
+                new Chart(vaccinationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Children (0-5y)', 'Seniors (60+y)', 'General Population'],
+                        datasets: [{
+                            data: [1240, 850, 2412], // Corrected data format
+                            backgroundColor: [
+                                'rgba(13, 148, 136, 0.8)', // teal-600
+                                'rgba(15, 118, 110, 0.8)', // teal-700
+                                'rgba(16, 185, 129, 0.8)'  // green-500
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                     options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Demographics Pie Chart (Teal/Green shades)
+            const demographicsCtx = document.getElementById('demographicsChart');
+            if (demographicsCtx) {
+                new Chart(demographicsCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['0-10 yrs', '11-20 yrs', '21-40 yrs', '41-60 yrs', '60+ yrs'],
+                        datasets: [{
+                            data: [250, 150, 400, 300, 184],
+                            backgroundColor: [
+                                'rgba(13, 148, 136, 0.8)', // teal-600
+                                'rgba(15, 118, 110, 0.8)', // teal-700
+                                'rgba(6, 78, 59, 0.8)',   // green-900
+                                'rgba(16, 185, 129, 0.8)', // green-500
+                                'rgba(5, 150, 105, 0.8)'  // green-600
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                     options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Consultations Line Chart (Teal)
+            const consultationsCtx = document.getElementById('consultationsChart');
+            if (consultationsCtx) {
+                new Chart(consultationsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [{
+                            label: 'Consultations',
+                            data: [110, 120, 150, 140, 160, 130, 170, 190],
+                            fill: true,
+                            backgroundColor: 'rgba(13, 148, 136, 0.1)', // teal-600 light
+                            borderColor: 'rgba(13, 148, 136, 1)',   // teal-600
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+
+</body>
+</html>

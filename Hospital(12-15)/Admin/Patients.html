@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management System</title>
+    <!-- Inter Font --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet --><style>
+        /* --- CSS Variables --- */
+        :root {
+            --color-primary-blue: #007FFF; /* Main blue */
+            --color-primary-blue-light: #00AFFF; /* Lighter blue for gradients/accents */
+            --color-primary-blue-dark: #006FDE; /* Darker blue for hover */
+            --color-primary-dark-blue: #1A2B48; /* Dark navy for sidebar & text */
+            
+            --color-bg-main: #F9FAFB; /* Light gray page background */
+            --color-bg-card: #FFFFFF; /* White card background */
+            --color-bg-sidebar: #1A2B48; /* Dark navy sidebar */
+            --color-bg-header: #FFFFFF; /* White header */
+            
+            --color-text-primary: #1A2B48; /* Dark navy */
+            --color-text-secondary: #6B7280; /* Medium gray */
+            --color-text-light: #FFFFFF; /* White */
+            --color-text-light-dim: #A0B3D0; /* Dimmed light text for sidebar */
+            --color-text-link: var(--color-primary-blue);
+            
+            --color-border-light: #F3F4F6; /* Light border for cards */
+            --color-border-medium: #E5E7EB; /* Medium border for inputs */
+            
+            /* Status & Accent Colors */
+            --color-tag-red-bg: #FFE4E6;
+            --color-tag-red-text: #FF6B6B; /* New Coral Accent */
+            --color-tag-green-bg: #D1FAE5;
+            --color-tag-green-text: #059669;
+            --color-accent-aqua: #14B8A6;
+            --color-accent-aqua-light: #F0FDFA;
+            --color-accent-purple: #8B5CF6;
+            --color-accent-purple-light: #F5F3FF;
+            --color-accent-yellow: #F59E0B;
+            --color-accent-yellow-light: #FFFBEB;
+            
+            /* Modern Shadow System */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Global Reset & Base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-main);
+            color: var(--color-text-primary);
+            display: flex;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* --- Main Layout --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--color-bg-sidebar);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100vh;
+            color: var(--color-text-light);
+        }
+
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .main-header {
+            background-color: var(--color-bg-header);
+            padding: 1.5rem 2.5rem;
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto; /* Allow content to scroll */
+            padding: 2.5rem;
+            background-color: var(--color-bg-main);
+        }
+
+        /* --- Sidebar --- */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-logo-img {
+            width: 40px;
+            height: 40px;
+            /* Removed border-radius, background-color, border, etc. */
+            display: flex; /* Kept for alignment of potential text inside, even if now an img */
+            align-items: center;
+            justify-content: center;
+            color: white; /* Kept for potential text inside */
+            font-weight: bold; /* Kept for potential text inside */
+            font-size: 1.25rem; /* Kept for potential text inside */
+        }
+        
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+            line-height: 1.4;
+        }
+
+        .sidebar-nav-menu {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text-light-dim);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-text-light-dim);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-nav-link svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-text-light-dim);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--color-text-light);
+        }
+        
+        .sidebar-nav-link:hover svg {
+            color: var(--color-text-light);
+        }
+
+        .sidebar-nav-link.active {
+            background-color: var(--color-bg-card);
+            color: var(--color-primary-blue);
+            box-shadow: var(--shadow-md);
+            font-weight: 600;
+        }
+        
+        .sidebar-nav-link.active svg {
+            color: var(--color-primary-blue);
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        
+        .sidebar-footer-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-footer-text {
+            font-size: 0.8rem;
+            color: var(--color-text-light-dim);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-upgrade {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background-image: linear-gradient(to right, var(--color-primary-blue) 0%, var(--color-primary-blue-light) 100%);
+            color: var(--color-text-light);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 127, 255, 0.35);
+        }
+
+        /* --- Main Header --- */
+        .main-header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-image: linear-gradient(to right, var(--color-primary-blue) 0%, var(--color-primary-blue-light) 100%);
+            color: var(--color-text-light);
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background-image: linear-gradient(to right, var(--color-primary-blue-dark) 0%, var(--color-primary-blue) 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px); /* Lift effect */
+        }
+        
+        .btn-primary-dark {
+            background-color: var(--color-primary-dark-blue);
+            color: var(--color-text-light);
+        }
+        
+        .btn-primary-dark:hover {
+            background-color: #2c4a77;
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-bg-card);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border-medium);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+        
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* --- Patient Header Card --- */
+        .patient-header-card {
+            background-color: var(--color-bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--color-border-light);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .patient-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: var(--color-accent-purple-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 4px solid var(--color-bg-card);
+            box-shadow: 0 0 0 4px var(--color-accent-purple);
+        }
+
+        .patient-avatar svg {
+            width: 32px;
+            height: 32px;
+            color: var(--color-accent-purple);
+        }
+        
+        .patient-info {
+            flex-grow: 1;
+        }
+
+        .patient-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .patient-meta {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        .patient-meta span {
+            margin-right: 1.5rem;
+        }
+        
+        .patient-meta strong {
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+        
+
+        /* --- Patient Tabs --- */
+        .patient-tabs {
+            display: flex;
+            background-color: var(--color-bg-card);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .patient-tab-link {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .patient-tab-link:hover {
+            background-color: var(--color-bg-main);
+            color: var(--color-text-primary);
+        }
+
+        .patient-tab-link:hover svg {
+            color: var(--color-text-primary);
+        }
+
+        .patient-tab-link.active {
+            background-image: linear-gradient(90deg, var(--color-primary-blue) 0%, var(--color-primary-blue-light) 100%);
+            color: var(--color-text-light);
+            box-shadow: 0 4px 10px rgba(0, 127, 255, 0.3);
+        }
+
+        .patient-tab-link svg {
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .patient-tab-link.active svg {
+            color: var(--color-text-light);
+        }
+
+        /* --- Tab Content --- */
+        .patient-tab-content {
+            display: none;
+        }
+
+        .patient-tab-content.active {
+            display: block;
+        }
+
+        /* --- Content Card --- */
+        .content-card {
+            background-color: var(--color-bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            overflow: hidden; /* For table */
+        }
+        
+        .content-card-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0; /* No margin inside card */
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .card-header-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            background-color: var(--color-accent-purple-light);
+            color: var(--color-accent-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .card-header-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* --- Vital Signs --- */
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .vital-item {
+            background-color: var(--color-bg-card);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--color-border-light);
+            border-left: 5px solid var(--color-primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .vital-item.accent-purple { border-color: var(--color-accent-purple); }
+        .vital-item.accent-aqua { border-color: var(--color-accent-aqua); }
+        .vital-item.accent-yellow { border-color: var(--color-accent-yellow); }
+        .vital-item.accent-red { border-color: var(--color-tag-red-text); }
+
+
+        .vital-item-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .vital-item-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .vital-item-value-small {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .vital-item-value span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            margin-left: 0.25rem;
+        }
+        
+        /* --- Medical Info: Allergies --- */
+        .allergy-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--color-tag-red-bg);
+            color: var(--color-tag-red-text);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* --- Medical Info: Chronic Conditions --- */
+        .condition-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .condition-item {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            padding: 1.25rem;
+            border: 1px solid var(--color-border-medium);
+            border-radius: 10px;
+        }
+        
+        /* --- Medical Info: Medical History --- */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .history-table th {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: var(--color-bg-main);
+        }
+        
+        .history-table td {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+        
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .history-table td:first-child {
+            font-weight: 600;
+        }
+
+        /* --- Consultation History --- */
+        .consultation-card {
+            background-color: var(--color-bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+        
+        .consultation-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .consultation-doctor {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .consultation-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--color-accent-aqua-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .consultation-avatar svg {
+            width: 24px;
+            height: 24px;
+            color: var(--color-accent-aqua);
+        }
+        
+        .consultation-doctor-info {
+            line-height: 1.4;
+        }
+        
+        .consultation-doctor-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+        
+        .consultation-doctor-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-meta {
+            text-align: right;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .consultation-meta .date {
+            display: block;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .consultation-body {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem 2rem;
+        }
+        
+        .consultation-item {
+            font-size: 0.95rem;
+        }
+        
+        .consultation-item-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .consultation-item-value {
+            font-weight: 500;
+            color: var(--color-text-primary);
+            line-height: 1.5;
+        }
+        
+        .consultation-item-value.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .consultation-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--color-border-light);
+            background-color: var(--color-bg-main);
+        }
+        
+        .consultation-followup {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .consultation-followup svg {
+            width: 18px;
+            height: 18px;
+            color: var(--color-text-secondary);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--color-bg-card);
+            border-top: 1px solid var(--color-border-light);
+            padding: 2.5rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-img {
+            width: 60px;
+            height: 60px;
+            /* Removed border-radius, background-color, border, etc. */
+            display: flex; /* Kept for alignment of potential text inside, even if now an img */
+            align-items: center;
+            justify-content: center;
+            color: white; /* Kept for potential text inside */
+            font-weight: bold; /* Kept for potential text inside */
+            font-size: 1.5rem; /* Kept for potential text inside */
+        }
+        
+        .footer-info {
+            line-height: 1.5;
+        }
+        
+        .footer-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-text-link);
+            text-decoration: underline;
+        }
+
+        .footer-copyright {
+            font-size: 0.9rem;
+        }
+        
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .footer-socials a {
+            color: var(--color-text-secondary);
+            opacity: 0.8;
+            transition: all 0.2s ease;
+        }
+        
+        .footer-socials a:hover {
+            color: var(--color-text-link);
+            opacity: 1;
+        }
+        
+        .footer-social-icon {
+            width: 24px;
+            height: 24px;
+            /* Removed border-radius from social icons */
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 50;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: var(--color-bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 600px;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-container {
+             transform: scale(1);
+             opacity: 1;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+        
+        .modal-subtitle {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            border: 1px solid var(--color-border-medium);
+            border-radius: 8px;
+            background-color: #F9FAFB;
+            color: var(--color-text-primary);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 127, 255, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--color-border-light);
+            background-color: var(--color-bg-main);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            border-radius: 0 0 12px 12px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- === Sidebar === --><aside class="sidebar">
+        <!-- Sidebar Header --><div class="sidebar-header">
+            <!-- Replaced SVG with <img> --><img src="Images/QCU_Logo_2019.png" alt="Health Center Logo" class="sidebar-logo-img">
+            <h1 class="sidebar-title">Barangay Health Center</h1>
+        </div>
+        
+        <!-- Sidebar Navigation --><h2 class="sidebar-nav-menu">Menu</h2>
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-nav-link">
+                <!-- Home Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504 1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+                <span>Home</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link active">
+                <!-- Patient Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A1.875 1.875 0 0 1 18 22.5h-12a1.875 1.875 0 0 1-1.499-2.382Z" />
+                </svg>
+                <span>Patients</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Appointment Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12v-.008ZM12 18h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75v-.008ZM9.75 18h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5v-.008ZM7.5 18h.008v.008H7.5v-.008ZM14.25 15h.008v.008H14.25v-.008ZM14.25 18h.008v.008H14.25v-.008ZM16.5 15h.008v.008H16.5v-.008ZM16.5 18h.008v.008H16.5v-.008Z" />
+                </svg>
+                <span>Appointment System</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Inventory Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6A1.125 1.125 0 0 1 2.25 10.875v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25A1.125 1.125 0 0 1 14.25 16.875v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25A1.125 1.125 0 0 1 3.75 18.375v-2.25Z" />
+                </svg>
+                <span>Medical Inventory</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Doctors Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A1.875 1.875 0 0 1 18 22.5h-12a1.875 1.875 0 0 1-1.499-2.382Z" />
+                </svg>
+                <span>Doctor's Profile</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Employees Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0-3.742-.97m-3.742.97a9.094 9.094 0 0 0-3.742-.97m3.742.97A9.094 9.094 0 0 1 12 21m-3.742-.97A9.094 9.094 0 0 1 6 18.72m0 0a9.094 9.094 0 0 1-2.258-1.151M12 12a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0 0a9.094 9.094 0 0 0-3.742 1.151M12 12a9.094 9.094 0 0 1 3.742 1.151M18 18.72a9.094 9.094 0 0 1 2.258-1.151M4.5 18.72a9.094 9.094 0 0 0 2.258-1.151M12 12a9.094 9.094 0 0 0-3.742-1.151M12 12a9.094 9.094 0 0 1 3.742-1.151" />
+                </svg>
+                <span>Employees / Volunteers</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Reports Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                <span>Reports</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Analytics Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m1-3 1 3m0 0-1 3m1-3 1 3M6.75 19.5l-1 3m1-3 1 3m0 0-1 3m1-3 1 3M17.25 19.5l-1 3m1-3 1 3m0 0-1 3m1-3 1 3" />
+                </svg>
+                <span>Insights & Analytics</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Emergency Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+                <span>Emergency Response</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Feedback Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-3.75 3h9M3 17.25h18M3 6.75h18M3 11.25h18M5.25 6.75v10.5" />
+                </svg>
+                <span>Feedback</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Gallery Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm1.5-6a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                <span>Gallery</span>
+            </a>
+            
+            <a href="#" class="sidebar-nav-link">
+                <!-- Contacts Icon --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.211-1.007-.568-1.365l-2.401-2.401c-.34-.34-.812-.469-1.244-.4-1.06.06-2.115.09-3.185.09h-.624c-.311 0-.614-.02-.915-.06-1.033-.13-2.01-.42-2.91-.855-.388-.18-.806-.24-1.228-.21-1.28.06-2.51.3-3.66.69-1.14.39-2.31.88-3.32 1.45l-.03.02c-.51.302-.914.73-1.19 1.225-.27.49-.41.103-.41.15v1.372c0 1.243 1.007 2.25 2.25 2.25h2.25Z" />
+                </svg>
+                <span>Contacts</span>
+            </a>
+        </nav>
+        
+        <!-- Sidebar Footer --><div class="sidebar-footer">
+            <h4 class="sidebar-footer-title">Need help?</h4>
+            <p class="sidebar-footer-text">Please check our docs or contact support.</p>
+            <button class="btn-upgrade">Get Help</button>
+        </div>
+    </aside>
+
+    <!-- === Main Content Area === --><div class="main-container">
+    
+        <!-- Main Header --><header class="main-header">
+            <h1 class="main-header-title">Patients</h1>
+            <button class="btn btn-primary" id="addPatientBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                </svg>
+                <span>Add Patient</span>
+            </button>
+        </header>
+
+        <!-- Scrolling Content --><main class="main-content">
+
+            <!-- Patient Header Card --><div class="patient-header-card">
+                <div class="patient-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A1.875 1.875 0 0 1 18 22.5h-12a1.875 1.875 0 0 1-1.499-2.382Z" />
+                    </svg>
+                </div>
+                <div class="patient-info">
+                    <h2 class="patient-name">Princess Lorraine Trabasas</h2>
+                    <p class="patient-meta">
+                        <span>ID: <strong>PT001234</strong></span>
+                        <span>Age: <strong>20 years old</strong></span>
+                        <span>Gender: <strong>Female</strong></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Patient Tabs --><nav class="patient-tabs">
+                <a href="#patient-info" class="patient-tab-link active" data-tab="patient-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Zm0 3.75a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Zm0 3.75a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Z" />
+                    </svg>
+                    <span>Patient Information</span>
+                </a>
+                <a href="#medical-info" class="patient-tab-link" data-tab="medical-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                    <span>Medical Information</span>
+                </a>
+                <a href="#consultation-records" class="patient-tab-link" data-tab="consultation-records">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" />
+                    </svg>
+                    <span>Consultation Records</span>
+                </a>
+                <a href="#medications" class="patient-tab-link" data-tab="medications">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a2.25 2.25 0 0 1-2.25 2.25H5.25a2.25 2.25 0 0 1-2.25-2.25v-8.25M11.25 11.25v-1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v1.875m0-1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m3.75-1.875a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v-1.875m0 1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875m3.75 0a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875M12 2.25v-1.5m0 1.5v1.875m0 0A1.875 1.875 0 1 1 9.75 6m1.5-1.875v1.875m0 0a1.875 1.875 0 1 0 3.75 0M12 4.125v1.875m0 0a1.875 1.875 0 1 1 3.75 0m-3.75 0v-1.875m0 1.875a1.875 1.875 0 1 0-3.75 0m3.75 0v-1.875" />
+                    </svg>
+                    <span>Medications</span>
+                </a>
+            </nav>
+            
+            <!-- === Patient Info Tab === --><div id="patient-info" class="patient-tab-content active">
+                <div class="content-card">
+                    <div class="card-header">
+                        <!-- Vitals Icon --><div class="card-header-icon-wrapper">
+                            <svg class="card-header-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l4.019 4.019a7.5 7.5 0 1 1 10.607 0l4.019-4.019M3.75 13.5H1.5m2.25 0l2.25 2.25M3.75 13.5l2.25-2.25m16.5 0l-2.25 2.25m0 0H22.5m-2.25 0l-2.25-2.25M15 11.25l1.5 1.5m0 0l1.5 1.5m-1.5-1.5l1.5-1.5m-1.5 1.5l-1.5 1.5m-1.5-1.5l1.5 1.5m-1.5-1.5l1.5-1.5m-1.5 1.5l-1.5 1.5m7.5-3l-1.5 1.5m0 0l-1.5 1.5m1.5-1.5l-1.5-1.5m1.5 1.5l1.5 1.5m-1.5-1.5l-1.5 1.5m-1.5-1.5l-1.5-1.5m1.5 1.5l-1.5 1.5" />
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Vital Signs</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="vitals-grid">
+                            <div class="vital-item">
+                                <div class="vital-item-label">Blood Pressure</div>
+                                <div class="vital-item-value">128/82 <span>mmHg</span></div>
+                            </div>
+                            <div class="vital-item accent-purple">
+                                <div class="vital-item-label">Temperature</div>
+                                <div class="vital-item-value-small">98.6 <span>°F</span></div>
+                            </div>
+                            <div class="vital-item accent-aqua">
+                                <div class="vital-item-label">Heart Rate</div>
+                                <div class="vital-item-value-small">72 <span>bpm</span></div>
+                            </div>
+                            <div class="vital-item accent-yellow">
+                                <div class="vital-item-label">Height</div>
+                                <div class="vital-item-value-small">165 <span>cm</span></div>
+                            </div>
+                            <div class="vital-item accent-red">
+                                <div class="vital-item-label">Weight</div>
+                                <div class="vital-item-value-small">68 <span>kg</span></div>
+                            </div>
+                            <div class="vital-item">
+                                <div class="vital-item-label">BMI</div>
+                                <div class="vital-item-value-small">24.9</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === Medical Info Tab === --><div id="medical-info" class="patient-tab-content">
+                <!-- Allergies Card --><div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-icon-wrapper" style="background-color: var(--color-tag-red-bg);">
+                            <svg class="card-header-icon" style="color: var(--color-tag-red-text);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Allergies</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="allergy-tag">
+                            <span>Peanuts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chronic Conditions Card --><div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-icon-wrapper" style="background-color: var(--color-accent-aqua-light);">
+                            <svg class="card-header-icon" style="color: var(--color-accent-aqua);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Chronic Conditions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="condition-list">
+                            <div class="condition-item">Type 2 Diabetes</div>
+                            <div class="condition-item">Hypertension</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Medical History Card --><div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-icon-wrapper">
+                            <svg class="card-header-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Medical History</h3>
+                    </div>
+                    <!-- Table goes directly in the card, no card-body for full-width table --><table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Procedure</th>
+                                <th>Hospital</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Appendectomy</td>
+                                <td>Boston General Hospital</td>
+                                <td>2015-08-20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- === Consultation Records Tab === --><div id="consultation-records" class="patient-tab-content">
+                <div class="content-card-header">
+                   <h3 class="card-title">Consultation History</h3>
+                   <button class="btn btn-primary-dark" id="addConsultationBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                        </svg>
+                        <span>Add Consultation</span>
+                   </button>
+                </div>
+                
+                <div class="consultation-card">
+                    <div class="consultation-header">
+                        <div class="consultation-doctor">
+                            <div class="consultation-avatar">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 9 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </div>
+                            <div class="consultation-doctor-info">
+                                <div class="consultation-doctor-name">Dr. Emily Chen</div>
+                                <div class="consultation-doctor-title">Endocrinology</div>
+                            </div>
+                        </div>
+                        <div class="consultation-meta">
+                            <span class="date">2025-10-15</span>
+                            <span class="time">10:30 AM</span>
+                        </div>
+                    </div>
+                    <div class="consultation-body">
+                        <div class="consultation-item">
+                            <div class="consultation-item-label">Chief Complaint</div>
+                            <div class="consultation-item-value">Routine diabetes management check-up</div>
+                        </div>
+                        <div class="consultation-item">
+                            <div class="consultation-item-label">Diagnosis</div>
+                            <div class="consultation-item-value">Type 2 Diabetes Mellitus - well controlled</div>
+                        </div>
+                        <div class="consultation-item full-width">
+                            <div class="consultation-item-label">Treatment Plan</div>
+                            <div class="consultation-item-value">Continue current medication regimen. Advised to maintain diet and exercise plan.</div>
+                        </div>
+                        <div class="consultation-item full-width">
+                            <div class="consultation-item-label">Notes</div>
+                            <div class="consultation-item-value">HbA1c levels improved to 6.8%. Patient reports good compliance with medication.</div>
+                        </div>
+                    </div>
+                    <div class="consultation-footer">
+                        <div class="consultation-followup">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                            <span>Follow-up scheduled: <strong>2026-01-15</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === Medications Tab === --><div id="medications" class="patient-tab-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-icon-wrapper" style="background-color: var(--color-accent-yellow-light);">
+                            <svg class="card-header-icon" style="color: var(--color-accent-yellow);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a2.25 2.25 0 0 1-2.25 2.25H5.25a2.25 2.25 0 0 1-2.25-2.25v-8.25M11.25 11.25v-1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v1.875m0-1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m3.75-1.875a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v-1.875m0 1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875m3.75 0a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875M12 2.25v-1.5m0 1.5v1.875m0 0A1.875 1.875 0 1 1 9.75 6m1.5-1.875v1.875m0 0a1.875 1.875 0 1 0 3.75 0M12 4.125v1.875m0 0a1.875 1.875 0 1 1 3.75 0m-3.75 0v-1.875m0 1.875a1.875 1.875 0 1 0-3.75 0m3.75 0v-1.875" />
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Medications</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Dina tatalab gamot dito. Kailangan nito rehub</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer --><footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-left">
+                        <!-- Replaced SVG with <img> --><img src="Images/QCU_Logo_2019.png" alt="Health Center Footer Logo" class="footer-logo-img">
+                        <div class="footer-info">
+                            <div class="footer-title">Barangay Health Center</div>
+                            <div class="footer-links">
+                                <a href="#">About Us</a>
+                                <a href="#">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-right">
+                         <div class="footer-socials">
+                            <a href="#" title="Facebook">
+                                <!-- Replaced SVG with <img> --><img src="Images/facebook.png" alt="Facebook Icon" class="footer-social-icon">
+                            </a>
+                            <a href="#" title="Messenger">
+                                <!-- Replaced SVG with <img> --><img src="Images/messenger.png" alt="Messenger Icon" class="footer-social-icon">
+                            </a>
+                        </div>
+                        <div class="footer-copyright">
+                            © 2025 Quezon City
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- === Add Patient Modal === --><div class="modal-overlay" id="addPatientModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Patient</h3>
+                <p class="modal-subtitle">Enter the patient's basic information to create a new record.</p>
+            </div>
+            <div class="modal-body">
+                <form action="#" class="form-grid">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name *</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="Juan Dela Cruz">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob" class="form-label">Date of Birth *</label>
+                        <input type="text" id="dob" class="form-input" placeholder="MM/DD/YYYY" onfocus="(this.type='date')">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender" class="form-label">Gender *</label>
+                        <select id="gender" class="form-select">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bloodType" class="form-label">Blood Type *</label>
+                        <select id="bloodType" class="form-select">
+                            <option value="">Select Blood Type</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="09123456789">
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" id="email" class="form-input" placeholder="juan@example.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address" class="form-label">Address *</label>
+                        <input type="text" id="address" class="form-input" placeholder="123 Rizal Street, Barangay San Jose">
+                    </div>
+                     <div class="form-group full-width">
+                        <label for="diagnosis" class="form-label">Diagnosis *</label>
+                        <textarea id="diagnosis" class="form-textarea" placeholder="Initial diagnosis or reason for visit..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelAddPatient">Cancel</button>
+                <button class="btn btn-primary-dark">Add Patient</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- === Add Consultation Modal === --><div class="modal-overlay" id="addConsultationModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Consultation Record</h3>
+                <p class="modal-subtitle">Document a new consultation or visit.</p>
+            </div>
+            <div class="modal-body">
+                <form action="#" class="form-grid">
+                    <div class="form-group">
+                        <label for="consultDate" class="form-label">Date *</label>
+                        <input type="text" id="consultDate" class="form-input" placeholder="MM/DD/YYYY" onfocus="(this.type='date')">
+                    </div>
+                    <div class="form-group">
+                        <label for="consultTime" class="form-label">Time *</label>
+                        <input type="text" id="consultTime" class="form-input" placeholder="HH:MM AM/PM" onfocus="(this.type='time')">
+                    </div>
+                    <div class="form-group">
+                        <label for="consultDoctor" class="form-label">Doctor's Name *</label>
+                        <input type="text" id="consultDoctor" class="form-input" placeholder="Dr. Emily Chen">
+                    </div>
+                    <div class="form-group">
+                        <label for="consultDept" class="form-label">Department *</label>
+                        <input type="text" id="consultDept" class="form-input" placeholder="Endocrinology">
+                    </div>
+                    <div class="form-group">
+                        <label for="consultType" class="form-label">Consultation Type *</label>
+                        <select id="consultType" class="form-select">
+                            <option value="">Select type</option>
+                            <option value="new">New Visit</option>
+                            <option value="follow-up">Follow-up</option>
+                            <option value="routine">Routine Check-up</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="consultFollowUp" class="form-label">Follow Up Date</label>
+                        <input type="text" id="consultFollowUp" class="form-input" placeholder="MM/DD/YYYY (Optional)" onfocus="(this.type='date')">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="consultComplaint" class="form-label">Chief Complaint *</label>
+                        <textarea id="consultComplaint" class="form-textarea" placeholder="Enter patient's chief complaint..."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="consultDiagnosis" class="form-label">Diagnosis *</label>
+                        <textarea id="consultDiagnosis" class="form-textarea" placeholder="Enter diagnosis..."></textarea>
+                    </div>
+                     <div class="form-group full-width">
+                        <label for="consultTreatment" class="form-label">Treatment Plan *</label>
+                        <textarea id="consultTreatment" class="form-textarea" placeholder="Enter treatment plan..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelAddConsultation">Cancel</button>
+                <button class="btn btn-primary-dark">Add Consultation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript --><script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Tab Navigation ---
+            const tabLinks = document.querySelectorAll('.patient-tab-link');
+            const tabContents = document.querySelectorAll('.patient-tab-content');
+
+            tabLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Get target tab
+                    const targetId = link.getAttribute('data-tab');
+                    const targetContent = document.getElementById(targetId);
+                    
+                    // Deactivate all links and content
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Activate clicked link and target content
+                    link.classList.add('active');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+
+            // --- Add Patient Modal ---
+            const addPatientModal = document.getElementById('addPatientModal');
+            const addPatientBtn = document.getElementById('addPatientBtn');
+            const cancelAddPatientBtn = document.getElementById('cancelAddPatient');
+
+            if (addPatientBtn) {
+                addPatientBtn.addEventListener('click', () => {
+                    addPatientModal.classList.add('active');
+                });
+            }
+            
+            if (cancelAddPatientBtn) {
+                 cancelAddPatientBtn.addEventListener('click', () => {
+                    addPatientModal.classList.remove('active');
+                });
+            }
+
+            // --- Add Consultation Modal ---
+            const addConsultationModal = document.getElementById('addConsultationModal');
+            const addConsultationBtn = document.getElementById('addConsultationBtn');
+            const cancelAddConsultationBtn = document.getElementById('cancelAddConsultation');
+
+            if (addConsultationBtn) {
+                addConsultationBtn.addEventListener('click', () => {
+                    addConsultationModal.classList.add('active');
+                });
+            }
+
+            if (cancelAddConsultationBtn) {
+                cancelAddConsultationBtn.addEventListener('click', () => {
+                    addConsultationModal.classList.remove('active');
+                });
+            }
+            
+            // --- Close modals on overlay click ---
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+            
+            // --- Convert date/time inputs ---
+            const dateInputs = [
+                document.getElementById('dob'),
+                document.getElementById('consultDate'),
+                document.getElementById('consultFollowUp')
+            ];
+            const timeInput = document.getElementById('consultTime');
+            
+            dateInputs.forEach(input => {
+                if (input) {
+                    input.addEventListener('focus', () => (input.type = 'date'));
+                    input.addEventListener('blur', () => {
+                        if (!input.value) {
+                            input.type = 'text';
+                        }
+                    });
+                }
+            });
+            
+            if (timeInput) {
+                timeInput.addEventListener('focus', () => (timeInput.type = 'time'));
+                timeInput.addEventListener('blur', () => {
+                    if (!timeInput.value) {
+                        timeInput.type = 'text';
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>
+

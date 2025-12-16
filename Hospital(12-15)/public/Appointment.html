@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments - Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        body.modal-active {
+            overflow: hidden;
+        }
+        
+        /* Status Badge Colors 
+        .status-confirmed { @apply bg-teal-100 text-teal-800 border-teal-200; }
+        .status-pending { @apply bg-yellow-100 text-yellow-800 border-yellow-200; }
+        .status-completed { @apply bg-gray-100 text-gray-800 border-gray-200; }
+        .status-cancelled { @apply bg-red-100 text-red-800 border-red-200; }
+        */
+
+        /* Tab Styles */
+        .tab-active {
+            border-bottom-width: 2px;
+            border-color: #0d9488; /* teal-600 */
+            color: #0f766e; /* teal-700 */
+        }
+        .tab-inactive {
+            border-bottom-width: 2px;
+            border-color: transparent;
+            color: #6b7280; /* gray-500 */
+        }
+        .tab-inactive:hover {
+            color: #374151; /* gray-700 */
+            border-color: #d1d5db; /* gray-300 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 pt-[72px]">
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Updated Logo Section -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                
+
+                <!-- 2. User Profile Dropdown -->
+                <div class="relative hidden lg:block">
+                    <button type="button" id="user-menu-button" class="flex items-center justify-center rounded-full bg-teal-100 p-1 hover:ring-2 hover:ring-teal-500 transition focus:outline-none">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="user-dropdown-menu" class="hidden absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-0 scale-95 transition ease-out duration-100">
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm text-gray-500">Signed in as</p>
+                            <p class="text-sm font-bold text-gray-900 truncate">juan.delacruz@email.com</p>
+                        </div>
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">My Profile</a>
+                        <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700">Settings</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign out</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="bg-teal-50 p-4 flex items-center gap-3 border-b border-teal-100">
+                <img class="h-10 w-10 rounded-full object-cover border border-teal-200" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User">
+                <div>
+                    <p class="text-sm font-bold text-gray-800">Juan Dela Cruz</p>
+                    <p class="text-xs text-gray-600">juan.delacruz@email.com</p>
+                </div>
+            </div>
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="profile.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">My Profile</a>
+                <a href="Appointment.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Appointments</a>
+                <a href="logout.php" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-10 max-w-5xl">
+        
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">My Appointments</h1>
+                <p class="text-gray-500 mt-1">Manage your upcoming schedules and view history at Barangay Bahay Toro Health Center.</p>
+            </div>
+            <button class="open-appointment-modal flex items-center gap-2 bg-teal-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-teal-700 transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Book New
+            </button>
+        </div>
+
+        <!-- Appointment Status Tabs -->
+        <div class="border-b border-gray-200 mb-6">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button onclick="switchAppTab('upcoming')" id="tab-btn-upcoming" class="tab-active whitespace-nowrap py-4 px-1 font-medium text-sm transition-colors">
+                    Upcoming
+                </button>
+                <button onclick="switchAppTab('history')" id="tab-btn-history" class="tab-inactive whitespace-nowrap py-4 px-1 font-medium text-sm transition-colors">
+                    History
+                </button>
+                <button onclick="switchAppTab('cancelled')" id="tab-btn-cancelled" class="tab-inactive whitespace-nowrap py-4 px-1 font-medium text-sm transition-colors">
+                    Cancelled
+                </button>
+            </nav>
+        </div>
+
+        <!-- Appointments List Container -->
+        <div id="appointments-container" class="space-y-4 min-h-[300px]">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+
+        <!-- Empty State Template (Hidden) -->
+        <template id="empty-state-template">
+            <div class="text-center py-12 bg-white rounded-xl border border-gray-200 border-dashed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No appointments found</h3>
+                <p class="mt-1 text-sm text-gray-500">There are no appointments in this category.</p>
+            </div>
+        </template>
+
+    </main>
+
+    <!-- Book Appointment Modal -->
+    <div id="appointment-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-70"></div>
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-[110] w-11/12 md:max-w-xl mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Book an Appointment</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="booking-form" action="#" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="full-name-modal" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="full-name-modal" value="Juan Dela Cruz" readonly class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-sm p-3 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label for="phone-modal" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <input type="tel" id="phone-modal" value="0917-123-4567" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="service-modal" class="block text-sm font-medium text-gray-700">Service Needed</label>
+                            <select id="service-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select a service</option>
+                                <option>General Consultation</option>
+                                <option>Vaccination</option>
+                                <option>Prenatal Checkup</option>
+                                <option>Dental Checkup</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="date-modal" class="block text-sm font-medium text-gray-700">Preferred Date</label>
+                            <input type="date" id="date-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label for="time-modal" class="block text-sm font-medium text-gray-700">Preferred Time</label>
+                            <select id="time-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select time</option>
+                                <option>8:00 AM - 9:00 AM</option>
+                                <option>9:00 AM - 10:00 AM</option>
+                                <option>10:00 AM - 11:00 AM</option>
+                                <option>1:00 PM - 2:00 PM</option>
+                                <option>2:00 PM - 3:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-6 w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-md">
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: View Details Modal -->
+    <div id="details-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-60"></div>
+        <div class="modal-content bg-white rounded-lg shadow-xl z-[110] w-11/12 md:max-w-md mx-auto transform -translate-y-10 scale-95">
+            <div class="bg-teal-600 p-4 rounded-t-lg flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Appointment Details</h3>
+                <button class="modal-close text-teal-100 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">Service</p>
+                    <p id="detail-title" class="text-lg font-bold text-gray-900">General Consultation</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase font-semibold">Date</p>
+                        <p id="detail-date" class="text-gray-800">Dec 12, 2024</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase font-semibold">Time</p>
+                        <p id="detail-time" class="text-gray-800">9:30 AM - 10:00 AM</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">Assigned Staff</p>
+                    <p id="detail-doctor" class="text-gray-800">Dr. Richard Nepomuceno</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">Location</p>
+                    <p id="detail-location" class="text-gray-800">Barangay Bahay Toro Health Center, Rm 102</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">Status</p>
+                    <span id="detail-status" class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full bg-teal-100 text-teal-800">Confirmed</span>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-b-lg text-right">
+                <button class="modal-close px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <a href="Homee.html" class="text-3xl font-bold text-white">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="Homee.html" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button class="open-appointment-modal text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="profile.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // --- MOCK DATA & STATE ---
+        let appointments = [
+            {
+                id: 1,
+                title: "General Consultation",
+                date: "Dec 12, 2025",
+                month: "DEC",
+                day: "12",
+                time: "9:30 AM - 10:00 AM",
+                doctor: "Dr. Richard Nepomuceno",
+                location: "Barangay Bahay Toro Health Center, Rm 102",
+                status: "Confirmed",
+                type: "upcoming"
+            },
+            {
+                id: 2,
+                title: "Annual Flu Vaccination",
+                date: "Jan 05, 2026",
+                month: "JAN",
+                day: "05",
+                time: "2:00 PM - 2:30 PM",
+                doctor: "Nurse Josefa Reyes",
+                location: "Vaccination Area (Gymnasium)",
+                status: "Pending",
+                type: "upcoming"
+            },
+            {
+                id: 3,
+                title: "Dental Checkup",
+                date: "Nov 10, 2025",
+                month: "NOV",
+                day: "10",
+                time: "10:00 AM - 11:00 AM",
+                doctor: "Dr. Diane Domondone",
+                location: "Dental Clinic",
+                status: "Completed",
+                type: "history"
+            },
+            {
+                id: 4,
+                title: "Blood Pressure Check",
+                date: "Oct 05, 2025",
+                month: "OCT",
+                day: "05",
+                time: "8:00 AM - 8:15 AM",
+                doctor: "BHW Carlos Manalo",
+                location: "Triage Area",
+                status: "Completed",
+                type: "history"
+            }
+        ];
+
+        let currentTab = 'upcoming';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHeaderDropdown();
+            setupHidingHeader();
+            setupMobileMenu();
+            setupModals();
+            setupBookingForm(); // Initialize booking form logic
+            renderAppointments(); // Initial Render
+        });
+
+        // --- TAB LOGIC ---
+        window.switchAppTab = function(tabName) {
+            currentTab = tabName;
+            
+            // Update UI Classes
+            const tabs = ['upcoming', 'history', 'cancelled'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tabName) {
+                    btn.classList.remove('tab-inactive');
+                    btn.classList.add('tab-active');
+                } else {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                }
+            });
+
+            renderAppointments();
+        }
+
+        // --- RENDER LOGIC ---
+        function renderAppointments() {
+            const container = document.getElementById('appointments-container');
+            const emptyTemplate = document.getElementById('empty-state-template').innerHTML;
+            
+            container.innerHTML = ''; // Clear current content
+
+            // Filter Data
+            const filtered = appointments.filter(app => {
+                if (currentTab === 'upcoming') return app.type === 'upcoming' && app.status !== 'Cancelled';
+                if (currentTab === 'history') return app.type === 'history' && app.status !== 'Cancelled';
+                if (currentTab === 'cancelled') return app.status === 'Cancelled';
+                return false;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = emptyTemplate;
+                return;
+            }
+
+            // Generate HTML for each appointment
+            filtered.forEach(app => {
+                const statusClass = getStatusClass(app.status);
+                const actionButton = getActionButton(app);
+
+                const cardHTML = `
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-200">
+                        <div class="p-6 sm:flex sm:items-center sm:justify-between">
+                            <div class="flex gap-5">
+                                <!-- Date Box -->
+                                <div class="flex flex-col items-center justify-center bg-teal-50 border border-teal-100 rounded-lg w-16 h-16 shrink-0">
+                                    <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">${app.month}</span>
+                                    <span class="text-xl font-bold text-gray-900">${app.day}</span>
+                                </div>
+                                <!-- Details -->
+                                <div>
+                                    <div class="flex items-center gap-3">
+                                        <h3 class="text-lg font-bold text-gray-900">${app.title}</h3>
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusClass}">
+                                            ${app.status}
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">${app.doctor} • <span class="font-medium">${app.time}</span></p>
+                                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        ${app.location}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Actions -->
+                            <div class="mt-4 sm:mt-0 flex gap-3 items-center">
+                                ${actionButton}
+                                <button onclick="viewDetails(${app.id})" class="text-sm font-medium bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Confirmed': return 'bg-teal-100 text-teal-800 border-teal-200';
+                case 'Pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                case 'Completed': return 'bg-gray-100 text-gray-800 border-gray-200';
+                case 'Cancelled': return 'bg-red-100 text-red-800 border-red-200';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getActionButton(app) {
+            if (app.status === 'Confirmed' || app.status === 'Pending') {
+                return `<button onclick="cancelAppointment(${app.id})" class="text-sm font-medium text-gray-500 hover:text-red-600 transition">Cancel</button>`;
+            }
+            return '';
+        }
+
+        // --- ACTION LOGIC ---
+        window.cancelAppointment = function(id) {
+            if(confirm('Are you sure you want to cancel this appointment?')) {
+                const index = appointments.findIndex(a => a.id === id);
+                if (index !== -1) {
+                    appointments[index].status = 'Cancelled';
+                    // Also conceptually moves to 'cancelled' type for our tab filter, 
+                    // though strict 'type' property might stay 'upcoming', our filter checks status first.
+                    renderAppointments();
+                }
+            }
+        }
+
+        window.viewDetails = function(id) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                document.getElementById('detail-title').textContent = app.title;
+                document.getElementById('detail-date').textContent = app.date;
+                document.getElementById('detail-time').textContent = app.time;
+                document.getElementById('detail-doctor').textContent = app.doctor;
+                document.getElementById('detail-location').textContent = app.location;
+                
+                const statusSpan = document.getElementById('detail-status');
+                statusSpan.textContent = app.status;
+                // Use a regex or simple string manipulation to map class name to color for modal badge
+                let colorClass = "";
+                if(app.status === "Confirmed") colorClass = "bg-teal-100 text-teal-800";
+                else if(app.status === "Pending") colorClass = "bg-yellow-100 text-yellow-800";
+                else if(app.status === "Cancelled") colorClass = "bg-red-100 text-red-800";
+                else colorClass = "bg-gray-100 text-gray-800";
+
+                statusSpan.className = `inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${colorClass}`;
+
+                const modal = document.getElementById('details-modal');
+                toggleModal(modal, true);
+            }
+        }
+
+        // --- BOOKING LOGIC ---
+        function setupBookingForm() {
+            const form = document.getElementById('booking-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // Get Values
+                    const service = document.getElementById('service-modal').value;
+                    const dateVal = document.getElementById('date-modal').value; 
+                    const time = document.getElementById('time-modal').value;
+                    
+                    if(service === 'Select a service' || !dateVal || time === 'Select time') {
+                        alert('Please fill in all fields.');
+                        return;
+                    }
+
+                    // Format Date
+                    const dateObj = new Date(dateVal);
+                    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+                    const monthShort = monthNames[dateObj.getMonth()];
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const fullDateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                    // Create Object
+                    const newAppt = {
+                        id: Date.now(),
+                        title: service,
+                        date: fullDateStr,
+                        month: monthShort,
+                        day: day,
+                        time: time,
+                        doctor: "Assigned Staff",
+                        location: "Barangay Bahay Toro Health Center",
+                        status: "Pending",
+                        type: "upcoming"
+                    };
+
+                    // Add & Refresh
+                    appointments.unshift(newAppt);
+                    
+                    // Switch to Upcoming Tab manually
+                    const btn = document.getElementById(`tab-btn-upcoming`);
+                    if(btn) btn.click(); // Trigger switchAppTab via click to ensure UI consistency
+                    else {
+                        currentTab = 'upcoming';
+                        renderAppointments();
+                    }
+                    
+                    // Close Modal & Reset
+                    toggleModal(document.getElementById('appointment-modal'), false);
+                    form.reset();
+                    
+                    alert("Appointment Request Submitted!");
+                });
+            }
+        }
+
+
+        // --- MODAL & HEADER UTILS (Global) ---
+        
+        // IMPORTANT: Made global so other functions can call it
+        window.toggleModal = function(modal, show) {
+            if (!modal) return;
+            const content = modal.querySelector('.modal-content');
+            const body = document.querySelector('body');
+            if (show) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('-translate-y-10', 'scale-95');
+                body.classList.add('modal-active');
+            } else {
+                modal.classList.add('opacity-0');
+                content.classList.add('-translate-y-10', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('pointer-events-none');
+                    if (document.querySelectorAll('.modal:not(.opacity-0)').length === 0) body.classList.remove('modal-active');
+                }, 250);
+            }
+        }
+
+        function setupModals() {
+            const body = document.querySelector('body');
+            const modals = [
+                { id: 'appointment-modal', openClass: '.open-appointment-modal' },
+                { id: 'details-modal', openClass: '' } 
+            ];
+
+            modals.forEach(m => {
+                const modal = document.getElementById(m.id);
+                if (modal) {
+                    if (m.openClass) {
+                        document.querySelectorAll(m.openClass).forEach(btn => {
+                            btn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                toggleModal(modal, true);
+                            });
+                        });
+                    }
+                    modal.querySelectorAll('.modal-close, .modal-overlay').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, false);
+                        });
+                    });
+                }
+            });
+        }
+        
+        function setupHeaderDropdown() {
+            const userMenuBtn = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown-menu');
+
+            if(userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = userDropdown.classList.contains('hidden');
+                    if (isHidden) {
+                        userDropdown.classList.remove('hidden');
+                        setTimeout(() => {
+                            userDropdown.classList.remove('opacity-0', 'scale-95');
+                            userDropdown.classList.add('opacity-100', 'scale-100');
+                        }, 20);
+                    } else {
+                        closeUserDropdown();
+                    }
+                });
+                window.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        closeUserDropdown();
+                    }
+                });
+            }
+            function closeUserDropdown() {
+                if(!userDropdown) return;
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => { userDropdown.classList.add('hidden'); }, 100);
+            }
+        }
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    const icon = menuToggle.querySelector('path');
+                    if(icon) icon.setAttribute('d', isHidden ? 'M4 6h16M4 12h16m-7 6h7' : 'M6 18L18 6M6 6l12 12');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

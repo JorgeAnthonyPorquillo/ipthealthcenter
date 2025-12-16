@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barangay Bahay Toro Health Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        #main-header { position: fixed; top: 0; width: 100%; transition: top 0.3s ease-in-out; z-index: 50; }
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
+        body.modal-active { overflow: hidden; }
+        /* DROPDOWN ANIMATION CLASSES (Standardized) */
+        .dropdown-enter { transition: opacity 0.1s ease-out, transform 0.1s ease-out; opacity: 0; transform: scale(0.95); }
+        .dropdown-enter-active { opacity: 1; transform: scale(1); }
+        .dropdown-leave { transition: opacity 0.075s ease-in, transform 0.075s ease-in; opacity: 1; transform: scale(1); }
+        .dropdown-leave-active { opacity: 0; transform: scale(0.95); transform: translateY(-5px); } /* Added translateY for consistency */
+        .hero-slide { transition: opacity 1.5s ease-in-out; }
+    </style>
+</head>
+<body class="bg-white text-gray-800 pt-[72px]"> 
+    
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain" onerror="this.style.display='none'">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-teal-600 border-b-2 border-teal-600 pb-1 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <div class="flex-shrink-0 flex gap-2 md:gap-4 items-center">
+                
+                <div class="relative hidden lg:block">
+                    <button type="button" id="notification-button" class="p-2 text-gray-500 hover:text-teal-600 hover:bg-teal-50 rounded-full transition-all focus:outline-none relative group">
+                        <span class="sr-only">View notifications</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white hidden"></span>
+                    </button>
+
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 dropdown-enter">
+                        <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-gray-900">Notifications</h3>
+                            <a href="#" class="text-xs text-teal-600 hover:text-teal-700">Mark all as read</a>
+                        </div>
+                        
+                        <div class="max-h-96 overflow-y-auto" id="notification-list">
+                            <div class="p-4 text-center text-sm text-gray-500">Loading...</div>
+                        </div>
+
+                       <a href="#" class="block px-4 py-2 text-xs text-center text-gray-500 hover:text-teal-600 hover:bg-gray-50 font-medium transition">View all notifications</a>
+                    </div>
+                </div>
+
+                <div id="profile-dropdown-container" class="relative hidden lg:block cursor-pointer">
+                    <button type="button" id="user-menu-button" class="flex items-center justify-center rounded-full bg-teal-50 p-1 pl-2 pr-3 hover:ring-2 hover:ring-teal-500 transition focus:outline-none gap-2 border border-teal-100">
+                        <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
+                        <span class="text-sm font-semibold text-gray-700">Juan</span>
+                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div id="user-dropdown-menu" class="hidden absolute right-0 z-50 mt-2 w-64 origin-top-right rounded-xl bg-white py-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dropdown-enter">
+                        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 rounded-t-xl">
+                            <p class="text-xs text-gray-500">Signed in as</p>
+                            <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">juan.delacruz@email.com</p>
+                        </div>
+                        
+                        <a href="user_logged.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 font-semibold bg-gray-50 text-teal-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                            Home
+                        </a>
+                        
+                        <a href="my_appointments.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
+                            My Appointments
+                        </a>
+
+                        <a href="settings.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-.21-.83-.39-1.3-.49-.24-.05-.48-.09-.73-.12-.26-.02-.5-.04-.75-.04-.25 0-.49-.02-.75-.04-.25-.03-.49-.07-.73-.12-.47-.1-.92-.28-1.3-.49L2 10.5h16L11.49 3.17zM9.5 16h1c.08 0 .15.02.2.05l.34-.14a3.5 3.5 0 004.99 0l.34.14c.05-.03.12-.05.2-.05h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1zm-5 0h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Settings
+                        </a>
+                        
+                        <a href="Profile.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                            My Profile
+                        </a>
+                        
+                        <div class="border-t border-gray-100 my-1"></div>
+                        
+                        <a href="#" id="logout-btn" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                            </svg>
+                            Sign out
+                        </a>
+                    </div>
+                </div>
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="bg-teal-50 p-4 flex items-center gap-3 border-b border-teal-100">
+                <img class="h-10 w-10 rounded-full object-cover border border-teal-200" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-800">Juan Dela Cruz</p>
+                    <p class="text-xs text-gray-600">juan.delacruz@email.com</p>
+                </div>
+            </div>
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-teal-600 bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="Profile.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">My Profile</a>
+                <a href="my_appointments.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Appointments</a>
+                <a href="Homee.html" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="flex flex-col md:flex-row bg-teal-50 min-h-[500px]">
+        <div class="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-12 lg:p-16 z-10">
+            <span class="text-teal-700 font-semibold tracking-wider text-sm uppercase flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Barangay Bahay Toro Services
+            </span>
+            <h1 class="text-3xl lg:text-5xl font-extrabold text-gray-900 mt-2 leading-tight">
+                Welcome back, <br>
+                <span class="text-teal-600">Juan!</span>
+            </h1>
+            <p class="text-xl font-medium text-gray-700 mt-6 border-l-4 border-teal-500 pl-4">
+                Barangay Bahay Toro Health Center
+            </p>
+            <p class="text-lg text-gray-600 mt-4 leading-relaxed">
+                Book appointments or view your history anytime. We are dedicated to your well-being.
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                <button class="open-appointment-modal bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-4 rounded-full font-bold text-center hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-xl transform hover:-translate-y-1">
+                    Book Appointment
+                </button>
+                <a href="services.html" class="bg-white text-teal-700 border-2 border-teal-600 px-8 py-4 rounded-full font-bold text-center hover:bg-teal-50 transition duration-300 shadow-md">
+                    View Services
+                </a
+            </div>
+            <p class="text-xs text-gray-500 mt-4 italic">*Services are free for all verified Barangay Bahay Toro residents.</p>
+        </div>
+        <div class="w-full md:w-1/2 relative h-[400px] md:h-auto overflow-hidden">
+            <img src="Images/torohills.png" alt="Health Center Facade" class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100" onerror="this.src='https://placehold.co/800x800/134e4a/ffffff?text=Bahay+Toro+Health+Center'">
+            <img src="Images/bahaytoro1.jpg" alt="Community Outreach" class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" onerror="this.src='https://placehold.co/800x800/115e59/ffffff?text=Community+Care'">
+            <img src="Images/torohc2.jpg" alt="Medical Staff" class="hero-slide w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" onerror="this.src='https://placehold.co/800x800/0f766e/ffffff?text=Our+Dedication'">
+            <div class="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent md:bg-gradient-to-l md:from-transparent md:to-teal-50/100"></div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Latest Announcements</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+             <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://www.reuters.com/resizer/v2/QDYOKJEFTNPZXMX5PWFGAG2Q2Q.jpg" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <span class="text-xs font-bold text-teal-600 uppercase">Event</span>
+                    <h3 class="font-bold text-lg mt-2 mb-2">Free Flu Vaccine Drive</h3>
+                    <p class="text-gray-500 text-sm mb-4">This Saturday at the covered court.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="appointment-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-70"></div>
+        <div class="modal-content bg-white rounded-xl shadow-2xl z-[110] w-11/12 md:max-w-xl mx-auto transform -translate-y-10 scale-95 border-t-4 border-teal-600">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Book an Appointment</h3>
+                <button class="modal-close p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="booking-form" action="#" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="full-name-modal" value="Juan Dela Cruz" readonly class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-sm p-3 text-gray-600 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <input type="tel" id="phone-modal" value="0917-123-4567" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="service-modal" class="block text-sm font-medium text-gray-700">Service Needed</label>
+                            <select id="service-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select a service</option>
+                                <option>General Consultation</option>
+                                <option>Vaccination</option>
+                                <option>Prenatal Checkup</option>
+                                <option>Dental Checkup</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="date-modal" class="block text-sm font-medium text-gray-700">Preferred Date</label>
+                            <input type="date" id="date-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-teal-500 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label for="time-modal" class="block text-sm font-medium text-gray-700">Preferred Time</label>
+                            <select id="time-modal" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white focus:border-teal-500 focus:ring-teal-500">
+                                <option>Select time</option>
+                                <option>8:00 AM - 9:00 AM</option>
+                                <option>9:00 AM - 10:00 AM</option>
+                                <option>10:00 AM - 11:00 AM</option>
+                                <option>1:00 PM - 2:00 PM</option>
+                                <option>2:00 PM - 3:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-6 w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition duration-300 shadow-md">
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHeroSlideshow();
+            setupHidingHeader();
+            setupMobileMenu();
+            setupDropdowns();
+            setupModals();
+            setupBookingRedirect();
+            
+            // --- LOAD REAL NOTIFICATIONS ON START ---
+            loadNotifications();
+            // --- SYNC PROFILE ON START ---
+            syncHeaderProfile(); 
+            // --- SETUP LOGOUT CONFIRMATION ---
+            setupLogoutConfirmation();
+        });
+
+        const API_BASE_URL = 'http://localhost:8080';
+        let userId = localStorage.getItem('userId');
+        if (!userId || userId === 'null') { userId = '1'; localStorage.setItem('userId', '1'); }
+
+        // --- NOTIFICATION LOGIC ---
+        function loadNotifications() {
+            fetch(`${API_BASE_URL}/my-notifications?user_id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        renderNotifications(data.notifications);
+                        updateBadge(data.unread_count);
+                    }
+                })
+                .catch(err => console.error("Notification load error:", err));
+        }
+
+        function renderNotifications(items) {
+            const container = document.getElementById('notification-list');
+            if(!container) return;
+            container.innerHTML = ''; 
+
+            if(items.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">No new notifications</div>';
+                return;
+            }
+
+            items.forEach(item => {
+                let iconBg = item.type === 'success' ? 'bg-teal-100' : 'bg-blue-100';
+                let iconColor = item.type === 'success' ? 'text-teal-600' : 'text-blue-600';
+                let iconSvg = item.type === 'success' 
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />';
+
+                // Format timestamp
+                const dateObj = new Date(item.created_at);
+                const timeAgo = dateObj.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                const html = `
+                <a href="#" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 ${item.is_read ? 'opacity-60 bg-gray-50' : 'bg-blue-50/20'}">
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <div class="h-8 w-8 rounded-full ${iconBg} flex items-center justify-center ${iconColor}">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">${iconSvg}</svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-800 font-medium">${item.title}</p>
+                            <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">${item.message}</p>
+                            <p class="text-[10px] text-gray-400 mt-1">${timeAgo}</p>
+                        </div>
+                    </div>
+                </a>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function updateBadge(count) {
+            const badge = document.querySelector('#notification-button span.absolute');
+            if(badge) {
+                if(count > 0) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        // Mark Read on Click
+        const notifBtn = document.getElementById('notification-button');
+        if(notifBtn) {
+            notifBtn.addEventListener('click', () => {
+                fetch(`${API_BASE_URL}/mark-notifications-read`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                }).then(() => {
+                    updateBadge(0);
+                });
+            });
+        }
+
+        // --- UI & MODAL FUNCTIONS ---
+        function setupHeroSlideshow() {
+            const slides = document.querySelectorAll('.hero-slide');
+            if (slides.length === 0) return;
+            let currentSlide = 0;
+            setInterval(() => {
+                slides[currentSlide].classList.remove('opacity-100');
+                slides[currentSlide].classList.add('opacity-0');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.remove('opacity-0');
+                slides[currentSlide].classList.add('opacity-100');
+            }, 3000);
+        }
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+
+        // --- DROPDOWN SETUP (MODIFIED) ---
+        function setupDropdowns() {
+            const dropdowns = [
+                { btnId: 'user-menu-button', menuId: 'user-dropdown-menu' },
+                { btnId: 'notification-button', menuId: 'notification-dropdown' }
+            ];
+            dropdowns.forEach(dd => {
+                const btn = document.getElementById(dd.btnId);
+                const menu = document.getElementById(dd.menuId);
+                if (btn && menu) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        // Close others
+                        dropdowns.forEach(d => {
+                             if(d.menuId !== dd.menuId) {
+                                 const otherMenu = document.getElementById(d.menuId);
+                                 if(otherMenu) otherMenu.classList.add('hidden');
+                             }
+                        });
+                        
+                        const isHidden = menu.classList.contains('hidden');
+                        if (isHidden) {
+                            menu.classList.remove('hidden');
+                            requestAnimationFrame(() => {
+                                menu.classList.remove('dropdown-leave', 'dropdown-leave-active');
+                                menu.classList.add('dropdown-enter');
+                                requestAnimationFrame(() => menu.classList.add('dropdown-enter-active'));
+                            });
+                        } else {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                    menu.addEventListener('click', (e) => e.stopPropagation());
+                }
+            });
+            window.addEventListener('click', () => {
+                 dropdowns.forEach(d => {
+                     const menu = document.getElementById(d.menuId);
+                     if(menu) menu.classList.add('hidden');
+                 });
+            });
+        }
+        
+        // --- LOGOUT CONFIRMATION (NEW) ---
+        function setupLogoutConfirmation() {
+             const logoutBtn = document.getElementById('logout-btn');
+             if(logoutBtn) {
+                 logoutBtn.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     // Close dropdown before showing modal/alert
+                     const userMenu = document.getElementById('user-dropdown-menu');
+                     if(userMenu) userMenu.classList.add('hidden'); 
+                     
+                     Swal.fire({
+                         title: 'Are you sure you want to log out?',
+                         text: "This action will end your current session.",
+                         icon: 'warning',
+                         showCancelButton: true,
+                         confirmButtonColor: '#DC2626', 
+                         cancelButtonColor: '#6B7280', 
+                         confirmButtonText: 'Log out',
+                         cancelButtonText: 'Cancel',
+                         reverseButtons: true
+                     }).then((result) => {
+                         if (result.isConfirmed) {
+                             Swal.fire({
+                                 title: 'Logging out...',
+                                 icon: 'info',
+                                 showConfirmButton: false,
+                                 timer: 1000
+                             }).then(() => {
+                                 window.location.href = 'Homee.html'; 
+                             });
+                         }
+                     });
+                 });
+             }
+         }
+
+
+        function setupModals() {
+            const modals = [
+                { id: 'appointment-modal', openClass: '.open-appointment-modal' },
+            ];
+            modals.forEach(m => {
+                const modal = document.getElementById(m.id);
+                if (modal) {
+                    const openButtons = document.querySelectorAll(m.openClass);
+                    const closeButtons = modal.querySelectorAll('.modal-close, .modal-overlay');
+                    openButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, true);
+                        });
+                    });
+                    closeButtons.forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            toggleModal(modal, false);
+                        });
+                    });
+                }
+            });
+        }
+
+        function toggleModal(modal, show) {
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            if (show) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modalContent.classList.remove('-translate-y-10', 'scale-95');
+                document.body.classList.add('modal-active');
+            } else {
+                modal.classList.add('opacity-0');
+                modalContent.classList.add('-translate-y-10', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('pointer-events-none');
+                    document.body.classList.remove('modal-active');
+                }, 250);
+            }
+        }
+
+        function setupBookingRedirect() {
+            const form = document.getElementById('booking-form');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.innerHTML;
+                    
+                    const service = document.getElementById('service-modal').value;
+                    const date = document.getElementById('date-modal').value;
+                    const time = document.getElementById('time-modal').value;
+
+                    if (service === "Select a service" || !date || time === "Select time") {
+                        Swal.fire({ icon: 'warning', title: 'Missing Information', text: 'Please fill in all fields.' });
+                        return;
+                    }
+
+                    btn.innerHTML = 'Booking...';
+                    btn.disabled = true;
+
+                    fetch(`${API_BASE_URL}/book-appointment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            patient_id: userId,
+                            appointment_date: date, 
+                            reason: `${service} (${time})` 
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            toggleModal(document.getElementById('appointment-modal'), false); 
+                            Swal.fire({
+                                icon: 'success', title: 'Success!', text: 'Appointment booked! Redirecting...',
+                                timer: 1500, showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = 'my_appointments.html';
+                            });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Failed', text: data.error });
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch Error:', error);
+                        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Is the server running?' });
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    });
+                });
+            }
+        }
+
+        // --- SYNC PROFILE (MODIFIED) ---
+        function syncHeaderProfile() {
+            const userId = localStorage.getItem('userId') || '1';
+            fetch(`http://localhost:8080/get-profile?user_id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const user = data.user;
+                        const defaultImg = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+                        const imgUrl = user.profile_picture || defaultImg;
+                        const firstName = user.first_name || 'Juan'; // Use first name for trigger span
+
+                        // Update Images
+                        document.querySelectorAll('#header-profile-img').forEach(img => {
+                             img.src = imgUrl;
+                        });
+
+                        // Update Name on the dropdown trigger span
+                        document.querySelector('#user-menu-button span').textContent = firstName;
+                        
+                        // Update Dropdown Email
+                        document.querySelector('#user-dropdown-menu #dropdown-user-email').textContent = user.email || 'N/A';
+                        
+                        // Update Mobile Menu Details
+                        document.querySelector('#mobile-menu p.font-bold').textContent = `${user.first_name || 'Juan'} ${user.last_name || 'Dela Cruz'}`;
+                        document.querySelector('#mobile-menu p.text-xs').textContent = user.email || 'N/A';
+
+                    }
+                })
+                .catch(err => console.error("Sync error:", err));
+        }
+    </script>
+</body>
+</html>

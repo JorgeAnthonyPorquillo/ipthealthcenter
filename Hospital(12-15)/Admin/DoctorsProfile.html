@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Doctor Profiles - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Collapsible Sidebar Styles (Matches Admin Dashboard) --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar {
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+            /* Collapsed "mini" state */
+            #sidebar { width: 5rem; z-index: 50; }
+            #main-content { margin-left: 5rem; }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow {
+                display: none; opacity: 0; transition: opacity 0.2s ease-in-out;
+            }
+            .sidebar-link-container, .sidebar-header { justify-content: center; }
+            #content-menu, #user-menu { display: none !important; }
+            
+            /* Expanded "hover" state */
+            #sidebar:hover { width: 16rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+            #sidebar:hover ~ #main-content { margin-left: 5rem; }
+            #sidebar:hover .sidebar-text, 
+            #sidebar:hover .sidebar-header-text, 
+            #sidebar:hover .sidebar-dropdown-arrow {
+                display: inline-block; opacity: 1; transition-delay: 0.1s;
+            }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header { justify-content: flex-start; }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu { display: block !important; }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar { width: 16rem; transform: translateX(-100%); z-index: 60; }
+            #main-content { margin-left: 0; }
+            body.sidebar-open #sidebar { transform: translateX(0); }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: inline-block; opacity: 1; }
+            .sidebar-link-container, .sidebar-header { justify-content: flex-start; }
+            #sidebar-backdrop { transition: opacity 0.3s ease-in-out; }
+            body:not(.sidebar-open) #sidebar-backdrop { opacity: 0; pointer-events: none; }
+            body.sidebar-open #sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+                <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                    </svg>
+                    <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">
+                        Admin
+                    </span>
+                </a>
+                <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <ul class="py-4">
+                    <li>
+                        <a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" />
+                                    <path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" />
+                                    <path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Patient Records</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="MedicalInventory.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Reports</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Inquiries.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Inquiries</span>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Health Statistics</span>
+                    </span>
+                </a>
+            </li>
+                    
+                    <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">
+                        Management
+                    </li>
+                    
+                    <li>
+                        <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                            </span>
+                            <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul id="content-menu" class="hidden bg-gray-700">
+                            <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                            <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                            <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 bg-gray-700 text-white font-semibold">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">User Management</span>
+                            </span>
+                            <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow rotate-180">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul id="user-menu" class="bg-gray-700">
+                             <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-teal-400 font-semibold bg-gray-600 sidebar-text">Staff</a></li>
+                            <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- 2. Header -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">Doctor Profiles</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Add Doctor Button (Desktop Header) -->
+                    <button id="addDoctorBtnHeader" data-modal-target="addDoctorModal" class="hidden md:flex items-center justify-center py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                            <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                        </svg>
+                        Add New Doctor
+                    </button>
+
+                    <!-- Notifications -->
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- User Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            <div class="hidden md:block text-left">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-500 hidden md:block">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 4. Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                 <!-- Mobile Add Doctor Button -->
+                <button data-modal-target="addDoctorModal" class="md:hidden w-full mb-6 flex items-center justify-center py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                    </svg>
+                    Add New Doctor
+                </button>
+
+                <!-- Doctor List View (Initially Visible) -->
+                <div id="doctorListView">
+                    <!-- Filters & Search -->
+                    <section class="bg-white rounded-lg shadow p-4 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 items-end">
+                            <div class="w-full md:w-1/3">
+                                <label for="filterSpecialty" class="text-sm font-medium text-gray-700 block mb-1">Specialty</label>
+                                <select id="filterSpecialty" class="w-full py-2 px-3 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500">
+                                    <option value="all">All Specialties</option>
+                                    <option value="Endocrinology">Endocrinology</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="General Practitioner">General Practitioner</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                </select>
+                            </div>
+                            <div class="w-full md:w-2/3">
+                                <label for="searchDoctorInput" class="text-sm font-medium text-gray-700 block mb-1">Search Doctor</label>
+                                <input type="search" id="searchDoctorInput" class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500" placeholder="Search by name...">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Doctor Grid -->
+                    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="doctorGrid">
+                        <!-- JS populated -->
+                        <p class="text-gray-500 text-center col-span-full">Loading doctors...</p>
+                    </section>
+                </div>
+
+                <!-- Doctor Profile View (Initially Hidden) -->
+                <div id="doctorProfileView" class="hidden">
+                    <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm mb-6 flex items-center" id="backToListBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                        </svg>
+                        Back to List
+                    </button>
+
+                    <section class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row md:items-start border-t-4 border-teal-500 mb-6 gap-6">
+                         <div class="flex-shrink-0">
+                            <img src="https://placehold.co/120x120/EBF8FF/4299E1?text=EC" alt="Doctor Avatar" id="profileAvatar" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md">
+                         </div>
+                         <div class="flex-grow">
+                             <h2 class="text-3xl font-bold text-gray-900 mb-1" id="profileName">Dr. Emily Chen</h2>
+                             <p class="text-xl font-medium text-teal-600 mb-4" id="profileSpecialty">Endocrinology</p>
+                             <div class="text-gray-600 text-sm space-y-2">
+                                 <div id="profileEmailContainer" class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>
+                                    <span id="profileEmail">echen@example.com</span>
+                                 </div>
+                                  <div id="profilePhoneContainer" class="flex items-center gap-2">
+                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-500"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.211-1.007-.568-1.365l-2.401-2.401c-.34-.34-.812-.469-1.244-.4-1.06.06-2.115.09-3.185.09h-.624c-.311 0-.614-.02-.915-.06-1.033-.13-2.01-.42-2.91-.855-.388-.18-.806-.24-1.228-.21-1.28.06-2.51.3-3.66.69-1.14.39-2.31.88-3.32 1.45l-.03.02c-.51.302-.914.73-1.19 1.225-.27.49-.41.103-.41.15v1.372c0 1.243 1.007 2.25 2.25 2.25h2.25Z" /></svg>
+                                    <span id="profilePhone">0917-xxx-xxxx</span>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
+                             <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium" id="viewScheduleBtn">View Schedule</button>
+                             <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium" id="assignPatientBtn">Assign Patient</button>
+                             <button class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition shadow-sm font-medium" id="profileEditBtn">Edit Profile</button>
+                         </div>
+                    </section>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                         <!-- Column 1: Schedule -->
+                         <div class="bg-white rounded-lg shadow lg:col-span-2">
+                             <div class="p-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">Weekly Availability</h3>
+                             </div>
+                             <div class="p-4">
+                                <div id="profileScheduleGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                                    <p class="text-gray-500 col-span-full">Loading schedule...</p>
+                                </div>
+                             </div>
+                         </div>
+                         <!-- Column 2: Assigned Patients -->
+                          <div class="bg-white rounded-lg shadow lg:col-span-1">
+                             <div class="p-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">Assigned Patients</h3>
+                             </div>
+                             <div class="p-4 space-y-3" id="profileAssignedPatients">
+                                <p class="text-gray-500 text-sm">No patients currently assigned.</p>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- === Add Doctor Modal === -->
+    <div id="addDoctorModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <form id="addDoctorForm">
+                <div class="p-5 border-b flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-teal-800">Add New Doctor</h3>
+                    <button type="button" class="p-2 text-gray-400 hover:text-gray-600" data-modal-close="addDoctorModal">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto max-h-[70vh] space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-full">
+                            <label for="addDoctorName" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                            <input type="text" id="addDoctorName" name="doctorName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                        </div>
+                        <div>
+                            <label for="addSpecialty" class="block text-sm font-medium text-gray-700 mb-1">Specialty *</label>
+                            <input type="text" id="addSpecialty" name="specialty" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., General Practitioner" required>
+                        </div>
+                         <div>
+                            <label for="addLicense" class="block text-sm font-medium text-gray-700 mb-1">License No.</label>
+                            <input type="text" id="addLicense" name="licenseNo" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div>
+                            <label for="addEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="addEmail" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div>
+                            <label for="addPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="addPhone" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div class="col-span-full">
+                             <label for="addAvatarUrl" class="block text-sm font-medium text-gray-700 mb-1">Avatar Image URL</label>
+                             <input type="url" id="addAvatarUrl" name="avatarUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" placeholder="https://placehold.co/120x120/EBF8FF/4299E1">
+                         </div>
+                         <div class="col-span-full">
+                             <label for="scheduleNotes" class="block text-sm font-medium text-gray-700 mb-1">Simple Schedule</label>
+                             <input type="text" id="scheduleNotes" name="scheduleNotes" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" placeholder="Mon: 9am-5pm, Wed: 9am-12pm">
+                         </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" data-modal-close="addDoctorModal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">Add Doctor</button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+     <!-- === Edit Doctor Modal === -->
+    <div id="editDoctorModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <form id="editDoctorForm">
+                 <input type="hidden" id="editDoctorId" name="doctorId">
+                <div class="p-5 border-b flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-teal-800">Edit Doctor Profile</h3>
+                    <button type="button" class="p-2 text-gray-400 hover:text-gray-600" data-modal-close="editDoctorModal">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                 <div class="p-6 overflow-y-auto max-h-[70vh] space-y-4">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-full">
+                            <label for="editDoctorName" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                            <input type="text" id="editDoctorName" name="doctorName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                        </div>
+                        <div>
+                            <label for="editSpecialty" class="block text-sm font-medium text-gray-700 mb-1">Specialty *</label>
+                            <input type="text" id="editSpecialty" name="specialty" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                        </div>
+                         <div>
+                            <label for="editLicense" class="block text-sm font-medium text-gray-700 mb-1">License No.</label>
+                            <input type="text" id="editLicense" name="licenseNo" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div>
+                            <label for="editEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="editEmail" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div>
+                            <label for="editPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="editPhone" name="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div class="col-span-full">
+                             <label for="editAvatarUrl" class="block text-sm font-medium text-gray-700 mb-1">Avatar Image URL</label>
+                             <input type="url" id="editAvatarUrl" name="avatarUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                         </div>
+                         <div class="col-span-full">
+                             <label for="editScheduleNotes" class="block text-sm font-medium text-gray-700 mb-1">Simple Schedule</label>
+                             <input type="text" id="editScheduleNotes" name="scheduleNotes" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                         </div>
+                    </div>
+                 </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-between space-x-2 rounded-b-xl">
+                     <button type="button" class="px-4 py-2 bg-red-100 text-red-700 border border-red-200 rounded-lg hover:bg-red-200" id="deleteDoctorBtn">Delete Doctor</button>
+                     <div class="flex space-x-2">
+                        <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" data-modal-close="editDoctorModal">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">Save Changes</button>
+                     </div>
+                </div>
+             </form>
+        </div>
+    </div>
+
+    <!-- === View Schedule Modal === -->
+    <div id="viewScheduleModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <div class="p-5 border-b flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-teal-800">Doctor's Schedule</h3>
+                <button type="button" class="p-2 text-gray-400 hover:text-gray-600" data-modal-close="viewScheduleModal">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-lg font-semibold mb-2" id="scheduleModalDoctorName">Dr. Name</p>
+                <p class="text-sm text-gray-600 mb-4">Detailed Availability:</p>
+                <pre id="scheduleModalDetails" class="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm text-gray-700" style="white-space: pre-wrap; font-family: 'Inter', sans-serif;">Mon: 9am-5pm</pre>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end rounded-b-xl">
+                <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" data-modal-close="viewScheduleModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+     <!-- === Assign Patient Modal === -->
+    <div id="assignPatientModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+             <form id="assignPatientForm">
+                <input type="hidden" id="assignDoctorId" name="doctorId">
+                <div class="p-5 border-b flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-teal-800">Assign Patient</h3>
+                    <button type="button" class="p-2 text-gray-400 hover:text-gray-600" data-modal-close="assignPatientModal">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="text-sm text-gray-600">Assign a patient to <strong id="assignDoctorName" class="text-gray-900">Doctor Name</strong>.</p>
+                     <div>
+                        <label for="assignPatientSelect" class="block text-sm font-medium text-gray-700 mb-1">Select Patient *</label>
+                        <select id="assignPatientSelect" name="patientId" class="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                            <option value="">Select a patient...</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="assignNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                        <textarea id="assignNotes" name="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" placeholder="Reason for assignment..."></textarea>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" data-modal-close="assignPatientModal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">Assign Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- === Delete Confirmation Modal === -->
+    <div id="deleteConfirmModal" class="modal fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-sm bg-white rounded-xl shadow-2xl border-t-4 border-red-600">
+            <input type="hidden" id="deleteDoctorIdValue">
+            <div class="p-5 border-b text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">Confirm Deletion</h3>
+            </div>
+            <div class="p-6 text-center">
+                <p class="text-gray-700">Are you sure you want to permanently remove <strong id="deleteDoctorName" class="text-gray-900">Doctor Name</strong>?</p>
+                <p class="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-between space-x-2 rounded-b-xl">
+                <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" data-modal-close="deleteConfirmModal">Cancel</button>
+                <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700" id="confirmDeleteDoctorBtn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Sample Data ---
+             let doctorsData = [
+                { id: 1, name: 'Dr. Emily Chen', specialty: 'Endocrinology', email: 'echen@example.com', phone: '0917-111-2222', avatar: 'https://placehold.co/120x120/EBF8FF/4299E1?text=EC', license: '12345', schedule: { Mon: '9am-5pm', Tue: '9am-5pm', Wed: '9am-12pm', Thu: '9am-5pm', Fri: '1pm-5pm', Sat: 'Off', Sun: 'Off'}, patients: ['Liza Gomez', 'John Doe'] },
+                { id: 2, name: 'Dr. Jose Reyes', specialty: 'Cardiology', email: 'jreyes@example.com', phone: '0918-222-3333', avatar: 'https://placehold.co/120x120/E2E8F0/1A2B48?text=JR', license: '67890', schedule: { Mon: '1pm-5pm', Tue: 'Off', Wed: '9am-5pm', Thu: '9am-5pm', Fri: '9am-12pm', Sat: 'Off', Sun: 'Off'}, patients: ['Mark Perez', 'Sofia Ramos'] },
+                { id: 3, name: 'Dr. Maria Cruz', specialty: 'General Practitioner', email: 'mcruz@example.com', phone: '0919-333-4444', avatar: 'https://placehold.co/120x120/FED7D7/C53030?text=MC', license: '11223', schedule: { Mon: '9am-5pm', Tue: '9am-1pm', Wed: 'Off', Thu: '1pm-5pm', Fri: '9am-5pm', Sat: '9am-12pm', Sun: 'Off'}, patients: ['Maria Santos', 'Carlos David'] },
+                { id: 4, name: 'Dr. Carlos David', specialty: 'Pediatrics', email: 'cdavid@example.com', phone: '0920-444-5555', avatar: 'https://placehold.co/120x120/FEFCBF/B7791F?text=CD', license: '44556', schedule: { Mon: '9am-12pm', Tue: '9am-5pm', Wed: '1pm-5pm', Thu: '9am-12pm', Fri: 'Off', Sat: 'Off', Sun: 'Off'}, patients: ['Anna Jimenez'] },
+                { id: 5, name: 'Dr. Anna Jimenez', specialty: 'General Practitioner', email: 'ajimenez@example.com', phone: '0921-555-6666', avatar: 'https://placehold.co/120x120/FEE2E2/DC2626?text=AJ', license: '55667', schedule: { Mon: 'Off', Tue: '1pm-5pm', Wed: '9am-1pm', Thu: 'Off', Fri: '9am-5pm', Sat: 'Off', Sun: 'Off'}, patients: [] },
+                { id: 6, name: 'Dr. Ben Santos', specialty: 'Cardiology', email: 'bsantos@example.com', phone: '0922-666-7777', avatar: 'https://placehold.co/120x120/DBEAFE/1D4ED8?text=BS', license: '77889', schedule: { Mon: '9am-12pm', Tue: '9am-12pm', Wed: 'Off', Thu: '1pm-5pm', Fri: '1pm-5pm', Sat: 'Off', Sun: 'Off'}, patients: ['Jane Smith'] },
+                { id: 7, name: 'Dr. Sofia Garcia', specialty: 'Pediatrics', email: 'sgarcia@example.com', phone: '0923-777-8888', avatar: 'https://placehold.co/120x120/FCE7F3/DB2777?text=SG', license: '99001', schedule: { Mon: '1pm-5pm', Tue: 'Off', Wed: '9am-12pm', Thu: '9am-5pm', Fri: '9am-1pm', Sat: 'Off', Sun: 'Off'}, patients: [] },
+                { id: 8, name: 'Dr. Michael Lim', specialty: 'Endocrinology', email: 'mlim@example.com', phone: '0925-888-9999', avatar: 'https://placehold.co/120x120/D1FAE5/047857?text=ML', license: '11234', schedule: { Mon: 'Off', Tue: '9am-5pm', Wed: '1pm-5pm', Thu: 'Off', Fri: '9am-5pm', Sat: '9am-1pm', Sun: 'Off'}, patients: [] },
+            ];
+
+             const patientOptions = [
+                 { id: 'PT005678', name: 'Liza Gomez'},
+                 { id: 'PT001122', name: 'Mark Perez'},
+                 { id: 'PT009988', name: 'Sofia Ramos'},
+                 { id: 'PT001235', name: 'Maria Santos'},
+                 { id: 'PT001234', name: 'John Doe'},
+                 { id: 'PT003344', name: 'Carlos David'},
+                 { id: 'PT007766', name: 'Anna Jimenez'},
+                 { id: 'PT008877', name: 'Jane Smith'}
+            ];
+
+            // --- DOM Elements ---
+            const doctorListView = document.getElementById('doctorListView');
+            const doctorProfileView = document.getElementById('doctorProfileView');
+            const doctorGrid = document.getElementById('doctorGrid');
+            const backToListBtn = document.getElementById('backToListBtn');
+            const addDoctorBtnHeader = document.getElementById('addDoctorBtnHeader');
+            const addDoctorForm = document.getElementById('addDoctorForm');
+            const editDoctorForm = document.getElementById('editDoctorForm');
+            const filterSpecialty = document.getElementById('filterSpecialty');
+            const searchDoctorInput = document.getElementById('searchDoctorInput');
+            const profileEditBtn = document.getElementById('profileEditBtn');
+            const deleteDoctorBtn = document.getElementById('deleteDoctorBtn');
+            const confirmDeleteDoctorBtn = document.getElementById('confirmDeleteDoctorBtn');
+            const viewScheduleBtn = document.getElementById('viewScheduleBtn');
+            const assignPatientBtn = document.getElementById('assignPatientBtn');
+            const assignPatientForm = document.getElementById('assignPatientForm');
+
+            // --- State ---
+            let currentDoctorId = null;
+
+            // --- Sidebar Toggle Logic ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) {
+                sidebarOpenBtn.addEventListener('click', () => {
+                    document.body.classList.add('sidebar-open');
+                });
+            }
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+            if (sidebarBackdrop) {
+                sidebarBackdrop.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+
+            // --- Dropdown Menu Logic (Sidebar) ---
+            function setupDropdown(toggleId, menuId, arrowId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                const arrow = document.getElementById(arrowId);
+
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault(); 
+                        if (window.innerWidth < 1024) {
+                            menu.classList.toggle('hidden');
+                            if (arrow) arrow.classList.toggle('rotate-180');
+                        }
+                    });
+
+                    if (window.innerWidth >= 1024) {
+                        const listItem = toggle.closest('li');
+                        listItem.addEventListener('mouseenter', () => {
+                             if (sidebar.matches(':hover')) menu.classList.remove('hidden');
+                        });
+                        listItem.addEventListener('mouseleave', () => {
+                             menu.classList.add('hidden');
+                        });
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu', 'content-arrow');
+            setupDropdown('user-toggle', 'user-menu', 'user-arrow');
+
+            // --- Profile Dropdown Logic ---
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => {
+                    profileMenu.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- Modal Functions (Standardized) ---
+            function setupModals() {
+                const modalTriggers = document.querySelectorAll('[data-modal-target]');
+                const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+                
+                modalTriggers.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modalId = button.getAttribute('data-modal-target');
+                        const modal = document.getElementById(modalId);
+                        if (modal) {
+                            modal.classList.remove('hidden');
+                            modal.classList.add('flex');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    });
+                });
+
+                modalCloseButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modalId = button.getAttribute('data-modal-close');
+                        const modal = document.getElementById(modalId);
+                        if (modal) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            if (!document.querySelector('.modal.flex')) {
+                                document.body.style.overflow = 'auto';
+                            }
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            if (!document.querySelector('.modal.flex')) {
+                                document.body.style.overflow = 'auto';
+                            }
+                        }
+                    });
+                });
+            }
+            setupModals();
+
+            // Explicit Open/Close for dynamic calls
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            // --- View Switching ---
+            function showListView() {
+                doctorListView.classList.remove('hidden');
+                doctorProfileView.classList.add('hidden');
+                currentDoctorId = null; 
+                if (addDoctorBtnHeader) addDoctorBtnHeader.classList.remove('hidden');
+            }
+
+            function showProfileView(doctorId) {
+                currentDoctorId = doctorId;
+                renderDoctorProfile(doctorId); 
+                doctorListView.classList.add('hidden');
+                doctorProfileView.classList.remove('hidden');
+                if (addDoctorBtnHeader) addDoctorBtnHeader.classList.add('hidden');
+            }
+
+            // --- Render Logic ---
+            function renderDoctorList(doctors) {
+                if (!doctorGrid) return;
+                doctorGrid.innerHTML = ''; 
+
+                 if (doctors.length === 0) {
+                     doctorGrid.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">No doctors found matching your criteria.</p>';
+                     return;
+                 }
+
+                doctors.forEach(doc => {
+                    const card = document.createElement('div');
+                    card.classList.add('bg-white', 'rounded-xl', 'shadow', 'p-6', 'flex', 'flex-col', 'items-center', 'text-center', 'hover:shadow-lg', 'transition', 'duration-200', 'border', 'border-gray-200');
+                    card.dataset.doctorId = doc.id; 
+                    card.innerHTML = `
+                        <div class="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-gray-100">
+                            <img src="${doc.avatar}" alt="${doc.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/E2E8F0/1A2B48?text=Dr'">
+                        </div>
+                        <div class="font-bold text-lg text-gray-900 mb-1">${doc.name}</div>
+                        <div class="text-sm text-gray-500 mb-4">${doc.specialty}</div>
+                        <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition view-profile-btn">View Profile</button>
+                    `;
+                    doctorGrid.appendChild(card);
+                });
+
+                document.querySelectorAll('.view-profile-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const card = e.target.closest('div[data-doctor-id]');
+                        const docId = card.dataset.doctorId;
+                        showProfileView(parseInt(docId));
+                    });
+                });
+            }
+
+            function renderDoctorProfile(doctorId) {
+                 const doc = doctorsData.find(d => d.id === doctorId);
+                 if (!doc) {
+                     showListView();
+                     return;
+                 }
+
+                 document.getElementById('profileAvatar').src = doc.avatar;
+                 document.getElementById('profileName').textContent = doc.name;
+                 document.getElementById('profileSpecialty').textContent = doc.specialty;
+                 document.getElementById('profileEmail').textContent = doc.email || 'N/A';
+                 document.getElementById('profilePhone').textContent = doc.phone || 'N/A';
+
+                const scheduleGrid = document.getElementById('profileScheduleGrid');
+                scheduleGrid.innerHTML = '';
+                const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                
+                daysOfWeek.forEach(day => {
+                    const availability = doc.schedule ? doc.schedule[day] : 'Off';
+                    const isAvailable = availability && availability !== 'Off';
+                    const dayDiv = document.createElement('div');
+                    
+                    dayDiv.className = `p-3 rounded-lg border text-center ${isAvailable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`;
+                    
+                    dayDiv.innerHTML = `
+                        <div class="text-xs font-bold text-gray-500 uppercase mb-1">${day}</div>
+                        <div class="text-sm font-medium text-gray-900">${availability || 'N/A'}</div>
+                    `;
+                    scheduleGrid.appendChild(dayDiv);
+                });
+
+                const patientList = document.getElementById('profileAssignedPatients');
+                patientList.innerHTML = '';
+                if (doc.patients && doc.patients.length > 0) {
+                     doc.patients.forEach(patientName => {
+                         const patientItem = document.createElement('div');
+                         patientItem.className = 'flex justify-between items-center py-2 border-b border-gray-100 last:border-0';
+                         patientItem.innerHTML = `
+                            <div>
+                                <div class="font-medium text-gray-900">${patientName}</div>
+                                <div class="text-xs text-gray-500">Next Checkup: Nov 28</div>
+                            </div>
+                            <button class="text-xs text-teal-600 hover:text-teal-800 font-medium">View</button>
+                         `;
+                         patientList.appendChild(patientItem);
+                     });
+                } else {
+                     patientList.innerHTML = '<p class="text-gray-500 text-sm italic">No patients currently assigned.</p>';
+                }
+            }
+
+            // --- Logic ---
+            function filterAndRenderDoctors() {
+                const specialtyFilter = filterSpecialty.value;
+                const searchTerm = searchDoctorInput.value.toLowerCase();
+
+                const filteredDoctors = doctorsData.filter(doc => {
+                    const specialtyMatch = specialtyFilter === 'all' || doc.specialty === specialtyFilter;
+                    const nameMatch = searchTerm === '' || doc.name.toLowerCase().includes(searchTerm);
+                    return specialtyMatch && nameMatch;
+                });
+                renderDoctorList(filteredDoctors);
+            }
+
+             function populateEditDoctorModal(doctorId) {
+                 const doc = doctorsData.find(d => d.id === doctorId);
+                 if (!doc) return;
+                 document.getElementById('editDoctorId').value = doc.id;
+                 document.getElementById('editDoctorName').value = doc.name;
+                 document.getElementById('editSpecialty').value = doc.specialty;
+                 document.getElementById('editLicense').value = doc.license || '';
+                 document.getElementById('editEmail').value = doc.email || '';
+                 document.getElementById('editPhone').value = doc.phone || '';
+                 document.getElementById('editAvatarUrl').value = doc.avatar || '';
+                 
+                 const scheduleNotes = Object.entries(doc.schedule || {})
+                     .filter(([day, time]) => time !== 'Off')
+                     .map(([day, time]) => `${day}: ${time}`).join(', ');
+                 document.getElementById('editScheduleNotes').value = scheduleNotes;
+
+                 openModal('editDoctorModal');
+             }
+
+             function populateScheduleModal(doctorId) {
+                 const doc = doctorsData.find(d => d.id === doctorId);
+                 if (!doc) return;
+                 document.getElementById('scheduleModalDoctorName').textContent = doc.name;
+                 const scheduleText = Object.entries(doc.schedule || {})
+                     .map(([day, time]) => `${day}: ${time || 'Off'}`)
+                     .join('\n');
+                 document.getElementById('scheduleModalDetails').textContent = scheduleText;
+                 openModal('viewScheduleModal');
+             }
+
+             function populateAssignPatientModal(doctorId) {
+                 const doc = doctorsData.find(d => d.id === doctorId);
+                 if (!doc) return;
+                 document.getElementById('assignDoctorId').value = doc.id;
+                 document.getElementById('assignDoctorName').textContent = doc.name;
+
+                 const select = document.getElementById('assignPatientSelect');
+                 select.innerHTML = '<option value="">Select a patient...</option>'; 
+                 patientOptions.forEach(p => {
+                     const option = document.createElement('option');
+                     option.value = p.id;
+                     option.textContent = `${p.name} (${p.id})`;
+                     select.appendChild(option);
+                 });
+
+                 openModal('assignPatientModal');
+             }
+
+            function populateDeleteDoctorModal(doctorId) {
+                 const doc = doctorsData.find(d => d.id === doctorId);
+                 if (!doc) return;
+                 document.getElementById('deleteDoctorIdValue').value = doc.id;
+                 document.getElementById('deleteDoctorName').textContent = doc.name;
+                 openModal('deleteConfirmModal');
+            }
+
+            // --- Event Listeners ---
+            if (backToListBtn) backToListBtn.addEventListener('click', showListView);
+            if (filterSpecialty) filterSpecialty.addEventListener('change', filterAndRenderDoctors);
+            if (searchDoctorInput) searchDoctorInput.addEventListener('input', filterAndRenderDoctors);
+
+            if (addDoctorForm) {
+                addDoctorForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(addDoctorForm);
+                    const newDoctor = Object.fromEntries(formData.entries());
+                    newDoctor.id = Date.now();
+                    newDoctor.patients = [];
+                    newDoctor.schedule = { Mon: 'Off', Tue: 'Off', Wed: 'Off', Thu: 'Off', Fri: 'Off', Sat: 'Off', Sun: 'Off' };
+                    
+                    if(newDoctor.scheduleNotes) {
+                        const parts = newDoctor.scheduleNotes.split(',').map(s => s.trim());
+                        parts.forEach(part => {
+                            const [day, time] = part.split(':').map(s => s.trim());
+                            const shortDay = day?.substring(0,3);
+                            if(shortDay && time) newDoctor.schedule[shortDay] = time;
+                        });
+                    }
+                    if(!newDoctor.avatarUrl) newDoctor.avatar = 'https://placehold.co/120x120/E2E8F0/1A2B48?text=Dr'; // Fallback
+                    else newDoctor.avatar = newDoctor.avatarUrl;
+
+                    doctorsData.push(newDoctor);
+                    closeModal('addDoctorModal');
+                    filterAndRenderDoctors();
+                    e.target.reset();
+                });
+            }
+
+            if (profileEditBtn) {
+                 profileEditBtn.addEventListener('click', () => {
+                     if (currentDoctorId) populateEditDoctorModal(currentDoctorId);
+                 });
+            }
+
+             if (editDoctorForm) {
+                 editDoctorForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(editDoctorForm);
+                    const updatedData = Object.fromEntries(formData.entries());
+                    const docId = parseInt(updatedData.doctorId);
+
+                     doctorsData = doctorsData.map(doc => {
+                         if (doc.id === docId) {
+                             let updatedSchedule = { Mon: 'Off', Tue: 'Off', Wed: 'Off', Thu: 'Off', Fri: 'Off', Sat: 'Off', Sun: 'Off' };
+                             if(updatedData.scheduleNotes) {
+                                const parts = updatedData.scheduleNotes.split(',').map(s => s.trim());
+                                parts.forEach(part => {
+                                    const [day, time] = part.split(':').map(s => s.trim());
+                                    const shortDay = day?.substring(0,3);
+                                     if(shortDay && time) updatedSchedule[shortDay] = time;
+                                });
+                             }
+                             return {
+                                 ...doc,
+                                 name: updatedData.doctorName,
+                                 specialty: updatedData.specialty,
+                                 license: updatedData.licenseNo,
+                                 email: updatedData.email,
+                                 phone: updatedData.phone,
+                                 avatar: updatedData.avatarUrl || doc.avatar,
+                                 schedule: updatedSchedule
+                             };
+                         }
+                         return doc;
+                     });
+                     closeModal('editDoctorModal');
+                     if(currentDoctorId === docId) renderDoctorProfile(docId);
+                     filterAndRenderDoctors();
+                 });
+             }
+
+             if (deleteDoctorBtn) {
+                 deleteDoctorBtn.addEventListener('click', () => {
+                     const docId = parseInt(document.getElementById('editDoctorId').value);
+                     if (docId) {
+                         closeModal('editDoctorModal');
+                         populateDeleteDoctorModal(docId);
+                     }
+                 });
+             }
+
+             if (confirmDeleteDoctorBtn) {
+                 confirmDeleteDoctorBtn.addEventListener('click', () => {
+                     const docId = parseInt(document.getElementById('deleteDoctorIdValue').value);
+                     doctorsData = doctorsData.filter(doc => doc.id !== docId);
+                     closeModal('deleteConfirmModal');
+                     showListView();
+                     filterAndRenderDoctors();
+                 });
+             }
+
+             if(viewScheduleBtn) {
+                 viewScheduleBtn.addEventListener('click', () => {
+                      if (currentDoctorId) populateScheduleModal(currentDoctorId);
+                 });
+             }
+
+             if(assignPatientBtn) {
+                 assignPatientBtn.addEventListener('click', () => {
+                      if (currentDoctorId) populateAssignPatientModal(currentDoctorId);
+                 });
+             }
+             
+             if(assignPatientForm) {
+                 assignPatientForm.addEventListener('submit', (e) => {
+                     e.preventDefault();
+                     const formData = new FormData(assignPatientForm);
+                     const data = Object.fromEntries(formData.entries());
+                     const docId = parseInt(data.doctorId);
+                     const patientId = data.patientId;
+                     const patientName = patientOptions.find(p => p.id === patientId)?.name || 'Unknown Patient';
+
+                      doctorsData = doctorsData.map(doc => {
+                         if (doc.id === docId) {
+                             if (!doc.patients) doc.patients = [];
+                             if (!doc.patients.includes(patientName)) {
+                                 doc.patients.push(patientName);
+                             }
+                         }
+                         return doc;
+                      });
+                     closeModal('assignPatientModal');
+                      if(currentDoctorId === docId) renderDoctorProfile(docId);
+                 });
+             }
+
+            // --- Initial Load ---
+            showListView();
+            filterAndRenderDoctors();
+        });
+    </script>
+</body>
+</html>

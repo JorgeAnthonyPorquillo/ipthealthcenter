@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Appointments - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    <!-- Load FullCalendar -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Collapsible Sidebar Styles (Copied from Dashboard) --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar {
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+            /* Collapsed "mini" state (DEFAULT) */
+            #sidebar {
+                width: 5rem; /* w-20 */
+                z-index: 50; /* On top */
+            }
+            #main-content {
+                margin-left: 5rem; /* ml-20 */
+            }
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: none;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+            }
+            .sidebar-link-container, .sidebar-header {
+                justify-content: center;
+            }
+            #content-menu, #user-menu {
+                display: none !important; /* Force hide submenus when mini */
+            }
+            .sidebar-header a svg {
+                width: 2rem; /* w-8 */
+                height: 2rem; /* h-8 */
+            }
+
+            /* Expanded "hover" state */
+            #sidebar:hover {
+                width: 16rem; /* w-64 */
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            #sidebar:hover ~ #main-content {
+                margin-left: 5rem; /* Stays w-20 */
+            }
+            #sidebar:hover .sidebar-text,
+            #sidebar:hover .sidebar-header-text,
+            #sidebar:hover .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+                transition-delay: 0.1s; /* Fade in slightly after expand */
+            }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header {
+                justify-content: flex-start;
+            }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu {
+                display: block !important;
+            }
+            #sidebar:hover .sidebar-header a svg {
+                width: 2rem; /* w-8 */
+                height: 2rem; /* h-8 */
+            }
+        }
+
+        @media (max-width: 1023px) {
+            /* Sidebar is always full-width but off-screen */
+            #sidebar {
+                width: 16rem; /* w-64 */
+                transform: translateX(-100%);
+                z-index: 60; /* Higher z-index for mobile overlay */
+            }
+            #main-content {
+                margin-left: 0;
+            }
+            body.sidebar-open #sidebar {
+                transform: translateX(0);
+            }
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+            }
+            .sidebar-link-container, .sidebar-header {
+                justify-content: flex-start;
+            }
+            #sidebar-backdrop {
+                transition: opacity 0.3s ease-in-out;
+            }
+            body:not(.sidebar-open) #sidebar-backdrop {
+                opacity: 0;
+                pointer-events: none;
+            }
+            body.sidebar-open #sidebar-backdrop {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+        /* --- End Sidebar Styles --- */
+
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* FullCalendar Customization */
+        :root {
+            --fc-border-color: #e5e7eb;
+            --fc-daygrid-event-dot-width: 8px;
+            --fc-list-event-dot-width: 10px;
+            --fc-list-event-hover-bg-color: #f3f4f6;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .fc .fc-button-primary {
+            background-color: #0d9488; /* teal-600 */
+            border-color: #0d9488;
+        }
+        .fc .fc-button-primary:hover, .fc .fc-button-primary:active {
+            background-color: #0f766e !important; /* teal-700 */
+            border-color: #0f766e !important;
+        }
+        .fc .fc-daygrid-day.fc-day-today {
+            background-color: #f0fdfa; /* teal-50 */
+        }
+        .fc .fc-event {
+            cursor: pointer;
+            border: none !important;
+            padding: 4px 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Custom Event Colors */
+        .fc-event-consultation {
+            background-color: #0d9488 !important; /* teal-600 */
+            color: #ffffff !important;
+        }
+        .fc-event-prenatal {
+            background-color: #0369a1 !important; /* sky-700 */
+            color: #ffffff !important;
+        }
+        .fc-event-dental {
+            background-color: #c026d3 !important; /* fuchsia-600 */
+            color: #ffffff !important;
+        }
+        .fc-event-vaccination {
+            background-color: #db2777 !important; /* pink-600 */
+            color: #ffffff !important;
+        }
+
+
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Global Admin Layout -->
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+    
+    <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+        <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+            <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">
+                Admin
+            </span>
+        </a>
+        <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+        <ul class="py-4">
+            
+            <li>
+                <a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Appointment.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" />
+                            <path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" />
+                            <path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Patient Records</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="MedicalInventory.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Reports</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Inquiries.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6-.82c.046-.28.076-.564.076-.858 0-2.24-1.99-4.05-4.442-4.05-2.452 0-4.442 1.81-4.442 4.05 0 .294.03.578.076.858a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inquiries</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Health Statistics</span>
+                    </span>
+                </a>
+            </li>
+            
+            <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">
+                Management
+            </li>
+            
+            <li>
+                <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                    </span>
+                    <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="content-menu" class="hidden bg-gray-700">
+                    <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                    <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                    <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">User Management</span>
+                    </span>
+                    <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="user-menu" class="hidden bg-gray-700">
+                    <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                    <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- 2. Header -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <!-- Mobile Menu Toggle (lg:hidden) -->
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <!-- Page Title -->
+                <div class="">
+                    <h1 class="text-xl font-semibold text-gray-800">Appointments</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Schedule Appointment Button (Desktop Header) -->
+                    <button data-modal-target="schedule-appointment-modal" class="hidden md:flex items-center justify-center py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                        </svg>
+                        Schedule
+                    </button>
+
+                    <!-- Notifications -->
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- 3. User Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                        </button>
+                        <!-- Profile Dropdown Menu -->
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <div class="px-4 py-2 border-b">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 4. Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                <!-- Page: Appointments (NEW TABBED LAYOUT) -->
+
+                <!-- NEW: Tab Navigation -->
+                <div class="mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="border-b border-gray-200 w-full">
+                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                                <button id="pending-tab" class="tab-btn active group inline-flex items-center py-3 px-1 border-b-2 border-teal-500 font-semibold text-teal-600">
+                                    <svg class="w-5 h-5 mr-2 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Pending Requests</span>
+                                    <span id="pending-count" class="ml-2 bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded-full">5</span>
+                                </button>
+                                <button id="calendar-tab" class="tab-btn group inline-flex items-center py-3 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                    <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zM4.5 8.25v7a1.25 1.25 0 001.25 1.25h9.5a1.25 1.25 0 001.25-1.25v-7h-12z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Full Schedule</span>
+                                </button>
+                            </nav>
+                        </div>
+                        <!-- Mobile "Schedule" Button -->
+                        <button data-modal-target="schedule-appointment-modal" class="md:hidden mt-4 w-full flex items-center justify-center py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                            </svg>
+                            Schedule Appointment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NEW: Tab Panel 1: Pending Requests -->
+                <div id="pending-panel">
+                    <!-- Filter/Search for Pending -->
+                    <div class="mb-4">
+                        <div class="relative w-full md:w-1/3">
+                            <label for="search-pending" class="sr-only">Search Pending</label>
+                            <input type="text" id="search-pending" placeholder="Search pending (e.g., Maria Santos...)" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Pending List as a clean Table -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-max text-left">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr class="text-sm text-gray-500">
+                                        <th class="p-4 font-medium">Patient</th>
+                                        <th class="p-4 font-medium">Service</th>
+                                        <th class="p-4 font-medium">Requested Date & Time</th>
+                                        <th class="p-4 font-medium">Assigned Staff</th>
+                                        <th class="p-4 font-medium">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <!-- Row 1: Pending (Maria Santos) -->
+                                    <tr class="text-gray-700 pending-row" data-id="P002" data-service="Prenatal Checkup">
+                                        <td class="p-4">
+                                            <div class="font-medium text-gray-900">Maria Santos</div>
+                                            <div class="text-xs text-gray-500">ID: P-002</div>
+                                        </td>
+                                        <td class="p-4">Prenatal Checkup</td>
+                                        <td class="p-4">Nov 18, 2025, 09:30 AM</td>
+                                        <td class="p-4">Dr. May S. Oki</td>
+                                        <td class="p-4 space-x-2">
+                                            <button class="approve-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-green-100 text-green-700 hover:bg-green-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                                Approve
+                                            </button>
+                                            <button data-modal-target="decline-confirm-modal" class="decline-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-red-100 text-red-700 hover:bg-red-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                                Decline
+                                            </button>
+                                            <button data-modal-target="edit-appointment-modal" class="edit-btn p-1 text-gray-400 hover:text-teal-600" title="Edit">
+                                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 2: Pending (Pedro Gomez) -->
+                                    <tr class="text-gray-700 pending-row" data-id="P004" data-service="General Consultation">
+                                        <td class="p-4">
+                                            <div class="font-medium text-gray-900">Pedro Gomez</div>
+                                            <div class="text-xs text-gray-500">ID: P-004</div>
+                                        </td>
+                                        <td class="p-4">General Consultation</td>
+                                        <td class="p-4">Nov 18, 2025, 11:00 AM</td>
+                                        <td class="p-4">Dr. Richard Nepomuceno</td>
+                                        <td class="p-4 space-x-2">
+                                            <button class="approve-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-green-100 text-green-700 hover:bg-green-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                                Approve
+                                            </button>
+                                            <button data-modal-target="decline-confirm-modal" class="decline-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-red-100 text-red-700 hover:bg-red-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                                Decline
+                                            </button>
+                                            <button data-modal-target="edit-appointment-modal" class="edit-btn p-1 text-gray-400 hover:text-teal-600" title="Edit">
+                                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 3: Pending (Elena Ramos) -->
+                                    <tr class="text-gray-700 pending-row" data-id="P005" data-service="Vaccination">
+                                        <td class="p-4">
+                                            <div class="font-medium text-gray-900">Elena Ramos</div>
+                                            <div class="text-xs text-gray-500">ID: P-005</div>
+                                        </td>
+                                        <td class="p-4">Vaccination</td>
+                                        <td class="p-4">Nov 19, 2025, 02:00 PM</td>
+                                        <td class="p-4">Nurse Josefa Reyes</td>
+                                        <td class="p-4 space-x-2">
+                                            <button class="approve-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-green-100 text-green-700 hover:bg-green-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                                Approve
+                                            </button>
+                                            <button data-modal-target="decline-confirm-modal" class="decline-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-red-100 text-red-700 hover:bg-red-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                                Decline
+                                            </button>
+                                            <button data-modal-target="edit-appointment-modal" class="edit-btn p-1 text-gray-400 hover:text-teal-600" title="Edit">
+                                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 4: Pending (Juan Dela Cruz - Dental) -->
+                                    <tr class="text-gray-700 pending-row" data-id="P001_D" data-service="Dental">
+                                        <td class="p-4">
+                                            <div class="font-medium text-gray-900">Juan Dela Cruz</div>
+                                            <div class="text-xs text-gray-500">ID: P-001</div>
+                                        </td>
+                                        <td class="p-4">Dental Checkup</td>
+                                        <td class="p-4">Nov 20, 2025, 08:00 AM</td>
+                                        <td class="p-4">Dr. Diane Domondone</td>
+                                        <td class="p-4 space-x-2">
+                                            <button class="approve-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-green-100 text-green-700 hover:bg-green-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                                Approve
+                                            </button>
+                                            <button data-modal-target="decline-confirm-modal" class="decline-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-red-100 text-red-700 hover:bg-red-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                                Decline
+                                            </button>
+                                            <button data-modal-target="edit-appointment-modal" class="edit-btn p-1 text-gray-400 hover:text-teal-600" title="Edit">
+                                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                     <!-- Row 5: Pending (Mark Ledesma) -->
+                                    <tr class="text-gray-700 pending-row" data-id="P006" data-service="General Consultation">
+                                        <td class="p-4">
+                                            <div class="font-medium text-gray-900">Mark Ledesma</div>
+                                            <div class="text-xs text-gray-500">ID: P-006</div>
+                                        </td>
+                                        <td class="p-4">General Consultation</td>
+                                        <td class="p-4">Nov 21, 2025, 09:00 AM</td>
+                                        <td class="p-4">Dr. Richard Nepomuceno</td>
+                                        <td class="p-4 space-x-2">
+                                            <button class="approve-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-green-100 text-green-700 hover:bg-green-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clip-rule="evenodd" /></svg>
+                                                Approve
+                                            </button>
+                                            <button data-modal-target="decline-confirm-modal" class="decline-btn inline-flex items-center py-1 px-3 text-xs font-medium rounded-full bg-red-100 text-red-700 hover:bg-red-200">
+                                                <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+                                                Decline
+                                            </button>
+                                            <button data-modal-target="edit-appointment-modal" class="edit-btn p-1 text-gray-400 hover:text-teal-600" title="Edit">
+                                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" /><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- No pending requests placeholder -->
+                                    <tr id="no-pending-placeholder" class="hidden">
+                                        <td colspan="5" class="p-6 text-center text-gray-500">
+                                            <svg class="w-12 h-12 mx-auto text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            <p class="mt-2 font-medium">All caught up!</p>
+                                            <p class="text-sm">There are no new pending requests.</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Tab Panel 2: Full Schedule (Calendar) -->
+                <div id="calendar-panel" class="hidden">
+                    <!-- Filter Bar (Keep Filters for Calendar View) -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col md:flex-row items-center gap-4">
+                        <div class="relative w-full md:w-1/3">
+                            <label for="search-patient" class="sr-only">Search Patient</label>
+                            <input type="text" id="search-patient" placeholder="Search by patient name..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="w-full md:w-auto">
+                            <label for="filter-staff" class="sr-only">Filter by Staff</label>
+                            <select id="filter-staff" class="w-full py-2 px-3 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500">
+                                <option value="">All Staff</option>
+                                <option value="dr-reyes">Dr. Richard Nepomuceno</option>
+                                <option value="dr-oki">Dr. May S. Oki</option>
+                                <option value="dr-domondone">Dr. Diane Domondone</option>
+                                <option value="nurse-reyes">Nurse Josefa Reyes</option>
+                            </select>
+                        </div>
+                        <div class="w-full md:w-auto">
+                            <label for="filter-service" class="sr-only">Filter by Service</label>
+                            <select id="filter-service" class="w-full py-2 px-3 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500">
+                                <option value="">All Services</option>
+                                <option value="consultation">General Consultation</option>
+                                <option value="prenatal">Prenatal Checkup</option>
+                                <option value="dental">Dental</option>
+                                <option value="vaccination">Vaccination</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Calendar View -->
+                    <div id="calendar-view" class="bg-white p-6 rounded-lg shadow">
+                        <div id="calendar" class="h-full min-h-[600px]"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- 
+    ============================================================
+    MODALS
+    ============================================================
+    -->
+
+    <!-- Modal 1: Schedule New Appointment -->
+    <div id="schedule-appointment-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 class="text-2xl font-bold text-teal-800">Schedule New Appointment</h3>
+                <button data-modal-close="schedule-appointment-modal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <form id="schedule-appointment-form">
+                <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <div>
+                        <label for="sched-patient" class="block text-sm font-medium text-gray-700">Patient</label>
+                        <!-- In a real app, this would be a searchable dropdown -->
+                        <input type="text" id="sched-patient" required placeholder="Start typing patient name..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="sched-service" class="block text-sm font-medium text-gray-700">Service</label>
+                            <select id="sched-service" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="">Select a service...</option>
+                                <option value="consultation">General Consultation</option>
+                                <option value="prenatal">Prenatal Checkup</option>
+                                <option value="dental">Dental</option>
+                                <option value="vaccination">Vaccination</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="sched-staff" class="block text-sm font-medium text-gray-700">Assign Staff</label>
+                            <select id="sched-staff" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="">Select staff...</option>
+                                <option value="dr-reyes">Dr. Richard Nepomuceno</option>
+                                <option value="dr-oki">Dr. May S. Oki</option>
+                                <option value="dr-domondone">Dr. Diane Domondone</option>
+                                <option value="nurse-reyes">Nurse Josefa Reyes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="sched-date" class="block text-sm font-medium text-gray-700">Date</label>
+                            <input type="date" id="sched-date" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="sched-time" class="block text-sm font-medium text-gray-700">Time</label>
+                            <input type="time" id="sched-time" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="sched-notes" class="block text-sm font-medium text-gray-700">Notes (Optional)</label>
+                        <textarea id="sched-notes" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Patient is a walk-in, follow-up checkup..."></textarea>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" data-modal-close="schedule-appointment-modal" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="py-2 px-4 bg-teal-600 border border-transparent rounded-lg text-white font-medium hover:bg-teal-700">
+                        Save Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal 2: View/Edit Appointment Details -->
+    <div id="edit-appointment-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Details</h3>
+                <button data-modal-close="edit-appointment-modal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <form id="edit-appointment-form">
+                <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <!-- This form would be pre-filled with the event/row data -->
+                    <div>
+                        <label for="edit-patient" class="block text-sm font-medium text-gray-700">Patient</label>
+                        <input type="text" id="edit-patient" readonly value="Juan Dela Cruz" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="edit-service" class="block text-sm font-medium text-gray-700">Service</label>
+                            <select id="edit-service" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="consultation" selected>General Consultation</option>
+                                <option value="prenatal">Prenatal Checkup</option>
+                                <option value="dental">Dental</option>
+                                <option value="vaccination">Vaccination</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit-staff" class="block text-sm font-medium text-gray-700">Assign Staff</label>
+                            <select id="edit-staff" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="dr-reyes" selected>Dr. Richard Nepomuceno</option>
+                                <option value="dr-oki">Dr. May S. Oki</option>
+                                <option value="dr-domondone">Dr. Diane Domondone</option>
+                                <option value="nurse-reyes">Nurse Josefa Reyes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="edit-date" class="block text-sm font-medium text-gray-700">Date</label>
+                            <input type="date" id="edit-date" value="2025-11-18" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="edit-time" class="block text-sm font-medium text-gray-700">Time</label>
+                            <input type="time" id="edit-time" value="09:00" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-between rounded-b-xl">
+                    <button type="button" data-modal-target="decline-confirm-modal" class="py-2 px-4 bg-red-100 border border-red-200 rounded-lg text-red-700 font-medium hover:bg-red-200">
+                        Decline Appointment
+                    </button>
+                    <button type="submit" class="py-2 px-4 bg-teal-600 border border-transparent rounded-lg text-white font-medium hover:bg-teal-700">
+                        Update Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal 3: Confirm Decline -->
+    <div id="decline-confirm-modal" class="modal fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden"> <!-- Higher z-index -->
+        <div class="modal-panel w-full max-w-sm bg-white rounded-xl shadow-2xl">
+            <!-- Modal Body -->
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-red-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800">Decline Appointment?</h3>
+                <p class="text-gray-500 mt-2">Are you sure you want to decline this request? The patient will be notified.</p>
+            </div>
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 grid grid-cols-2 gap-3 rounded-b-xl">
+                <button type="button" id="decline-confirm-go-back" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                    Go Back
+                </button>
+                <button type="button" id="decline-confirm-action" class="py-2 px-4 bg-red-600 border border-transparent rounded-lg text-white font-medium hover:bg-red-700">
+                    Confirm Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Sidebar Toggle Logic ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn'); // In header
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn'); // In sidebar
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) {
+                sidebarOpenBtn.addEventListener('click', () => {
+                    document.body.classList.add('sidebar-open');
+                });
+            }
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+            if (sidebarBackdrop) {
+                sidebarBackdrop.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+
+            // --- Dropdown Menu Logic (Sidebar) ---
+            function setupDropdown(toggleId, menuId, arrowId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                const arrow = document.getElementById(arrowId);
+
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault(); 
+                        if (window.innerWidth < 1024) {
+                            menu.classList.toggle('hidden');
+                            if (arrow) {
+                                arrow.classList.toggle('rotate-180');
+                            }
+                        }
+                    });
+
+                    if (window.innerWidth >= 1024) {
+                        const listItem = toggle.closest('li');
+                        listItem.addEventListener('mouseenter', () => {
+                            if (sidebar.matches(':hover')) {
+                                menu.classList.remove('hidden');
+                            }
+                        });
+                        listItem.addEventListener('mouseleave', () => {
+                            menu.classList.add('hidden');
+                        });
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu', 'content-arrow');
+            setupDropdown('user-toggle', 'user-menu', 'user-arrow');
+
+            // --- Profile Dropdown Logic (Header) ---
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => {
+                    profileMenu.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- General Modal Handling Function ---
+            const modals = {};
+            
+            function setupModals() {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modals[modal.id] = modal;
+                });
+            
+                const modalTriggers = document.querySelectorAll('[data-modal-target]');
+                const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+            
+                modalTriggers.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modalId = button.getAttribute('data-modal-target');
+                        
+                        // NEW: Pre-fill logic for edit modal triggered by the table
+                        if (modalId === 'edit-appointment-modal') {
+                            const row = button.closest('.pending-row');
+                            if (row) {
+                                const patientName = row.querySelector('td:nth-child(1) div:first-child').textContent;
+                                const serviceCell = row.querySelector('td:nth-child(2)').textContent.trim();
+                                const staffCell = row.querySelector('td:nth-child(4)').textContent.trim();
+                                
+                                const editForm = document.getElementById('edit-appointment-form');
+                                editForm.querySelector('#edit-patient').value = patientName;
+                                
+                                // Simplified mapping for simulation
+                                const serviceMap = {
+                                    'Prenatal Checkup': 'prenatal',
+                                    'General Consultation': 'consultation',
+                                    'Dental Checkup': 'dental',
+                                    'Vaccination': 'vaccination'
+                                };
+                                const staffMap = {
+                                    'Dr. Richard Nepomuceno': 'dr-reyes',
+                                    'Dr. May S. Oki': 'dr-oki',
+                                    'Dr. Diane Domondone': 'dr-domondone',
+                                    'Nurse Josefa Reyes': 'nurse-reyes'
+                                };
+                                
+                                editForm.querySelector('#edit-service').value = serviceMap[serviceCell] || 'consultation';
+                                editForm.querySelector('#edit-staff').value = staffMap[staffCell] || 'dr-reyes';
+                                
+                                // You'd also populate date and time here
+                            }
+                        }
+
+                        openModal(modalId);
+                    });
+                });
+            
+                modalCloseButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modal = button.closest('.modal');
+                        if (modal) {
+                            closeModal(modal.id);
+                        }
+                    });
+                });
+            
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            closeModal(modal.id);
+                        }
+                    });
+                });
+                
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        document.querySelectorAll('.modal.flex').forEach(modal => {
+                            closeModal(modal.id);
+                        });
+                    }
+                });
+            }
+
+            function openModal(modalId) {
+                const modal = modals[modalId];
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal(modalId) {
+                const modal = modals[modalId];
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    const anyModalOpen = Object.values(modals).some(m => m.classList.contains('flex'));
+                    if (!anyModalOpen) {
+                        document.body.style.overflow = 'auto';
+                    }
+                }
+            }
+
+            setupModals(); // Initialize general modal listeners
+
+            // --- FullCalendar Initialization ---
+            let calendarInstance = null;
+            function initializeFullCalendar() {
+                const calendarEl = document.getElementById('calendar');
+                if (!calendarEl) return;
+                
+                if (calendarInstance) {
+                    calendarInstance.destroy();
+                }
+
+                // Enhanced event list for display
+                const events = [
+                    // Confirmed Appointments (Scheduled for this week and next)
+                    { id: '1', title: 'J. Dela Cruz (Consult)', start: '2025-11-18T09:00:00', extendedProps: { service: 'consultation', staff: 'Dr. Nepomuceno' } },
+                    { id: '4', title: 'Vaccination Drive', start: '2025-11-20', allDay: true, extendedProps: { service: 'vaccination', staff: 'Nurse Reyes' } },
+                    { id: '6', title: 'A. Torres (Prenatal)', start: '2025-11-25T14:30:00', extendedProps: { service: 'prenatal', staff: 'Dr. Oki' } },
+                    { id: '7', title: 'R. Garcia (Dental)', start: '2025-11-26T10:00:00', extendedProps: { service: 'dental', staff: 'Dr. Domondone' } },
+                    { id: '8', title: 'C. Lim (Consult)', start: '2025-11-28T13:00:00', extendedProps: { service: 'consultation', staff: 'Dr. Nepomuceno' } },
+                    { id: '9', title: 'Infant Checkups Day', start: '2025-12-05', allDay: true, extendedProps: { service: 'vaccination', staff: 'Nurse Reyes' } }
+                ];
+
+                calendarInstance = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'title',
+                        right: 'prev,next today dayGridMonth' // Only shows Month View
+                    },
+                    events: events,
+                    eventClassNames: function(arg) {
+                        const service = arg.event.extendedProps.service;
+                        if (service === 'consultation') return ['fc-event-consultation'];
+                        if (service === 'prenatal') return ['fc-event-prenatal'];
+                        if (service === 'dental') return ['fc-event-dental'];
+                        if (service ==='vaccination') return ['fc-event-vaccination'];
+                        return ['fc-event-consultation']; 
+                    },
+                    eventClick: function(info) {
+                        // Logic to populate and open edit modal when clicking a calendar event
+                        // In a real app, this would dynamically fill the modal with info.event.extendedProps
+                        openModal('edit-appointment-modal');
+                    },
+                    // --- NEW: Selectable functionality to add schedule by clicking/dragging ---
+                    selectable: true,
+                    selectMirror: true,
+                    select: function(arg) {
+                        // Automatically open the schedule modal with the selected start date
+                        const dateInput = document.getElementById('sched-date');
+                        if (dateInput) {
+                             // Use slice(0, 10) to format the date to YYYY-MM-DD
+                            dateInput.value = arg.startStr.slice(0, 10);
+                        }
+                        openModal('schedule-appointment-modal');
+                        calendarInstance.unselect(); // clear date selection
+                    },
+                    // --- END Selectable ---
+                });
+                calendarInstance.render();
+            }
+            
+            // --- NEW: Tab View Logic ---
+            const pendingTab = document.getElementById('pending-tab');
+            const calendarTab = document.getElementById('calendar-tab');
+            const pendingPanel = document.getElementById('pending-panel');
+            const calendarPanel = document.getElementById('calendar-panel');
+
+            if (pendingTab) {
+                pendingTab.addEventListener('click', () => {
+                    // Show pending
+                    pendingPanel.classList.remove('hidden');
+                    calendarPanel.classList.add('hidden');
+                    
+                    // Set active tab style
+                    pendingTab.classList.add('active');
+                    pendingTab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    calendarTab.classList.remove('active');
+                    calendarTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                });
+            }
+
+            if (calendarTab) {
+                calendarTab.addEventListener('click', () => {
+                    // Show calendar
+                    calendarPanel.classList.remove('hidden');
+                    pendingPanel.classList.add('hidden');
+                    
+                    // Set active tab style
+                    calendarTab.classList.add('active');
+                    calendarTab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    pendingTab.classList.remove('active');
+                    pendingTab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    
+                    // Initialize or resize calendar
+                    initializeFullCalendar();
+                });
+            }
+
+            // --- Custom Modal Form Logic ---
+
+            // Schedule Form
+            document.getElementById('schedule-appointment-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Simulation: Add event to calendar if currently visible
+                if (calendarInstance) {
+                    calendarInstance.addEvent({
+                        title: `${document.getElementById('sched-patient').value} (${document.getElementById('sched-service').value})`,
+                        start: `${document.getElementById('sched-date').value}T${document.getElementById('sched-time').value}:00`,
+                        allDay: false,
+                        extendedProps: { 
+                            service: document.getElementById('sched-service').value,
+                            staff: document.getElementById('sched-staff').value,
+                            status: 'confirmed'
+                        }
+                    });
+                }
+                e.target.reset(); // Reset form after submission
+                closeModal('schedule-appointment-modal');
+            });
+
+            // Edit Form
+            document.getElementById('edit-appointment-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                closeModal('edit-appointment-modal');
+            });
+            
+            // Decline Modal Flow
+            const declineConfirmTrigger = document.querySelector('[data-modal-target="decline-confirm-modal"]');
+            const declineGoBackBtn = document.getElementById('decline-confirm-go-back');
+            const declineConfirmBtn = document.getElementById('decline-confirm-action');
+
+            if (declineConfirmTrigger) {
+                declineConfirmTrigger.addEventListener('click', () => {
+                    closeModal('edit-appointment-modal'); 
+                    openModal('decline-confirm-modal'); 
+                });
+            }
+            
+            if (declineGoBackBtn) {
+                declineGoBackBtn.addEventListener('click', () => {
+                    closeModal('decline-confirm-modal');
+                    openModal('edit-appointment-modal'); 
+                });
+            }
+
+            if (declineConfirmBtn) {
+                declineConfirmBtn.addEventListener('click', () => {
+                    // Add decline logic here
+                    closeModal('decline-confirm-modal');
+                    // You would also remove the row from the pending table here
+                });
+            }
+
+            function updatePendingCount() {
+                const pendingRows = document.querySelectorAll('.pending-row:not(.hidden)');
+                const countEl = document.getElementById('pending-count');
+                const placeholder = document.getElementById('no-pending-placeholder');
+                
+                countEl.textContent = pendingRows.length;
+                
+                if (pendingRows.length === 0) {
+                    countEl.classList.add('hidden');
+                    if(placeholder) placeholder.classList.remove('hidden');
+                } else {
+                    countEl.classList.remove('hidden');
+                    if(placeholder) placeholder.classList.add('hidden');
+                }
+            }
+
+            // --- Pending Card "Approve" Button ---
+            document.querySelectorAll('.approve-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const row = e.target.closest('tr');
+                    e.target.textContent = 'Approving...';
+                    e.target.disabled = true;
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        // Visually animate/remove the row from the pending list
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            // If calendar is open, add the event (simulation)
+                            if (calendarInstance) {
+                                // Extract data from row for calendar event
+                                const patientName = row.querySelector('td:nth-child(1) div:first-child').textContent;
+                                const serviceCell = row.querySelector('td:nth-child(2)').textContent.trim();
+                                const dateAndTime = row.querySelector('td:nth-child(3)').textContent.trim();
+                                
+                                // Simple mock date parsing (e.g., Nov 18, 2025, 09:30 AM -> 2025-11-18T09:30:00)
+                                const datePart = dateAndTime.split(', ')[0];
+                                const timePart = dateAndTime.split(', ')[1].replace(/ AM| PM/, '');
+                                const startDate = new Date(datePart + ' ' + timePart);
+                                
+                                calendarInstance.addEvent({
+                                    title: `${patientName} (${serviceCell})`,
+                                    start: startDate.toISOString().slice(0, 19),
+                                    extendedProps: { service: serviceCell.toLowerCase().split(' ')[0], status: 'confirmed' }
+                                });
+                            }
+                            
+                            row.remove();
+                            updatePendingCount(); // Update the count badge
+                        }, 300);
+                    }, 1000);
+                });
+            });
+
+            // Initial count check
+            updatePendingCount();
+            
+            // --- Default to Pending tab load ---
+            pendingTab.click(); 
+
+        });
+    </script>
+
+</body>
+</html>
