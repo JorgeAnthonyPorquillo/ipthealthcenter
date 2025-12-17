@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title from MedicalInventory.html -->
+    <title>Patient Management System - Medical Inventory</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    <!-- Load Chart.js (Kept from Admin, though not used on this page) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Styles from AdminDashboard.html for sidebar -->
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Collapsible Sidebar Styles --- */
+
+        /* Custom scrollbar for sidebar (Webkit) */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+
+        /* Custom scrollbar for sidebar (Firefox) */
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+
+        /* Sidebar transitions for width and transform */
+        #sidebar {
+            /* z-50 to be on top, shadow-lg for depth */
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        /* Main content transition for margin */
+        #main-content {
+            /* Only transition margin-left */
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* Desktop Styles (lg & up) */
+        @media (min-width: 1024px) {
+            /* Collapsed "mini" state (DEFAULT) */
+            #sidebar {
+                width: 5rem; /* w-20 */
+                z-index: 50; /* On top */
+            }
+            #main-content {
+                margin-left: 5rem; /* ml-20 */
+            }
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: none;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+            }
+            .sidebar-link-container, .sidebar-header {
+                justify-content: center;
+            }
+            #content-menu, #user-menu {
+                display: none !important; /* Force hide submenus when mini */
+            }
+            /* Make header icon slightly smaller when mini */
+            .sidebar-header a svg {
+                width: 2rem; /* w-8 */
+                height: 2rem; /* h-8 */
+            }
+
+            /* Expanded "hover" state */
+            #sidebar:hover {
+                width: 16rem; /* w-64 */
+                /* Add a shadow to show it's floating */
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            /* CRITICAL: Main content does NOT move */
+            #sidebar:hover ~ #main-content {
+                margin-left: 5rem; /* Stays w-20 */
+            }
+            #sidebar:hover .sidebar-text,
+            #sidebar:hover .sidebar-header-text,
+            #sidebar:hover .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+                transition-delay: 0.1s; /* Fade in slightly after expand */
+            }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header {
+                justify-content: flex-start;
+            }
+            /* Show dropdowns on hover */
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu {
+                display: block !important;
+            }
+            /* Restore header icon size on hover */
+            #sidebar:hover .sidebar-header a svg {
+                width: 2rem; /* w-8 (was 1.5rem, looks better same size) */
+                height: 2rem; /* h-8 */
+            }
+        }
+
+        /* Mobile Styles (lg & down) */
+        @media (max-width: 1023px) {
+            /* Sidebar is always full-width but off-screen */
+            #sidebar {
+                width: 16rem; /* w-64 */
+                transform: translateX(-100%);
+                z-index: 60; /* Higher z-index for mobile overlay */
+            }
+            #main-content {
+                margin-left: 0;
+            }
+            /* Mobile overlay open state */
+            body.sidebar-open #sidebar {
+                transform: translateX(0);
+            }
+            /* Show text on mobile overlay */
+            .sidebar-text,
+            .sidebar-header-text,
+            .sidebar-dropdown-arrow {
+                display: inline-block;
+                opacity: 1;
+            }
+            .sidebar-link-container, .sidebar-header {
+                justify-content: flex-start;
+            }
+            
+            /* Backdrop for mobile overlay */
+            #sidebar-backdrop {
+                transition: opacity 0.3s ease-in-out;
+            }
+            body:not(.sidebar-open) #sidebar-backdrop {
+                opacity: 0;
+                pointer-events: none;
+            }
+            body.sidebar-open #sidebar-backdrop {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Global Admin Layout -->
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar) from AdminDashboard.html -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+    
+    <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+        <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+            <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">
+                Admin
+            </span>
+        </a>
+        <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+        <ul class="py-4">
+            
+            <li>
+                <a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" />
+                            <path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" />
+                            <path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Patient Records</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="MedicalInventory.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Reports</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Inquiries.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6-.82c.046-.28.076-.564.076-.858 0-2.24-1.99-4.05-4.442-4.05-2.452 0-4.442 1.81-4.442 4.05 0 .294.03.578.076.858a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Inquiries</span>
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Health Statistics</span>
+                    </span>
+                </a>
+            </li>
+            
+            <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">
+                Management
+            </li>
+            
+            <li>
+                <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                    </span>
+                    <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="content-menu" class="hidden bg-gray-700">
+                    <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                    <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                    <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">User Management</span>
+                    </span>
+                    <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul id="user-menu" class="hidden bg-gray-700">
+                    <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                    <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+        <!-- Mobile Sidebar Backdrop from AdminDashboard.html -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper from AdminDashboard.html -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- 2. Header from AdminDashboard.html (Modified) -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <!-- Mobile Menu Toggle (lg:hidden) -->
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <!-- Welcome Message (Modified) -->
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">Medical Inventory</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Notifications -->
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <!-- Notification Badge -->
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- 3. User Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            <div class="hidden md:block text-left">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-500 hidden md:block">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <!-- Profile Dropdown Menu -->
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 4. Main Content Area (Container from Admin, Content from Inventory) -->
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                <!-- Summary Cards (from Inventory, re-styled with Tailwind) -->
+                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Card 1: Total Items -->
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-teal-500 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 uppercase">Total Items</div>
+                            <div class="text-3xl font-bold text-gray-800" id="totalItemsCount">--</div>
+                        </div>
+                        <div class="text-teal-500">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a2.25 2.25 0 0 1-2.25 2.25H5.25a2.25 2.25 0 0 1-2.25-2.25v-8.25M11.25 11.25v-1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v1.875m0-1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m3.75-1.875a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v1.875m0 0a1.875 1.875 0 1 0-3.75 0m3.75 0h.007v.007h-.007v-.007Zm0 0v-1.875m0 1.875a1.875 1.875 0 1 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875m3.75 0a1.875 1.875 0 0 1-3.75 0m3.75 0h.007v.007h-.007v-.007Zm-3.75 0v-1.875M12 2.25v-1.5m0 1.5v1.875m0 0A1.875 1.875 0 1 1 9.75 6m1.5-1.875v1.875m0 0a1.875 1.875 0 1 0 3.75 0M12 4.125v1.875m0 0a1.875 1.875 0 1 1 3.75 0m-3.75 0v-1.875m0 1.875a1.875 1.875 0 1 0-3.75 0m3.75 0v-1.875" /></svg>
+                        </div>
+                    </div>
+                    <!-- Card 2: Low Stock -->
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-yellow-500 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 uppercase">Low Stock Items</div>
+                            <div class="text-3xl font-bold text-gray-800" id="lowStockCount">--</div>
+                        </div>
+                        <div class="text-yellow-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
+                        </div>
+                    </div>
+                    <!-- Card 3: Expired Items -->
+                    <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500 flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 uppercase">Expired Items</div>
+                            <div class="text-3xl font-bold text-gray-800" id="expiredCount">--</div>
+                        </div>
+                        <div class="text-red-500">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filters & Search (from Inventory, re-styled with Tailwind) -->
+                <section class="bg-white p-4 rounded-lg shadow mb-6 flex flex-wrap gap-4 items-end">
+                    <div class="flex-grow">
+                        <label for="filterCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="filterCategory" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                            <option value="all">All Categories</option>
+                            <option value="Medications">Medications</option>
+                            <option value="Supplies">Supplies</option>
+                            <option value="Equipment">Equipment</option>
+                            <option value="Vaccines">Vaccines</option>
+                        </select>
+                    </div>
+                    <div class="flex-grow">
+                        <label for="filterStatus" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select id="filterStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                            <option value="all">All Statuses</option>
+                            <option value="ok">In Stock</option>
+                            <option value="low">Low Stock</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                    <div class="flex-grow" style="flex-basis: 300px;">
+                        <label for="searchInput" class="block text-sm font-medium text-gray-700">Search Item</label>
+                        <input type="search" id="searchInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Search by name...">
+                    </div>
+                </section>
+
+                <!-- Inventory Table Section (from Inventory, re-styled with Tailwind) -->
+                <section>
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800">Inventory List</h3>
+                            <button id="addItemBtn" data-modal-target="addItemModal" class="flex items-center justify-center gap-2 py-2 px-4 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                                  <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                                </svg>
+                                <span>Add New Item</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-max text-left">
+                                <thead class="border-b border-gray-200 bg-gray-50">
+                                    <tr class="text-sm text-gray-500">
+                                        <th class="p-4 font-medium uppercase">Item Name</th>
+                                        <th class="p-4 font-medium uppercase">Category</th>
+                                        <th class="p-4 font-medium uppercase">Quantity</th>
+                                        <th class="p-4 font-medium uppercase">Unit</th>
+                                        <th class="p-4 font-medium uppercase">Expiry Date</th>
+                                        <th class="p-4 font-medium uppercase">Status</th>
+                                        <th class="p-4 font-medium uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100" id="inventoryTableBody">
+                                    <!-- Table rows will be added by JS -->
+                                    <tr><td colspan="7" class="text-center p-6 text-gray-500">Loading inventory...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- 
+    ============================================================
+    MODALS (from MedicalInventory.html, re-styled like AdminDashboard.html)
+    ============================================================
+    -->
+
+    <!-- === Add Item Modal === -->
+    <div id="addItemModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-2xl bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <form id="addItemForm">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center p-5 border-b">
+                    <div>
+                        <h3 class="text-2xl font-bold text-teal-800">Add New Inventory Item</h3>
+                        <p class="text-sm text-gray-600">Enter details for the new item.</p>
+                    </div>
+                    <button type="button" data-modal-close="addItemModal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label for="addItemName" class="block text-sm font-medium text-gray-700">Item Name *</label>
+                            <input type="text" id="addItemName" name="itemName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+
+                        <div>
+                            <label for="addCategory" class="block text-sm font-medium text-gray-700">Category *</label>
+                            <select id="addCategory" name="category" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="">Select category</option>
+                                <option value="Medications">Medications</option>
+                                <option value="Supplies">Supplies</option>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Vaccines">Vaccines</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="addExpiryDate" class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                            <input type="date" id="addExpiryDate" name="expiryDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+
+                        <div>
+                            <label for="addQuantity" class="block text-sm font-medium text-gray-700">Initial Quantity *</label>
+                            <input type="number" id="addQuantity" name="quantity" min="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                         <div>
+                            <label for="addUnit" class="block text-sm font-medium text-gray-700">Unit *</label>
+                            <input type="text" id="addUnit" name="unit" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Box, Pcs, Bottle">
+                        </div>
+
+                        <div>
+                             <label for="addLowStockThreshold" class="block text-sm font-medium text-gray-700">Low Stock Threshold</label>
+                             <input type="number" id="addLowStockThreshold" name="lowStockThreshold" min="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 10">
+                         </div>
+                         <div>
+                             <label for="addSupplier" class="block text-sm font-medium text-gray-700">Supplier</label>
+                             <input type="text" id="addSupplier" name="supplier" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                         </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="addNotes" class="block text-sm font-medium text-gray-700">Notes</label>
+                            <textarea id="addNotes" name="notes" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="Optional notes about the item..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" data-modal-close="addItemModal" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="py-2 px-4 bg-teal-600 border border-transparent rounded-lg text-white font-medium hover:bg-teal-700">
+                        Add Item
+                    </button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+     <!-- === Edit Item Modal === -->
+    <div id="editItemModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-2xl bg-white rounded-xl shadow-2xl border-t-4 border-teal-600">
+            <form id="editItemForm">
+                <input type="hidden" id="editItemId" name="itemId">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center p-5 border-b">
+                    <div>
+                        <h3 class="text-2xl font-bold text-teal-800">Edit Inventory Item</h3>
+                        <p class="text-sm text-gray-600">Update details for the item.</p>
+                    </div>
+                    <button type="button" data-modal-close="editItemModal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                 <!-- Modal Body -->
+                 <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label for="editItemName" class="block text-sm font-medium text-gray-700">Item Name *</label>
+                            <input type="text" id="editItemName" name="itemName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+
+                        <div>
+                            <label for="editCategory" class="block text-sm font-medium text-gray-700">Category *</label>
+                            <select id="editCategory" name="category" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                                <option value="">Select category</option>
+                                <option value="Medications">Medications</option>
+                                <option value="Supplies">Supplies</option>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Vaccines">Vaccines</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="editExpiryDate" class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                            <input type="date" id="editExpiryDate" name="expiryDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+
+                         <div>
+                             <label for="editCurrentQuantity" class="block text-sm font-medium text-gray-700">Current Quantity</label>
+                             <input type="number" id="editCurrentQuantity" name="currentQuantity" readonly disabled class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500">
+                         </div>
+
+                         <div>
+                            <label for="editUnit" class="block text-sm font-medium text-gray-700">Unit *</label>
+                            <input type="text" id="editUnit" name="unit" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., Box, Pcs, Bottle">
+                        </div>
+
+                        <div>
+                             <label for="editLowStockThreshold" class="block text-sm font-medium text-gray-700">Low Stock Threshold</label>
+                             <input type="number" id="editLowStockThreshold" name="lowStockThreshold" min="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="e.g., 10">
+                         </div>
+                         <div>
+                             <label for="editSupplier" class="block text-sm font-medium text-gray-700">Supplier</label>
+                             <input type="text" id="editSupplier" name="supplier" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                         </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="editNotes" class="block text-sm font-medium text-gray-700">Notes</label>
+                            <textarea id="editNotes" name="notes" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="Optional notes about the item..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" data-modal-close="editItemModal" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="py-2 px-4 bg-teal-600 border border-transparent rounded-lg text-white font-medium hover:bg-teal-700">
+                        Save Changes
+                    </button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+    <!-- === Adjust Stock Modal === -->
+    <div id="adjustStockModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-gray-600">
+            <form id="adjustStockForm">
+                <input type="hidden" id="adjustItemId" name="itemId">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center p-5 border-b">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Adjust Stock Quantity</h3>
+                        <p class="text-sm text-gray-600">Item: <strong id="adjustItemName" class="text-gray-900">Item Name</strong></p>
+                    </div>
+                    <button type="button" data-modal-close="adjustStockModal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4">
+                    <div>
+                        <span class="block text-sm font-medium text-gray-700">Current Quantity:</span>
+                        <p class="text-2xl font-bold text-gray-900" id="adjustCurrentQuantityDisplay">--</p>
+                    </div>
+                    <div>
+                        <label for="adjustmentType" class="block text-sm font-medium text-gray-700">Adjustment Type *</label>
+                        <select id="adjustmentType" name="adjustmentType" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                            <option value="decrease">Decrease Stock (Used/Removed)</option>
+                            <option value="increase">Increase Stock (Received)</option>
+                            <option value="set">Set New Quantity (Correction)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="adjustmentValue" class="block text-sm font-medium text-gray-700">Quantity to Add/Remove/Set *</label>
+                         <input type="number" id="adjustmentValue" name="adjustmentValue" min="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label for="adjustmentReason" class="block text-sm font-medium text-gray-700">Reason (Optional)</label>
+                        <textarea id="adjustmentReason" name="reason" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="Reason for adjustment..."></textarea>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                    <button type="button" data-modal-close="adjustStockModal" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="py-2 px-4 bg-teal-600 border border-transparent rounded-lg text-white font-medium hover:bg-teal-700">
+                        Apply Adjustment
+                    </button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+    <!-- === Delete Confirmation Modal === -->
+    <div id="deleteConfirmModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-red-600">
+            <input type="hidden" id="deleteItemIdValue">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-5 border-b">
+                <h3 class="text-2xl font-bold text-red-800">Confirm Deletion</h3>
+                <button type="button" data-modal-close="deleteConfirmModal" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6">
+                <p class="text-gray-700">Are you sure you want to permanently delete the item: <strong id="deleteItemName" class="text-gray-900">Item Name</strong>?</p>
+                <p class="mt-2 text-sm text-red-600">This action cannot be undone.</p>
+            </div>
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-2 rounded-b-xl">
+                <button type="button" data-modal-close="deleteConfirmModal" class="py-2 px-4 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="button" id="confirmDeleteBtn" class="py-2 px-4 bg-red-600 border border-transparent rounded-lg text-white font-medium hover:bg-red-700">
+                    Yes, Delete Item
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JavaScript (Merged) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Helper function to manually open dynamic modals ---
+            function openModalHelper(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden'; // Prevent background scroll
+                }
+            }
+
+            // --- Sidebar Toggle Logic (from Admin) ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn'); // In header
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn'); // In sidebar
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) {
+                // Mobile: Open overlay
+                sidebarOpenBtn.addEventListener('click', () => {
+                    document.body.classList.add('sidebar-open');
+                });
+            }
+            if (sidebarCloseBtn) {
+                // Mobile close button
+                sidebarCloseBtn.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+            if (sidebarBackdrop) {
+                // Mobile backdrop click to close
+                sidebarBackdrop.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-open');
+                });
+            }
+
+            // --- Dropdown Menu Logic (Sidebar) (from Admin) ---
+            function setupDropdown(toggleId, menuId, arrowId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                const arrow = document.getElementById(arrowId);
+
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault(); // Prevent <a> tag from navigating
+                        // Only allow toggle if sidebar is not in mini-mode (i.e., on mobile)
+                        {
+                            menu.classList.toggle('hidden');
+                            if (arrow) {
+                                arrow.classList.toggle('rotate-180');
+                            }
+                        }
+                    });
+
+                    // Add hover logic for desktop dropdowns
+                    if (window.innerWidth >= 1024) {
+                        const listItem = toggle.closest('li');
+                        listItem.addEventListener('mouseenter', () => {
+                            menu.classList.remove('hidden');
+                        });
+                        listItem.addEventListener('mouseleave', () => {
+                            menu.classList.add('hidden');
+                        });
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu', 'content-arrow');
+            setupDropdown('user-toggle', 'user-menu', 'user-arrow');
+
+            // --- Profile Dropdown Logic (Header) (from Admin) ---
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => {
+                    profileMenu.classList.toggle('hidden');
+                });
+                // Close when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (e.target && !profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- General Modal Handling Function (from Admin) ---
+            // This handles data-modal-target and data-modal-close attributes
+            function setupModals() {
+                const modalTriggers = document.querySelectorAll('[data-modal-target]');
+                const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+                const allModals = document.querySelectorAll('.modal');
+
+                // Open Modals
+                modalTriggers.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modalId = button.getAttribute('data-modal-target');
+                        openModalHelper(modalId); // Use our helper
+                    });
+                });
+
+                // Close Modals with 'X' button or secondary close buttons
+                modalCloseButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const modal = button.closest('.modal'); 
+                        if (modal) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            document.body.style.overflow = 'auto'; // Restore scroll
+                        }
+                    });
+                });
+
+                // Close Modals by clicking backdrop
+                allModals.forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        // Check if the click is directly on the modal backdrop
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            document.body.style.overflow = 'auto'; // Restore scroll
+                        }
+                    });
+                });
+                
+                // Close modals with Escape key
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        allModals.forEach(modal => {
+                            if (!modal.classList.contains('hidden')) {
+                                modal.classList.add('hidden');
+                                modal.classList.remove('flex');
+                                document.body.style.overflow = 'auto'; // Restore scroll
+                            }
+                        });
+                    }
+                });
+            }
+            setupModals(); // Initialize modal listeners
+
+
+            // --- Inventory Page Logic (from MedicalInventory.html) ---
+
+            // --- Sample Inventory Data ---
+            let inventoryData = [
+                { id: 1, name: 'Paracetamol 500mg', category: 'Medications', quantity: 85, unit: 'Tablets', expiry: '2026-12-31', lowStock: 50, notes: 'Standard pain reliever.' },
+                { id: 2, name: 'Gauze Pads (Sterile)', category: 'Supplies', quantity: 15, unit: 'Boxes', expiry: '2027-06-30', lowStock: 20, notes: 'Box of 100 pads.' },
+                { id: 3, name: 'Amoxicillin 250mg/5ml', category: 'Medications', quantity: 30, unit: 'Bottles', expiry: '2026-08-31', lowStock: 15, notes: 'Suspension' },
+                { id: 4, name: 'Digital Thermometer', category: 'Equipment', quantity: 8, unit: 'Pcs', expiry: null, lowStock: 5, notes: '' },
+                { id: 5, name: 'Bandages (Assorted)', category: 'Supplies', quantity: 40, unit: 'Boxes', expiry: '2028-01-31', lowStock: 25, notes: '' },
+                { id: 6, name: 'Syringes 5ml', category: 'Supplies', quantity: 150, unit: 'Pcs', expiry: '2027-11-30', lowStock: 100, notes: '' },
+                { id: 7, name: 'Flu Vaccine', category: 'Vaccines', quantity: 5, unit: 'Doses', expiry: '2025-09-30', lowStock: 10, notes: 'Keep refrigerated.' }, // Expired based on today's simulated date
+                { id: 8, name: 'Alcohol Swabs', category: 'Supplies', quantity: 200, unit: 'Pcs', expiry: '2026-05-31', lowStock: 100, notes: '' },
+                { id: 9, name: 'Salbutamol Nebules', category: 'Medications', quantity: 25, unit: 'Pcs', expiry: '2025-11-15', lowStock: 30, notes: '' },
+            ];
+
+            // --- DOM Elements ---
+            // Note: addItemBtn is now handled by setupModals
+            const inventoryTableBody = document.getElementById('inventoryTableBody');
+            const addItemForm = document.getElementById('addItemForm');
+            const editItemForm = document.getElementById('editItemForm');
+            const adjustStockForm = document.getElementById('adjustStockForm');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const filterCategory = document.getElementById('filterCategory');
+            const filterStatus = document.getElementById('filterStatus');
+            const searchInput = document.getElementById('searchInput');
+            const totalItemsCount = document.getElementById('totalItemsCount');
+            const lowStockCount = document.getElementById('lowStockCount');
+            const expiredCount = document.getElementById('expiredCount');
+
+             // --- Date Formatting ---
+             function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                // Basic check if already in YYYY-MM-DD
+                if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                     const date = new Date(dateString + 'T00:00:00'); // Add time to avoid timezone issues
+                     return date.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+                }
+                return dateString; // Return as is if format is different
+             }
+
+             function isExpired(expiryDate) {
+                 if (!expiryDate) return false;
+                 // Use a fixed date for consistent demo results, matching the old file
+                 const today = new Date('2025-10-29'); 
+                 today.setHours(0, 0, 0, 0); // Remove time component
+                 const expiry = new Date(expiryDate + 'T00:00:00');
+                 return expiry < today;
+             }
+
+             // --- Inventory Table Rendering ---
+             function renderInventoryTable(dataToRender) {
+                 if (!inventoryTableBody) return;
+                 inventoryTableBody.innerHTML = ''; // Clear existing table
+
+                 if (dataToRender.length === 0) {
+                      inventoryTableBody.innerHTML = '<tr><td colspan="7" class="text-center p-6 text-gray-500">No inventory items found.</td></tr>';
+                      return;
+                 }
+
+                 let lowStock = 0;
+                 let expired = 0;
+                 let totalItems = 0; // Recalculate for filtered view
+
+                 dataToRender.forEach(item => {
+                     totalItems++; // Count items being rendered
+                     const expiryFormatted = formatDate(item.expiry);
+                     const isItemExpired = isExpired(item.expiry);
+                     const isLowStock = item.quantity < item.lowStock;
+
+                     let statusClass = 'bg-green-100 text-green-800';
+                     let statusText = 'In Stock';
+                     if (isItemExpired) {
+                         statusClass = 'bg-red-100 text-red-800';
+                         statusText = 'Expired';
+                         expired++;
+                     } else if (isLowStock) {
+                         statusClass = 'bg-yellow-100 text-yellow-800';
+                         statusText = 'Low Stock';
+                         lowStock++;
+                     }
+
+                     const row = document.createElement('tr');
+                     row.dataset.itemId = item.id; // Store item ID on the row
+                     row.classList.add('text-gray-700', 'hover:bg-gray-50');
+                     row.innerHTML = `
+                        <td class="p-4 font-medium text-gray-900">${item.name}</td>
+                        <td class="p-4">${item.category}</td>
+                        <td class="p-4 font-medium">${item.quantity}</td>
+                        <td class="p-4">${item.unit}</td>
+                        <td class="p-4">${expiryFormatted}</td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">
+                                <span class="w-2 h-2 mr-1.5 rounded-full ${statusClass.replace('-100', '-500').replace('text-green-800', 'bg-green-500').replace('text-yellow-800', 'bg-yellow-500').replace('text-red-800', 'bg-red-500')}"></span>
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="p-4">
+                            <span class="flex gap-1">
+                                <button class="p-1 text-gray-500 hover:text-teal-600 rounded-full hover:bg-gray-100 edit-btn" title="Edit Item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                                </button>
+                                <button class="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100 adjust-btn" title="Adjust Stock">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                                </button>
+                                <button class="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-gray-100 delete-btn" title="Delete Item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                                </button>
+                            </span>
+                        </td>
+                     `;
+                     inventoryTableBody.appendChild(row);
+                 });
+
+                // Update summary counts based on the *full* dataset
+                updateSummaryCounts();
+
+                 // Re-attach listeners for buttons in the new rows
+                 attachTableActionListeners();
+             }
+
+             function updateSummaryCounts() {
+                let total = inventoryData.length;
+                let low = 0;
+                let expired = 0;
+
+                inventoryData.forEach(item => {
+                    if (isExpired(item.expiry)) {
+                        expired++;
+                    } else if (item.quantity < item.lowStock) {
+                        low++;
+                    }
+                });
+
+                if(totalItemsCount) totalItemsCount.textContent = total;
+                if(lowStockCount) lowStockCount.textContent = low;
+                if(expiredCount) expiredCount.textContent = expired;
+             }
+
+             // --- Populate Modals ---
+             function findItemById(id) {
+                 return inventoryData.find(item => item.id === parseInt(id));
+             }
+
+             function populateEditModal(itemId) {
+                 const item = findItemById(itemId);
+                 if (!item) return;
+                 document.getElementById('editItemId').value = item.id;
+                 document.getElementById('editItemName').value = item.name;
+                 document.getElementById('editCategory').value = item.category;
+                 document.getElementById('editExpiryDate').value = item.expiry || '';
+                 document.getElementById('editCurrentQuantity').value = item.quantity; // Display current qty
+                 document.getElementById('editUnit').value = item.unit;
+                 document.getElementById('editLowStockThreshold').value = item.lowStock || '';
+                 document.getElementById('editSupplier').value = item.supplier || '';
+                 document.getElementById('editNotes').value = item.notes || '';
+                 openModalHelper('editItemModal'); // Use helper to open
+             }
+
+             function populateAdjustModal(itemId) {
+                 const item = findItemById(itemId);
+                 if (!item) return;
+                 document.getElementById('adjustItemId').value = item.id;
+                 document.getElementById('adjustItemName').textContent = item.name;
+                 document.getElementById('adjustCurrentQuantityDisplay').textContent = item.quantity;
+                 document.getElementById('adjustmentValue').value = ''; // Clear previous value
+                 document.getElementById('adjustmentReason').value = ''; // Clear previous reason
+                 document.getElementById('adjustmentType').value = 'decrease'; // Default to decrease
+                 openModalHelper('adjustStockModal'); // Use helper to open
+             }
+
+             function populateDeleteModal(itemId) {
+                 const item = findItemById(itemId);
+                 if (!item) return;
+                 document.getElementById('deleteItemIdValue').value = item.id;
+                 document.getElementById('deleteItemName').textContent = item.name;
+                 openModalHelper('deleteConfirmModal'); // Use helper to open
+             }
+
+             // --- Event Handlers ---
+
+             // Add item form submission
+             if (addItemForm) {
+                 addItemForm.addEventListener('submit', (e) => {
+                     e.preventDefault();
+                     const formData = new FormData(addItemForm);
+                     const newItem = Object.fromEntries(formData.entries());
+                     newItem.id = Date.now(); // Simple unique ID generation for demo
+                     newItem.quantity = parseInt(newItem.quantity) || 0; // Ensure quantity is number
+                     newItem.lowStock = parseInt(newItem.lowStockThreshold) || 0;
+
+                     inventoryData.push(newItem);
+                     console.log("Adding Item:", newItem);
+                     // Find and click the close button
+                     addItemForm.closest('.modal').querySelector('[data-modal-close]').click();
+                     filterAndRenderTable(); // Re-render table
+                 });
+             }
+
+             // Edit item form submission
+             if (editItemForm) {
+                 editItemForm.addEventListener('submit', (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(editItemForm);
+                      const updatedData = Object.fromEntries(formData.entries());
+                      const itemId = parseInt(updatedData.itemId);
+
+                      inventoryData = inventoryData.map(item => {
+                          if (item.id === itemId) {
+                              return {
+                                  ...item, // Keep existing quantity
+                                  name: updatedData.itemName,
+                                  category: updatedData.category,
+                                  expiry: updatedData.expiryDate || null,
+                                  unit: updatedData.unit,
+                                  lowStock: parseInt(updatedData.lowStockThreshold) || 0,
+                                  supplier: updatedData.supplier,
+                                  notes: updatedData.notes
+                              };
+                          }
+                          return item;
+                      });
+                      console.log("Updating Item ID:", itemId, "with data:", updatedData);
+                      editItemForm.closest('.modal').querySelector('[data-modal-close]').click();
+                      filterAndRenderTable(); // Re-render table
+                 });
+             }
+
+             // Adjust stock form submission
+            if (adjustStockForm) {
+                adjustStockForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(adjustStockForm);
+                    const adjustmentData = Object.fromEntries(formData.entries());
+                    const itemId = parseInt(adjustmentData.itemId);
+                    const value = parseInt(adjustmentData.adjustmentValue);
+                    const type = adjustmentData.adjustmentType;
+
+                    inventoryData = inventoryData.map(item => {
+                        if (item.id === itemId) {
+                            let newQuantity = item.quantity;
+                            if (type === 'increase') {
+                                newQuantity += value;
+                            } else if (type === 'decrease') {
+                                newQuantity -= value;
+                            } else if (type === 'set') {
+                                newQuantity = value;
+                            }
+                            newQuantity = Math.max(0, newQuantity); // Prevent negative stock
+                            return { ...item, quantity: newQuantity };
+                        }
+                        return item;
+                    });
+
+                    console.log("Adjusting Stock for ID:", itemId, "Data:", adjustmentData);
+                    adjustStockForm.closest('.modal').querySelector('[data-modal-close]').click();
+                    filterAndRenderTable(); // Re-render table
+                });
+            }
+
+             // Confirm delete button
+            if (confirmDeleteBtn) {
+                 confirmDeleteBtn.addEventListener('click', () => {
+                     const itemId = parseInt(document.getElementById('deleteItemIdValue').value);
+                     inventoryData = inventoryData.filter(item => item.id !== itemId);
+                     console.log("Deleting Item ID:", itemId);
+                     confirmDeleteBtn.closest('.modal').querySelector('[data-modal-close]').click();
+                     filterAndRenderTable(); // Re-render table
+                 });
+            }
+
+            // Attach listeners to buttons within the table (needs to be done after rendering)
+            function attachTableActionListeners() {
+                inventoryTableBody.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const row = e.target.closest('tr');
+                        const itemId = row.dataset.itemId;
+                        populateEditModal(itemId);
+                    });
+                });
+                 inventoryTableBody.querySelectorAll('.adjust-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const row = e.target.closest('tr');
+                        const itemId = row.dataset.itemId;
+                        populateAdjustModal(itemId);
+                    });
+                });
+                inventoryTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                         const row = e.target.closest('tr');
+                         const itemId = row.dataset.itemId;
+                         populateDeleteModal(itemId);
+                    });
+                });
+            }
+
+            // --- Filtering and Searching ---
+            function filterAndRenderTable() {
+                const categoryFilter = filterCategory.value;
+                const statusFilter = filterStatus.value;
+                const searchTerm = searchInput.value.toLowerCase();
+
+                const filteredData = inventoryData.filter(item => {
+                    // Category Filter
+                    if (categoryFilter !== 'all' && item.category !== categoryFilter) {
+                        return false;
+                    }
+                    // Status Filter
+                    const isItemExpired = isExpired(item.expiry);
+                    const isLowStock = item.quantity < item.lowStock;
+                    let currentStatus = 'ok';
+                    if (isItemExpired) currentStatus = 'expired';
+                    else if (isLowStock) currentStatus = 'low';
+
+                    if (statusFilter !== 'all' && currentStatus !== statusFilter) {
+                        return false;
+                    }
+                    // Search Filter (simple name check)
+                    if (searchTerm && !item.name.toLowerCase().includes(searchTerm)) {
+                        return false;
+                    }
+                    return true; // Keep item if all checks pass
+                });
+
+                renderInventoryTable(filteredData);
+            }
+
+            // Add event listeners for filters and search
+            if(filterCategory) filterCategory.addEventListener('change', filterAndRenderTable);
+            if(filterStatus) filterStatus.addEventListener('change', filterAndRenderTable);
+            if(searchInput) searchInput.addEventListener('input', filterAndRenderTable);
+
+            // --- Initial Load ---
+            filterAndRenderTable(); // Initial render of the table
+            console.log("Merged Medical Inventory loaded.");
+            
+        });
+    </script>
+
+</body>
+</html>

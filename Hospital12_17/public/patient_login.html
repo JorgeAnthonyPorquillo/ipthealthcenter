@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Barangay Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Fade Animation for Toggle Switching */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Modal styles */
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
+        body.modal-active { overflow: hidden; }
+        
+        /* Scrollable Modal Body */
+        .modal-body-scroll { max-height: 80vh; overflow-y: auto; }
+        /* Custom Scrollbar for Modal */
+        .modal-body-scroll::-webkit-scrollbar { width: 8px; }
+        .modal-body-scroll::-webkit-scrollbar-track { background: #f8fafc; }
+        .modal-body-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .modal-body-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px] flex flex-col min-h-screen"> <!-- Added flex col to push footer down -->
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain" onerror="this.style.display='none'">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links - Centered and Aligned -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <!-- Public-Facing Pages -->
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                <!-- Login Button -->
+                <a href="patient_login.html" class="hidden lg:block bg-teal-50 text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300 text-sm md:text-base">
+                    Login
+                </a>
+                
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <hr class="my-2">
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                    Patient Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content: Login Split Card -->
+    <section class="flex-grow flex items-center justify-center p-4 lg:p-8">
+        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row md:h-[650px]">
+            
+            <!-- Left Side: Image Visual -->
+            <div class="hidden md:block w-1/2 relative bg-teal-900">
+                <img id="login-image" src="https://cdn.prod.website-files.com/5babc11099f97ea5dbcf24d5/66f3142a68e1fe6804b21d00_patient-rights.jpg" 
+                     alt="Barangay Health Service" 
+                     class="absolute inset-0 w-full h-full object-cover opacity-80 transition-opacity duration-500">
+                
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-teal-900 via-teal-900/40 to-transparent"></div>
+                
+                <!-- Text Content Over Image -->
+                <div class="absolute bottom-0 left-0 p-10 text-white z-10 w-full">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-teal-500/20 p-1.5 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </span>
+                            <span class="text-xs font-bold tracking-widest text-teal-200 uppercase">Secure Portal</span>
+                        </div>
+                        <h2 id="image-title" class="text-3xl font-bold mb-2">Patient Access</h2>
+                        <p id="image-desc" class="text-teal-100 text-sm leading-relaxed">
+                            Book appointments, view medical history, and manage your family's health records from the comfort of your home.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Login Form -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+                
+                <!-- Header for Mobile (since image is hidden) -->
+                <div class="md:hidden text-center mb-6">
+                    <h1 class="text-2xl font-bold text-teal-700">Barangay Health Center</h1>
+                </div>
+
+                <!-- Toggle Switch (Pill Shape) -->
+                <div class="bg-gray-100 p-1 rounded-full flex mb-8 max-w-sm mx-auto w-full relative">
+                    <button id="btn-patient" class="w-1/2 py-2 text-sm font-semibold rounded-full shadow-sm bg-white text-teal-700 transition-all duration-300">
+                        Patient Login
+                    </button>
+                    <button id="btn-admin" class="w-1/2 py-2 text-sm font-semibold rounded-full text-gray-500 hover:text-teal-600 transition-all duration-300">
+                        Admin Login
+                    </button>
+                </div>
+
+                <!-- Dynamic Form Title -->
+                <div class="mb-6 fade-in" id="form-header">
+                    <h2 class="text-3xl font-bold text-gray-900">Welcome Back</h2>
+                    <p class="text-gray-500 mt-2">Please enter your details to sign in.</p>
+                </div>
+
+                <!-- Form -->
+                <form id="login-form" class="space-y-5 fade-in">
+                    <input type="hidden" id="role-input" value="patient">
+                    
+                    <div>
+                        <label id="label-identity" for="identity" class="block text-sm font-medium text-gray-700 mb-1">Email Address or Patient ID</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <!-- Changed icon to generic user/ID icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </span>
+                            <input type="text" id="identity" name="identity" required 
+                                class="w-full pl-10 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                                placeholder="email@example.com or PID-12345">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input type="password" id="password" name="password" required 
+                                class="w-full pl-10 pr-10 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                                placeholder="••••••••">
+                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-teal-600 cursor-pointer">
+                                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500">
+                            <span class="ml-2">Remember me</span>
+                        </label>
+                        <button type="button" class="open-forgot-password-modal font-semibold text-teal-600 hover:text-teal-700 hover:underline">
+                            Forgot password?
+                        </button>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full bg-teal-600 text-white font-bold py-3.5 px-4 rounded-lg shadow-lg hover:bg-teal-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                        Sign In as Patient
+                    </button>
+                </form>
+
+                <!-- Footer Links -->
+                <div class="mt-8 text-center" id="form-footer">
+                    <p class="text-sm text-gray-600 fade-in">
+                        Don't have an account? 
+                        <button type="button" class="open-register-modal font-bold text-teal-600 hover:text-teal-800 transition">
+                            Register now
+                        </button>
+                    </p>
+                </div>
+                
+                <!-- Admin Footer Hint (Hidden by default) -->
+                <div id="admin-footer" class="mt-8 text-center hidden fade-in">
+                    <p class="text-xs text-gray-400">
+                        <span class="block font-semibold text-gray-500 mb-1">Authorized Personnel Only</span>
+                        Please contact IT Support if you lost your credentials.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2025 Barangay Health Center. All rights reserved.</p>
+            <div class="flex justify-center gap-4 mt-2 text-sm text-gray-400">
+                <a href="privacy_policy.html" class="hover:text-teal-600">Privacy Policy</a>
+                <span class="text-gray-300">|</span>
+                <a href="terms_of_service.html" class="hover:text-teal-600">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODALS -->
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm hidden opacity-0 pointer-events-none">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform scale-95">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 19l-1 1-1-1-2-2-2-2-.707-.707a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">Reset Password</h3>
+                <p class="text-gray-500 text-sm mt-1">Enter your email or ID to receive a reset code.</p>
+            </div>
+            <form id="forgot-password-form" class="space-y-4">
+                <input type="text" class="w-full border border-gray-200 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition" placeholder="Email / ID" required>
+                <button type="submit" class="w-full bg-teal-600 text-white rounded-lg py-2.5 font-semibold hover:bg-teal-700 transition shadow-lg shadow-teal-500/30">Send Reset Code</button>
+            </form>
+            <button class="modal-close w-full mt-4 text-sm text-gray-500 hover:text-gray-800">Cancel</button>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL (Expanded & Professional) -->
+    <div id="register-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm hidden opacity-0 pointer-events-none">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-0 overflow-hidden transform scale-95 flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-teal-600 to-teal-700 p-5 text-white flex justify-between items-center shrink-0">
+                <div>
+                    <h3 class="text-xl font-bold">New Patient Registration</h3>
+                    <p class="text-teal-100 text-xs mt-0.5">Complete your medical profile to proceed.</p>
+                </div>
+                <button class="modal-close text-white hover:bg-white/20 p-2 rounded-full transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+            
+            <!-- Scrollable Body -->
+            <div class="p-8 modal-body-scroll flex-grow bg-gray-50">
+                <form id="register-form" class="space-y-8">
+                    
+                    <!-- Section 1: Personal Information -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
+                            <div class="bg-teal-100 p-1.5 rounded-lg text-teal-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
+                            <h4 class="text-md font-bold text-gray-800">Personal Information</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">First Name <span class="text-red-500">*</span></label>
+                                <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Middle Name</label>
+                                <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Last Name <span class="text-red-500">*</span></label>
+                                <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date of Birth <span class="text-red-500">*</span></label>
+                                <input type="date" id="dob-input" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition" required>
+                                <p class="text-[10px] text-gray-400 mt-1">Must be prior to today.</p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Gender <span class="text-red-500">*</span></label>
+                                <select class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 bg-white" required>
+                                    <option value="">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Civil Status</label>
+                                <select class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 bg-white">
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Widowed">Widowed</option>
+                                    <option value="Separated">Separated</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Blood Type</label>
+                                <select class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 bg-white">
+                                    <option value="">Unknown</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Contact & Address -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
+                            <div class="bg-blue-100 p-1.5 rounded-lg text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></div>
+                            <h4 class="text-md font-bold text-gray-800">Contact Details</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Mobile Number <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-3 text-gray-500 text-sm font-medium">🇵🇭</span>
+                                    <input type="tel" class="w-full pl-9 border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm" placeholder="+63 9XX..." oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email Address <span class="text-red-500">*</span></label>
+                                <input type="email" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm" required>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Complete Address <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm" placeholder="House No., Street Name, Barangay Bahay Toro, Quezon City" required>
+                            <p class="text-[10px] text-teal-600 mt-1 font-medium">Note: You must be a resident of Barangay Bahay Toro.</p>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Medical & Emergency -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
+                            <div class="bg-red-100 p-1.5 rounded-lg text-red-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg></div>
+                            <h4 class="text-md font-bold text-gray-800">Medical & Emergency</h4>
+                        </div>
+                        
+                        <!-- Emergency Contact -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emergency Contact Name</label>
+                                <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 text-sm focus:ring-2 focus:ring-teal-500" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Relationship</label>
+                                <input type="text" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 text-sm focus:ring-2 focus:ring-teal-500" placeholder="e.g. Spouse, Parent" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Emergency Mobile</label>
+                                <input type="tel" class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 text-sm focus:ring-2 focus:ring-teal-500" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                            </div>
+                        </div>
+
+                        <!-- Illness History -->
+                        <div class="mb-4">
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">Medical History / Known Conditions</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                <label class="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-teal-600 focus:ring-teal-500">
+                                    <span class="text-sm text-gray-700">Hypertension</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-teal-600 focus:ring-teal-500">
+                                    <span class="text-sm text-gray-700">Diabetes</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-teal-600 focus:ring-teal-500">
+                                    <span class="text-sm text-gray-700">Asthma</span>
+                                </label>
+                                <label class="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-teal-600 focus:ring-teal-500">
+                                    <span class="text-sm text-gray-700">Allergies</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Other Medical Notes / Allergies</label>
+                            <textarea class="w-full border border-gray-300 rounded-lg p-2.5 mt-1 text-sm focus:ring-2 focus:ring-teal-500" rows="2" placeholder="List any maintenance medications or specific allergies..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Account Security -->
+                    <div class="bg-gray-100 p-6 rounded-xl border border-gray-200">
+                        <div class="flex items-center gap-2 mb-4 border-b border-gray-200 pb-2">
+                            <div class="bg-gray-700 p-1.5 rounded-lg text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></div>
+                            <h4 class="text-md font-bold text-gray-800">Account Security</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Password <span class="text-red-500">*</span></label>
+                                <div class="relative mt-1">
+                                    <input type="password" id="reg-password" class="w-full border border-gray-300 rounded-lg p-2.5 pr-10 text-sm focus:ring-2 focus:ring-teal-500 bg-white" placeholder="Minimum 8 characters" required>
+                                    <button type="button" id="toggle-reg-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-teal-600 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Confirm Password <span class="text-red-500">*</span></label>
+                                <div class="relative mt-1">
+                                    <input type="password" id="reg-confirm-password" class="w-full border border-gray-300 rounded-lg p-2.5 pr-10 text-sm focus:ring-2 focus:ring-teal-500 bg-white" required>
+                                    <button type="button" id="toggle-reg-confirm-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-teal-600 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="flex items-start gap-3 py-2 px-1">
+                        <input type="checkbox" id="terms" class="mt-1 h-4 w-4 text-teal-600 rounded border-gray-300 focus:ring-teal-500" required>
+                        <label for="terms" class="text-xs text-gray-600 leading-snug">
+                            I certify that I am a resident of Barangay Bahay Toro and that the information provided is true and correct. I understand that falsifying information may lead to the suspension of my account. I agree to the <a href="#" class="text-teal-600 underline font-semibold">Data Privacy Policy</a>.
+                        </label>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200 flex justify-end gap-3">
+                        <button type="button" class="modal-close px-6 py-2.5 rounded-lg text-gray-600 font-semibold hover:bg-gray-200 transition text-sm">Cancel</button>
+                        <button type="submit" class="px-8 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-lg font-bold hover:shadow-lg hover:from-teal-700 hover:to-teal-800 transition transform hover:-translate-y-0.5 text-sm">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Modal (Unified) -->
+    <div id="otp-modal" class="modal fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm hidden opacity-0 pointer-events-none">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform scale-95 text-center">
+            <h3 class="text-xl font-bold text-gray-900">Verify Account</h3>
+            <p id="otp-message" class="text-gray-500 text-sm mt-2 mb-6">Please enter the 6-digit code sent to your email.</p>
+            
+            <form id="otp-form" class="space-y-4">
+                <div class="flex justify-center gap-2">
+                    <input type="text" id="otp-input" maxlength="6" class="w-full text-center text-2xl tracking-[0.5em] font-bold border border-gray-300 rounded-lg py-3 uppercase focus:ring-teal-500 focus:border-transparent outline-none transition" placeholder="000000" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                </div>
+                <button type="submit" class="w-full bg-teal-600 text-white rounded-lg py-3 font-bold hover:bg-teal-700 transition shadow-lg shadow-teal-500/30">Verify Code</button>
+            </form>
+            
+            <div class="mt-4 text-sm text-gray-500">
+                Didn't receive code? 
+                <button id="resend-otp-btn" class="font-semibold text-teal-600 hover:text-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition" disabled>
+                    Resend in <span id="resend-timer">60</span>s
+                </button>
+            </div>
+            <button class="modal-close w-full mt-6 text-sm text-gray-400 hover:text-gray-600">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification (Hidden by default) -->
+    <div id="toast-notification" class="fixed top-24 right-5 z-[100] flex items-center gap-3 px-6 py-4 rounded-xl shadow-xl bg-red-600 text-white transform translate-x-full opacity-0 pointer-events-none transition-all duration-300 ease-out">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <div>
+            <span class="block font-bold">Access Denied</span>
+            <span id="toast-message" class="text-sm">You have not logged in yet.</span>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            }
+
+            // --- Tab Switching Logic (Patient vs Admin) ---
+            const btnPatient = document.getElementById('btn-patient');
+            const btnAdmin = document.getElementById('btn-admin');
+            const roleInput = document.getElementById('role-input');
+            
+            // UI Elements to update
+            const formHeader = document.getElementById('form-header');
+            const formTitle = formHeader.querySelector('h2');
+            const formSubtitle = formHeader.querySelector('p');
+            const labelIdentity = document.getElementById('label-identity');
+            const inputIdentity = document.getElementById('identity');
+            const submitBtn = document.getElementById('submit-btn');
+            const footerPatient = document.getElementById('form-footer');
+            const footerAdmin = document.getElementById('admin-footer');
+            
+            // Image Visual Elements
+            const loginImage = document.getElementById('login-image');
+            const imageTitle = document.getElementById('image-title');
+            const imageDesc = document.getElementById('image-desc');
+
+            function switchTab(role) {
+                formHeader.classList.remove('fade-in');
+                void formHeader.offsetWidth; // trigger reflow
+                formHeader.classList.add('fade-in');
+
+                roleInput.value = role;
+
+                if (role === 'patient') {
+                    btnPatient.className = "w-1/2 py-2 text-sm font-semibold rounded-full shadow-sm bg-white text-teal-700 transition-all duration-300";
+                    btnAdmin.className = "w-1/2 py-2 text-sm font-semibold rounded-full text-gray-500 hover:text-teal-600 transition-all duration-300";
+
+                    formTitle.textContent = "Welcome Back";
+                    formSubtitle.textContent = "Please enter your details to sign in.";
+                    labelIdentity.textContent = "Email Address or Patient ID";
+                    inputIdentity.placeholder = "email@example.com or PID-12345";
+                    submitBtn.textContent = "Sign In as Patient";
+                    
+                    submitBtn.classList.remove('bg-gray-800', 'hover:bg-gray-900');
+                    submitBtn.classList.add('bg-teal-600', 'hover:bg-teal-700');
+
+                    footerPatient.classList.remove('hidden');
+                    footerAdmin.classList.add('hidden');
+
+                    loginImage.style.opacity = '0';
+                    setTimeout(() => {
+                        loginImage.src = "https://cdn.prod.website-files.com/5babc11099f97ea5dbcf24d5/66f3142a68e1fe6804b21d00_patient-rights.jpg";
+                        loginImage.style.opacity = '0.8';
+                        imageTitle.textContent = "Patient Access";
+                        imageDesc.textContent = "Book appointments, view medical history, and manage your family's health records from the comfort of your home.";
+                    }, 300);
+
+                } else {
+                    btnAdmin.className = "w-1/2 py-2 text-sm font-semibold rounded-full shadow-sm bg-white text-gray-800 transition-all duration-300";
+                    btnPatient.className = "w-1/2 py-2 text-sm font-semibold rounded-full text-gray-500 hover:text-gray-700 transition-all duration-300";
+
+                    formTitle.textContent = "Admin Portal";
+                    formSubtitle.textContent = "Restricted access for medical staff.";
+                    labelIdentity.textContent = "Username or Employee ID";
+                    inputIdentity.placeholder = "admin.user";
+                    submitBtn.textContent = "Sign In as Admin";
+
+                    submitBtn.classList.remove('bg-teal-600', 'hover:bg-teal-700');
+                    submitBtn.classList.add('bg-gray-800', 'hover:bg-gray-900');
+
+                    footerPatient.classList.add('hidden');
+                    footerAdmin.classList.remove('hidden');
+
+                    loginImage.style.opacity = '0';
+                    setTimeout(() => {
+                        loginImage.src = "https://img.freepik.com/free-photo/doctor-hospital_1098-19685.jpg?semt=ais_hybrid&w=740&q=80";
+                        loginImage.style.opacity = '0.8';
+                        imageTitle.textContent = "Staff Dashboard";
+                        imageDesc.textContent = "Securely manage patient records, clinic schedules, and daily operations.";
+                    }, 300);
+                }
+            }
+
+            btnPatient.addEventListener('click', () => switchTab('patient'));
+            btnAdmin.addEventListener('click', () => switchTab('admin'));
+
+            // Password Toggle (Login)
+            const toggleBtn = document.getElementById('toggle-password');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const input = document.getElementById('password');
+                    const eye = document.getElementById('eye-icon');
+                    // Simple toggle logic assuming SVG paths
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                    } else {
+                        input.type = 'password';
+                    }
+                });
+            }
+
+            // Password Toggle (Registration)
+            const toggleRegBtn = document.getElementById('toggle-reg-password');
+            if (toggleRegBtn) {
+                toggleRegBtn.addEventListener('click', () => {
+                    const input = document.getElementById('reg-password');
+                    input.type = input.type === 'password' ? 'text' : 'password';
+                });
+            }
+
+            // Confirm Password Toggle (Registration)
+            const toggleRegConfirmBtn = document.getElementById('toggle-reg-confirm-password');
+            if (toggleRegConfirmBtn) {
+                toggleRegConfirmBtn.addEventListener('click', () => {
+                    const input = document.getElementById('reg-confirm-password');
+                    input.type = input.type === 'password' ? 'text' : 'password';
+                });
+            }
+
+            // --- Login Form Submit ---
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const btn = loginForm.querySelector('button[type="submit"]');
+                    const role = roleInput.value;
+                    
+                    btn.disabled = true;
+                    btn.innerHTML = 'Verifying...';
+                    btn.classList.add('opacity-75', 'cursor-wait');
+                    
+                    setTimeout(() => {  
+                         if (role === 'patient') {
+                            window.location.href = 'user_logged.html'; // REDIRECT TO PATIENT DASHBOARD
+                        } else {
+                            window.location.href = 'Admin/AdminDashboard.html'; // REDIRECT TO ADMIN DASHBOARD
+                        }
+                    }, 800);
+                });
+            }
+
+            // --- Check URL for alerts (Login Required Toast) ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const alertType = urlParams.get('alert');
+            
+            if (alertType === 'login_required') {
+                const toast = document.getElementById('toast-notification');
+                // Remove from URL so it doesn't persist on refresh
+                history.replaceState(null, '', window.location.pathname);
+                
+                // Show Toast
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+                    toast.classList.add('translate-x-0', 'opacity-100');
+                    // Hide after 4 seconds
+                    setTimeout(() => {
+                         toast.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+                         toast.classList.remove('translate-x-0', 'opacity-100');
+                    }, 4000);
+                }, 100);
+            }
+
+            // --- 2FA / OTP Logic Hookup ---
+            const otpModal = document.getElementById('otp-modal');
+            const otpMessage = document.getElementById('otp-message');
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            const registerForm = document.getElementById('register-form');
+            const otpForm = document.getElementById('otp-form');
+            
+            let resendTimerInterval;
+
+            function startResendTimer() {
+                const resendBtn = document.getElementById('resend-otp-btn');
+                const timerSpan = document.getElementById('resend-timer');
+                let timeLeft = 60; 
+
+                resendBtn.disabled = true;
+                resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                resendBtn.innerHTML = `Resend in <span id="resend-timer">${timeLeft}</span>s`;
+                
+                if (resendTimerInterval) clearInterval(resendTimerInterval);
+
+                resendTimerInterval = setInterval(() => {
+                    timeLeft--;
+                    const span = document.getElementById('resend-timer'); 
+                    if (span) span.textContent = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(resendTimerInterval);
+                        resendBtn.disabled = false;
+                        resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        resendBtn.textContent = "Resend Code";
+                    }
+                }, 1000);
+            }
+
+            // 1. Hook Forgot Password Submit -> Show OTP
+            forgotPasswordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                toggleModal('forgot-password-modal', false);
+                otpMessage.textContent = "Please enter the 6-digit code sent to your email/mobile.";
+                setTimeout(() => {
+                    toggleModal('otp-modal', true);
+                    startResendTimer();
+                }, 300);
+            });
+
+            // 2. Hook Register Submit -> Show OTP
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                toggleModal('register-modal', false);
+                otpMessage.textContent = "Please enter the 6-digit code sent to your email address.";
+                setTimeout(() => {
+                    toggleModal('otp-modal', true);
+                    startResendTimer();
+                }, 300);
+            });
+
+            // 3. Hook Resend Click -> Restart Timer
+            document.getElementById('resend-otp-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert("New code sent!");
+                startResendTimer();
+            });
+
+            // 4. Hook OTP Submit -> Final Success -> Redirect
+            otpForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                toggleModal('otp-modal', false);
+                alert("Verification Successful! You are now logged in.");
+                window.location.href = 'user_logged.html'; // REDIRECT TO PATIENT DASHBOARD
+            });
+
+            // --- Modal Logic ---
+            function toggleModal(modalId, show) {
+                const modal = document.getElementById(modalId);
+                if (!modal) return;
+                const content = modal.querySelector('.modal-content');
+
+                if (show) {
+                    modal.classList.remove('hidden', 'pointer-events-none');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        content.classList.remove('scale-95');
+                        content.classList.add('scale-100');
+                    }, 10);
+                    document.body.classList.add('modal-active');
+                } else {
+                    modal.classList.add('opacity-0');
+                    content.classList.remove('scale-100');
+                    content.classList.add('scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('hidden', 'pointer-events-none');
+                        document.body.classList.remove('modal-active');
+                    }, 250);
+                }
+            }
+
+            // Bind Modals
+            document.querySelectorAll('.open-forgot-password-modal').forEach(el => 
+                el.addEventListener('click', () => toggleModal('forgot-password-modal', true)));
+            
+            document.querySelectorAll('.open-register-modal').forEach(el => 
+                el.addEventListener('click', () => {
+                    // Set DOB Max Date to Yesterday
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const dobInput = document.getElementById('dob-input');
+                    if (dobInput) dobInput.max = yesterday.toISOString().split("T")[0];
+                    toggleModal('register-modal', true);
+                }));
+            
+            document.querySelectorAll('.modal-close').forEach(el => 
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleModal(el.closest('.modal').id, false);
+                }));
+
+            // Auto Open Register if ?action=register
+            if (urlParams.get('action') === 'register') {
+                // Set DOB Max Date to Yesterday
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const dobInput = document.getElementById('dob-input');
+                if (dobInput) dobInput.max = yesterday.toISOString().split("T")[0];
+                toggleModal('register-modal', true);
+            }
+            
+            // Close modals with Escape key
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal:not(.hidden)').forEach(modal => {
+                        toggleModal(modal.id, false);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

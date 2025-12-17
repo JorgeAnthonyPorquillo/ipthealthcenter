@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    
+    <style>
+        html { font-family: 'Inter', sans-serif; }
+
+        /* --- Collapsible Sidebar Styles --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar { transition: width 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        #main-content { transition: margin-left 0.3s ease-in-out; }
+
+        /* Desktop Styles */
+        @media (min-width: 1024px) {
+            #sidebar { width: 5rem; z-index: 50; }
+            #main-content { margin-left: 5rem; }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: none; opacity: 0; transition: opacity 0.2s ease-in-out; }
+            .sidebar-link-container, .sidebar-header { justify-content: center; }
+            #content-menu, #user-menu { display: none !important; }
+            .sidebar-header a svg { width: 2rem; height: 2rem; }
+
+            /* Hover Expand */
+            #sidebar:hover { width: 16rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+            #sidebar:hover ~ #main-content { margin-left: 5rem; }
+            #sidebar:hover .sidebar-text, 
+            #sidebar:hover .sidebar-header-text, 
+            #sidebar:hover .sidebar-dropdown-arrow { display: inline-block; opacity: 1; transition-delay: 0.1s; }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header { justify-content: flex-start; }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu { display: block !important; }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1023px) {
+            #sidebar { width: 16rem; transform: translateX(-100%); z-index: 60; }
+            #main-content { margin-left: 0; }
+            body.sidebar-open #sidebar { transform: translateX(0); }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: inline-block; opacity: 1; }
+            .sidebar-link-container, .sidebar-header { justify-content: flex-start; }
+            #sidebar-backdrop { transition: opacity 0.3s ease-in-out; }
+            body:not(.sidebar-open) #sidebar-backdrop { opacity: 0; pointer-events: none; }
+            body.sidebar-open #sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+
+        /* Settings Tab Styles */
+        .tab-btn.active {
+            background-color: #f0fdfa; /* teal-50 */
+            color: #0f766e; /* teal-700 */
+            border-left-width: 4px;
+            border-color: #0d9488; /* teal-600 */
+        }
+
+        /* Custom toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #0d9488;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #0d9488;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Global Layout -->
+    <div class="flex h-screen bg-gray-100">
+
+        <!-- 1. Main Navigation (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+            <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+                <a href="admindashboard.html" class="flex items-center space-x-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                    </svg>
+                    <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">Admin</span>
+                </a>
+                <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <ul class="py-4">
+                    <li>
+                        <a href="admindashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" /><path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                            </span>
+                            <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <ul id="content-menu" class="hidden bg-gray-700">
+                            <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                            <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                            <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0"><path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" /></svg>
+                                <span class="sidebar-text whitespace-nowrap">User Management</span>
+                            </span>
+                            <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <ul id="user-menu" class="hidden bg-gray-700">
+                            <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                            <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden h-screen">
+            
+            <!-- Header -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                </button>
+                
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">Admin Settings</h1>
+                    <p class="text-sm text-gray-500">Manage system preferences and your account.</p>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            <div class="hidden md:block text-left">
+                                <span class="font-semibold text-sm text-gray-700">Admin User</span>
+                                <span class="block text-xs text-gray-500">Administrator</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-gray-500 hidden md:block"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+                    
+                    <!-- Settings Navigation (Static) -->
+                    <aside class="w-full md:w-64 flex-shrink-0">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <nav class="flex flex-col">
+                                <button onclick="switchTab('general')" id="tab-general" class="tab-btn active text-left px-6 py-4 font-medium text-sm hover:bg-gray-50 transition border-l-4 border-transparent">
+                                    General Settings
+                                </button>
+                                <button onclick="switchTab('security')" id="tab-security" class="tab-btn text-left px-6 py-4 font-medium text-sm text-gray-600 hover:bg-gray-50 transition border-l-4 border-transparent">
+                                    Security & Access
+                                </button>
+                                <button onclick="switchTab('notifications')" id="tab-notifications" class="tab-btn text-left px-6 py-4 font-medium text-sm text-gray-600 hover:bg-gray-50 transition border-l-4 border-transparent">
+                                    System Notifications
+                                </button>
+                            </nav>
+                        </div>
+                    </aside>
+
+                    <!-- Settings Content -->
+                    <div class="flex-1">
+                        
+                        <!-- 1. GENERAL TAB -->
+                        <div id="content-general" class="settings-content space-y-6">
+                            <!-- Admin Profile Details -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Admin Profile</h2>
+                                <div class="flex items-center gap-6 mb-6">
+                                    <img id="admin-profile-preview" class="h-20 w-20 rounded-full object-cover ring-4 ring-gray-50" src="https://placehold.co/256x256/0d9488/ffffff?text=ADMIN" alt="Admin Photo">
+                                    <div>
+                                        <input type="file" id="file-upload" class="hidden" accept="image/png, image/jpeg, image/jpg">
+                                        <button onclick="document.getElementById('file-upload').click()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+                                            Change Photo
+                                        </button>
+                                        <p class="text-xs text-gray-500 mt-2">JPG, GIF or PNG. Max size of 800K.</p>
+                                    </div>
+                                </div>
+                                <form class="space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                                            <input type="text" value="Admin User" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                            <input type="text" value="System Administrator" class="w-full rounded-md border-gray-300 bg-gray-50 text-gray-500 shadow-sm sm:text-sm py-2 px-3 border cursor-not-allowed" disabled>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                                        <input type="email" value="admin@barangay.gov.ph" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                    </div>
+                                    <div class="pt-2 flex justify-end">
+                                        <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-teal-700 shadow-sm transition">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- System Configuration -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">System Configuration</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-900">Maintenance Mode</h3>
+                                            <p class="text-xs text-gray-500">Prevent users from accessing the portal.</p>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" name="toggle" id="toggle-maint" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                            <label for="toggle-maint" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. SECURITY TAB -->
+                        <div id="content-security" class="settings-content hidden space-y-6">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Change Admin Password</h2>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                        <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                        <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                        <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm py-2 px-3 border">
+                                    </div>
+                                    <div class="pt-2 flex justify-end">
+                                        <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded-md font-medium text-sm hover:bg-teal-700 shadow-sm transition">Update Password</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Two-Factor Authentication</h2>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-700">Require 2FA for all admin logins.</p>
+                                    </div>
+                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="toggle" id="toggle-2fa" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                        <label for="toggle-2fa" class="toggle-label block overflow-hidden h-6 rounded-full bg-teal-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. NOTIFICATIONS TAB -->
+                        <div id="content-notifications" class="settings-content hidden space-y-6">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-6">Email Alerts</h2>
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-900">New Patient Registration</h3>
+                                            <p class="text-xs text-gray-500">Receive email when a new resident registers.</p>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" name="toggle" id="notif-1" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                            <label for="notif-1" class="toggle-label block overflow-hidden h-6 rounded-full bg-teal-600 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <hr class="border-gray-100">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-900">Low Stock Alert</h3>
+                                            <p class="text-xs text-gray-500">Receive email when inventory items are low.</p>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" name="toggle" id="notif-2" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                            <label for="notif-2" class="toggle-label block overflow-hidden h-6 rounded-full bg-teal-600 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                    <hr class="border-gray-100">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-900">System Errors</h3>
+                                            <p class="text-xs text-gray-500">Get notified of critical system failures.</p>
+                                        </div>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" name="toggle" id="notif-3" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                            <label for="notif-3" class="toggle-label block overflow-hidden h-6 rounded-full bg-teal-600 cursor-pointer"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Tab Switching Logic
+            window.switchTab = function(tabName) {
+                const contents = document.querySelectorAll('.settings-content');
+                contents.forEach(el => el.classList.add('hidden'));
+                const buttons = document.querySelectorAll('.tab-btn');
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-gray-600');
+                    btn.classList.remove('text-teal-700', 'bg-teal-50');
+                });
+                document.getElementById('content-' + tabName).classList.remove('hidden');
+                const activeBtn = document.getElementById('tab-' + tabName);
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-gray-600');
+            };
+
+            // Image Upload Preview
+            const fileInput = document.getElementById('file-upload');
+            const previewImage = document.getElementById('admin-profile-preview');
+            if(fileInput && previewImage) {
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if(file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => previewImage.src = e.target.result;
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Sidebar & Dropdown Logic (Same as dashboard)
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+            if (sidebarOpenBtn) sidebarOpenBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+            if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+
+            function setupDropdown(toggleId, menuId, arrowId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                const arrow = document.getElementById(arrowId);
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (window.innerWidth < 1024) {
+                            menu.classList.toggle('hidden');
+                            if (arrow) arrow.classList.toggle('rotate-180');
+                        }
+                    });
+                    if (window.innerWidth >= 1024) {
+                        const listItem = toggle.closest('li');
+                        listItem.addEventListener('mouseenter', () => { menu.classList.remove('hidden'); });
+                        listItem.addEventListener('mouseleave', () => { menu.classList.add('hidden'); });
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu', 'content-arrow');
+            setupDropdown('user-toggle', 'user-menu', 'user-arrow');
+
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if (profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Barangay Bahay Toro Health Center</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Style for the hiding header */
+        #main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Styles for modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        /* Legal text styling */
+        .legal-section {
+            margin-bottom: 2rem;
+        }
+        .legal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937; /* gray-800 */
+            margin-bottom: 0.5rem;
+        }
+        .legal-content {
+            color: #374151; /* gray-700 */
+            line-height: 1.75;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 pt-[72px]">
+
+    <!-- Main Header -->
+    <header id="main-header" class="bg-white shadow-md">
+        <nav class="w-full px-4 lg:px-10 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="Homee.html" class="flex items-center gap-3 text-xl md:text-2xl font-bold text-teal-700 flex-shrink-0">
+                <img src="Images/bbhlogo1-removebg-preview.png" alt="Barangay Bahay Toro Logo" class="h-12 w-auto object-contain">
+                <span class="hidden sm:block">Barangay Bahay Toro Health Center</span>
+                <span class="sm:hidden">Bahay Toro HC</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex flex-grow justify-center gap-6 xl:gap-8 items-center">
+                <a href="Homee.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Home</a>
+                <a href="about.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">About Us</a>
+                <a href="services.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Services</a>
+                <a href="announcements.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">News</a>
+                <a href="contact.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">Contact</a>
+                <a href="faqs.html" class="font-medium text-gray-700 hover:text-teal-600 transition duration-200">FAQs</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex-shrink-0 flex gap-4 items-center">
+                <a href="patient_login.html" class="hidden lg:block bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold hover:bg-teal-50 transition duration-300 text-sm md:text-base">
+                    Login
+                </a>
+                <button id="mobile-menu-toggle" class="lg:hidden text-gray-700 hover:text-teal-600 p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white w-full shadow-lg absolute top-full left-0 z-40 border-t border-gray-200">
+            <div class="flex flex-col p-4 gap-2">
+                <a href="Homee.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Home</a>
+                <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">About Us</a>
+                <a href="services.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Services</a>
+                <a href="announcements.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">News & Announcements</a>
+                <a href="contact.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">Contact Us</a>
+                <a href="faqs.html" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-md font-medium">FAQs</a>
+                <hr class="my-2">
+                <a href="patient_login.html" class="block w-full text-center bg-white text-teal-600 border border-teal-600 px-5 py-2 rounded-full font-semibold transition duration-300">
+                    Patient Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="bg-teal-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Terms of Service</h1>
+            <p class="text-teal-100">Please read these terms carefully before using our services.</p>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="bg-white rounded-xl shadow-lg p-8 md:p-12 border-t-4 border-teal-600">
+            
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Terms of Use – Health Center Website</h2>
+
+            <!-- 1. No Medical Advice -->
+            <div class="legal-section">
+                <h3 class="legal-title">1. No Medical Advice</h3>
+                <div class="legal-content">
+                    <p>The content on the Health Center website is provided for informational and educational purposes only. It is not intended to replace professional medical, nursing, or other healthcare advice, diagnosis, consultation, or treatment in any jurisdiction.</p>
+                </div>
+            </div>
+
+            <!-- 2. Individualized Care -->
+            <div class="legal-section">
+                <h3 class="legal-title">2. Individualized Care</h3>
+                <div class="legal-content">
+                    <p>Treatment for patients varies depending on medical and surgical history, underlying conditions, and other factors. The information on this website is not a substitute for medical advice and is provided to educate healthcare professionals and patients about current treatments and medical research at the Health Center. Patients should always consult a licensed physician before making any medical decisions.</p>
+                </div>
+            </div>
+
+            <!-- 3. Limitation of Liability -->
+            <div class="legal-section">
+                <h3 class="legal-title">3. Limitation of Liability</h3>
+                <div class="legal-content">
+                    <p>By using this website, you agree that the Health Center shall not be liable for any direct, indirect, incidental, consequential, special, punitive, or other damages, including but not limited to fees, fines, penalties, or loss of business, arising from your use of this website, websites accessed through this website, or any content provided herein.</p>
+                </div>
+            </div>
+
+            <!-- 4. Sole Remedy -->
+            <div class="legal-section">
+                <h3 class="legal-title">4. Sole Remedy</h3>
+                <div class="legal-content">
+                    <p>Your sole and exclusive remedy for dissatisfaction with this website is to discontinue its use. While the Health Center strives to provide accurate information, we cannot guarantee the accuracy or completeness of the content, which is provided without any warranties or guarantees of any kind.</p>
+                </div>
+            </div>
+
+            <!-- 5. Indemnification -->
+            <div class="legal-section">
+                <h3 class="legal-title">5. Indemnification</h3>
+                <div class="legal-content">
+                    <p>You agree to indemnify, defend, and hold harmless the Health Center, its parent or subsidiary companies, successors, assigns, licensees, and their respective officers, directors, and employees, from any claims, damages, losses, liabilities, costs, or expenses (including reasonable attorneys’ fees) arising from:</p>
+                    <ul class="list-disc pl-6 mt-2 space-y-1">
+                        <li>Your use of this website</li>
+                        <li>Any breach of this Agreement</li>
+                        <li>Any violation of the terms or conditions of this website</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-200 text-center">
+                <p class="text-gray-600 font-medium italic">
+                    By using this website, you acknowledge that you have read, understood, and agreed to these terms.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-gray-900 to-teal-900 text-white py-16 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo & Socials -->
+                <div class="md:col-span-2">
+                    <a href="Homee.html" class="text-3xl font-extrabold text-white mb-4 block">
+                        Barangay Bahay Toro Health Center
+                    </a>
+                    <p class="text-gray-300 mt-4">Community healthcare for a better you. Focused on prevention and accessible service for all residents.</p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://www.facebook.com/MTAbahaytoro/" target="_blank" class="text-gray-300 hover:text-white transition">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"> 
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links Sections -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">About Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Our Mission</a></li>
+                        <li><a href="Homee.html" class="text-gray-300 hover:text-white">Our Team</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white">Barangay Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Consultation</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Vaccination</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Dental</a></li>
+                        <li><a href="services.html" class="text-gray-300 hover:text-white">Prenatal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white">Residents</h4>
+                    <ul class="space-y-2">
+                        <li><button data-modal-target="auth-gate-modal" class="text-gray-300 hover:text-white text-left">Book Appointment</button></li>
+                        <li><a href="patient_login.html" class="text-gray-300 hover:text-white">Patient Portal</a></li>
+                        <li><a href="faqs.html" class="text-gray-300 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-teal-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+                <p>&copy; 2025 Barangay Bahay Toro Health Center. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="privacy_policy.html" class="hover:text-white">Privacy Policy</a>
+                    <a href="terms_of_service.html" class="hover:text-white font-semibold text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Gate Modal -->
+    <div id="auth-gate-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black bg-opacity-70 hidden">
+        <div class="modal-panel w-full max-w-md bg-white rounded-xl shadow-2xl border-t-4 border-teal-600 text-center">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-teal-800">Appointment Required</h3>
+                <button data-modal-close="auth-gate-modal" class="text-gray-600 hover:text-gray-800 p-2 -mr-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-6">
+                <p class="text-gray-600">To book an appointment, please sign in or register as a resident first.</p>
+                <a href="patient_login.html" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-white bg-teal-600 hover:bg-teal-700 transition duration-300">I am a Registered Patient (Login)</a>
+                <a href="patient_login.html?action=register" class="w-full flex justify-center py-3 px-4 rounded-full shadow-md text-base font-semibold text-teal-600 bg-teal-50 border border-teal-600 hover:bg-teal-100 transition duration-300">I am a New Resident (Register)</a>
+                <button data-modal-close="auth-gate-modal" class="w-full text-sm font-medium text-gray-500 hover:text-gray-700 transition">&larr; Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupHidingHeader();
+            setupMobileMenu();
+            setupModals();
+        });
+
+        function setupHidingHeader() {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+            let lastScrollTop = 0;
+            const headerHeight = header.offsetHeight;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                    header.style.top = `-${headerHeight}px`;
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
+
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconPath = document.getElementById('menu-icon-path');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    const isHidden = mobileMenu.classList.toggle('hidden');
+                    if (isHidden) {
+                        menuIconPath.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
+                        document.body.classList.remove('overflow-hidden');
+                    } else {
+                        menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            }
+        }
+
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal-target]');
+            const modalCloseButtons = document.querySelectorAll('[data-modal-close]');
+            const allModals = document.querySelectorAll('.modal');
+
+            modalTriggers.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = button.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            });
+
+            modalCloseButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = button.closest('.modal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                });
+            });
+            
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    allModals.forEach(modal => {
+                        if (!modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            document.body.classList.remove('overflow-hidden');
+                        }
+                    });
+                }
+            });
+        }
+        
+        window.addEventListener('load', () => {
+             const urlParams = new URLSearchParams(window.location.search);
+             const authGateModal = document.getElementById('auth-gate-modal');
+             if (urlParams.get('action') === 'book' && authGateModal) {
+                 history.replaceState(null, '', window.location.pathname); 
+                 authGateModal.classList.remove('hidden');
+                 authGateModal.classList.add('flex');
+                 document.body.classList.add('overflow-hidden');
+             }
+        });
+    </script>
+</body>
+</html>

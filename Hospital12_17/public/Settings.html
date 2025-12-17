@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | Barangay Bahay Toro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        /* Dropdown Animation Classes */
+        .dropdown-enter { transition: opacity 0.1s ease-out, transform 0.1s ease-out; opacity: 0; transform: scale(0.95); }
+        .dropdown-enter-active { opacity: 1; transform: scale(1); }
+        .dropdown-leave { transition: opacity 0.075s ease-in, transform 0.075s ease-in; opacity: 1; transform: scale(1); }
+        .dropdown-leave-active { opacity: 0; transform: scale(0.95); transform: translateY(-5px); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 pt-[64px]">
+
+    <header class="fixed top-0 w-full bg-white shadow-sm z-50 h-[64px] flex items-center justify-between px-10 border-b border-gray-100">
+        <a href="user_logged.html" class="text-xl font-bold text-teal-800">Barangay Bahay Toro HC</a>
+        
+        <div id="profile-dropdown-container" class="relative cursor-pointer">
+            <div id="profile-trigger" class="flex items-center gap-1 p-1 rounded-full hover:bg-gray-100 transition">
+                <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover border-2 border-teal-500 bg-white" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+
+            <div id="profile-menu" class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 hidden z-50 border border-gray-200">
+                <div class="px-4 py-2 border-b border-gray-100 mb-1">
+                    <p class="text-xs text-gray-500">Signed in as</p>
+                    <p class="text-sm font-semibold text-gray-800 truncate" id="dropdown-user-email">juan.delacruz@email.com</p>
+                </div>
+                
+                <a href="user_logged.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    Home
+                </a>
+                
+                <a href="my_appointments.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                    My Appointments
+                </a>
+
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 font-semibold bg-gray-50 text-teal-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-.21-.83-.39-1.3-.49-.24-.05-.48-.09-.73-.12-.26-.02-.5-.04-.75-.04-.25 0-.49-.02-.75-.04-.25-.03-.49-.07-.73-.12-.47-.1-.92-.28-1.3-.49L2 10.5h16L11.49 3.17zM9.5 16h1c.08 0 .15.02.2.05l.34-.14a3.5 3.5 0 004.99 0l.34.14c.05-.03.12-.05.2-.05h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1zm-5 0h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    Settings
+                </a>
+                
+                <a href="Profile.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                    My Profile
+                </a>
+                
+                <div class="border-t border-gray-100 my-1"></div>
+                
+                <a href="#" id="logout-btn" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                    </svg>
+                    Sign out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-3">Account Settings</h1>
+
+        <div class="flex-1 space-y-8">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Profile Photo</h2>
+                <div class="flex items-center gap-6">
+                    <img id="settings-profile-preview" class="h-24 w-24 rounded-full object-cover ring-4 ring-teal-500 bg-white" src="">
+                    <div>
+                        <input type="file" id="file-upload" class="hidden" accept="image/*">
+                        <button id="change-photo-btn" type="button" class="px-5 py-2.5 border border-gray-300 rounded-lg text-base font-semibold text-gray-700 bg-white hover:bg-gray-50 transition shadow-sm">Change Photo</button>
+                        <p class="text-xs text-gray-500 mt-2">Maximum file size: 100 MB</p> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-2">Personal Details</h2>
+                <form id="general-form" class="space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label><input type="text" id="first_name" class="w-full rounded-lg border-gray-300 shadow-sm border p-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition duration-150"></div>
+                        <div><label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label><input type="text" id="last_name" class="w-full rounded-lg border-gray-300 shadow-sm border p-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition duration-150"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label><input type="email" id="email" class="w-full rounded-lg border-gray-300 shadow-sm border p-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition duration-150"></div>
+                        <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label><input type="text" id="phone" class="w-full rounded-lg border-gray-300 shadow-sm border p-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition duration-150"></div>
+                    </div>
+                    <div><label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label><input type="text" id="address" class="w-full rounded-lg border-gray-300 shadow-sm border p-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition duration-150"></div>
+
+                    <div class="pt-6 flex justify-end">
+                        <button type="submit" class="bg-teal-600 text-white px-8 py-3 rounded-lg font-bold text-base hover:bg-teal-700 shadow-lg transition duration-150">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+        let userId = localStorage.getItem('userId') || '1';
+        const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            setupImageUpload();
+            setupFormSubmit();
+            setupDropdownToggle();
+        });
+
+        function setupDropdownToggle() {
+            const trigger = document.getElementById('profile-trigger');
+            const menu = document.getElementById('profile-menu');
+            const container = document.getElementById('profile-dropdown-container');
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target) && !menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure you want to log out?',
+                    text: "This action will end your current session.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#DC2626', 
+                    cancelButtonColor: '#6B7280', 
+                    confirmButtonText: 'Log out',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Logging out...',
+                            icon: 'info',
+                            showConfirmButton: false,
+                            timer: 1000
+                        }).then(() => {
+                            window.location.href = 'Homee.html'; 
+                        });
+                    }
+                });
+            });
+        }
+
+        function loadUserProfile() {
+            fetch(`${API_BASE_URL}/get-profile?user_id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const user = data.user;
+                        const defaultImg = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+                        const img = user.profile_picture || defaultImg;
+                        
+                        document.getElementById('header-profile-img').src = img;
+                        document.getElementById('dropdown-user-email').innerText = user.email || 'N/A';
+                        
+                        document.getElementById('first_name').value = user.first_name || '';
+                        document.getElementById('last_name').value = user.last_name || '';
+                        document.getElementById('email').value = user.email || '';
+                        document.getElementById('phone').value = user.phone || '';
+                        document.getElementById('address').value = user.address || '';
+                        document.getElementById('settings-profile-preview').src = img;
+                    }
+                });
+        }
+
+        function setupImageUpload() {
+            const btn = document.getElementById('change-photo-btn');
+            const input = document.getElementById('file-upload');
+            const preview = document.getElementById('settings-profile-preview');
+            const headerImg = document.getElementById('header-profile-img');
+            
+            btn.addEventListener('click', () => input.click());
+            
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > MAX_FILE_SIZE_BYTES) {
+                        Swal.fire('File Too Large', 'The selected photo must be smaller than 100 MB.', 'warning');
+                        input.value = ''; 
+                        return; 
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        headerImg.src = e.target.result; 
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function setupFormSubmit() {
+            document.getElementById('general-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const payload = {
+                    user_id: userId,
+                    first_name: document.getElementById('first_name').value,
+                    last_name: document.getElementById('last_name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    profile_picture: document.getElementById('settings-profile-preview').src 
+                };
+
+                fetch(`${API_BASE_URL}/update-profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! Status: ${res.status} ${res.statusText}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // 🛑 REDIRECTION FIX: Redirect to Profile.html on successful save
+                        Swal.fire('Saved!', 'Profile updated. Redirecting...', 'success').then(() => {
+                            window.location.href = 'Profile.html';
+                        });
+                    } else {
+                        Swal.fire('Error', data.error || 'Update failed on the server.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    Swal.fire('Error', 'Server connection failed or invalid response. Check console for details.', 'error');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

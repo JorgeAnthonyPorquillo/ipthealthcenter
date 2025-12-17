@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments | Barangay Bahay Toro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        .table-container::-webkit-scrollbar { height: 6px; }
+        .table-container::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+        /* Dropdown Animation Classes */
+        .dropdown-enter {
+            transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .dropdown-enter-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .dropdown-leave {
+            transition: opacity 0.075s ease-in, transform 0.075s ease-in;
+            opacity: 1;
+            transform: scale(1);
+        }
+        .dropdown-leave-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transform: translateY(-5px); /* Add slight vertical exit transition */
+        }
+        
+        /* Chatbot animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animation-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="pt-[80px]">
+
+    <header class="fixed top-0 w-full bg-white shadow-md z-50 h-[72px] flex items-center justify-between px-4 lg:px-10">
+        <a href="user_logged.html" class="flex items-center gap-3 text-xl font-bold text-teal-700">
+            <img src="Images/bbhlogo1-removebg-preview.png" alt="Logo" class="h-10 w-auto" onerror="this.style.display='none'">
+            <span>Barangay Bahay Toro HC</span>
+        </a>
+
+        <div id="profile-dropdown-container" class="relative">
+            <button type="button" id="user-menu-button" class="flex items-center justify-center rounded-full bg-teal-50 p-1 pl-2 pr-3 hover:ring-2 hover:ring-teal-500 transition focus:outline-none gap-2 border border-teal-100 cursor-pointer">
+                <img id="header-profile-img" class="h-8 w-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Profile">
+                <span class="text-sm font-semibold text-gray-700 hidden sm:block" id="header-user-name">Juan</span>
+                <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div id="user-dropdown-menu" class="hidden absolute right-0 z-50 mt-2 w-64 origin-top-right rounded-xl bg-white py-1 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dropdown-enter">
+                <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 rounded-t-xl">
+                    <p class="text-xs text-gray-500">Signed in as</p>
+                    <p class="text-sm font-bold text-gray-900 truncate" id="dropdown-user-email">juan.delacruz@email.com</p>
+                </div>
+                
+                <a href="user_logged.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Home
+                </a>
+                
+                <a href="my_appointments.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 font-semibold bg-teal-50 text-teal-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                    My Appointments
+                </a>
+                
+                <a href="Profile.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    My Profile
+                </a>
+                
+                <a href="settings.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-.21-.83-.39-1.3-.49-.24-.05-.48-.09-.73-.12-.26-.02-.5-.04-.75-.04-.25 0-.49-.02-.75-.04-.25-.03-.49-.07-.73-.12-.47-.1-.92-.28-1.3-.49L2 10.5h16L11.49 3.17zM9.5 16h1c.08 0 .15.02.2.05l.34-.14a3.5 3.5 0 004.99 0l.34.14c.05-.03.12-.05.2-.05h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1zm-5 0h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1a.5.5 0 00.5.5zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    Settings
+                </a>
+                
+                <div class="border-t border-gray-100 my-1"></div>
+                
+                <a href="#" id="logout-btn" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-b-xl transition">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Sign out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">My Appointments</h1>
+                <p class="text-gray-500 mt-1">Manage your upcoming schedules and view history.</p>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto">
+                <div class="relative w-full md:w-48">
+                    <select id="statusFilter" class="w-full appearance-none bg-white border border-gray-300 text-gray-700 py-2.5 px-4 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <option value="all">All </option>
+                        <option value="Approved">Approved Only</option>
+                        <option value="Pending">Pending Only</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+
+                <a href="user_logged.html" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-200 flex items-center gap-2 whitespace-nowrap">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Book New
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-10">
+            <div class="px-6 py-4 border-b border-gray-100 bg-teal-50/50 flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <h2 class="font-bold text-lg text-teal-900">Upcoming Schedule</h2>
+            </div>
+            
+            <div class="overflow-x-auto table-container">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider font-semibold border-b border-gray-200">
+                            <th class="px-6 py-4">Date</th>
+                            <th class="px-6 py-4">Details (Service & Time)</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="active-appointments-body" class="divide-y divide-gray-100">
+                        </tbody>
+                </table>
+            </div>
+            <div id="loading-msg" class="p-8 text-center text-gray-500">Loading your appointments...</div>
+            <div id="no-active-msg" class="hidden p-8 text-center text-gray-500">No upcoming appointments found.</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden opacity-90">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
+                <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <h2 class="font-bold text-lg text-gray-700">Appointment History</h2>
+            </div>
+
+            <div class="overflow-x-auto table-container">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white text-gray-400 text-xs uppercase tracking-wider font-semibold border-b border-gray-100">
+                            <th class="px-6 py-3">Date</th>
+                            <th class="px-6 py-3">Details</th>
+                            <th class="px-6 py-3">Final Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-appointments-body" class="divide-y divide-gray-50 bg-gray-50/30">
+                            </tbody>
+                </table>
+            </div>
+             <div id="no-history-msg" class="hidden p-8 text-center text-gray-400 text-sm">No history records found.</div>
+        </div>
+
+    </div>
+
+    <!-- Chatbot Floating Button -->
+    <!-- Chatbot Floating Button -->
+    <button id="chatbotBtn"
+        class="fixed bottom-6 right-6 bg-white hover:bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 z-50 border-2 border-teal-600 overflow-hidden">
+        <img src="Images/aiavatar.png" alt="Chat with us" class="w-full h-full object-cover">
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbotModal"
+        class="hidden fixed bottom-24 right-6 w-96 bg-white shadow-2xl rounded-2xl border flex flex-col z-[100]"
+        style="height: 600px; max-height: 80vh;">
+
+        <div class="p-4 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-bold">Barangay Chatbot</h2>
+
+                <!-- Toggle language -->
+                <button id="toggleLangBtn" class="bg-gray-200 px-3 py-1 rounded text-sm">
+                    🇺🇸 English
+                </button>
+            </div>
+
+
+            <!-- Chat Box -->
+            <div id="chatBox" class="flex-1 overflow-y-auto bg-gray-50 rounded p-3 space-y-3 min-h-0 border mb-3">
+                <!-- Welcome Message -->
+                <div class="flex justify-start items-start gap-2">
+                    <div
+                        class="md-avatar flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                        <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div
+                        class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                        Hello! I am your Barangay Health Assistant. Please select a question below.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="hidden text-teal-600 text-xs italic mb-2 ml-2">
+                Health Assistant is typing...
+            </div>
+
+            <!-- Predefined Questions Dropdown (Bottom) -->
+            <div class="relative">
+                <select id="presetSelect"
+                    class="appearance-none w-full border border-teal-300 rounded-lg p-3 pr-8 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent cursor-pointer shadow-sm">
+                    <option value="">Select a question to ask...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-teal-600">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        const API_BASE_URL = 'http://localhost:8080';
+        const activeBody = document.getElementById('active-appointments-body');
+        const historyBody = document.getElementById('history-appointments-body');
+        const loadingMsg = document.getElementById('loading-msg');
+        
+        let userId = localStorage.getItem('userId');
+        if (!userId || userId === 'null') {
+            userId = '1'; 
+            localStorage.setItem('userId', '1');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAppointments();
+            
+            // Setup Filter
+            document.getElementById('statusFilter').addEventListener('change', (e) => {
+                filterActiveTable(e.target.value);
+            });
+
+            // Setup Dropdown Logic
+            setupDropdown();
+            
+            // Initialize chatbot
+            setupChatbot();
+        });
+
+        // Dropdown Toggle Logic
+        function setupDropdown() {
+            const btn = document.getElementById('user-menu-button');
+            const menu = document.getElementById('user-dropdown-menu');
+            const container = document.getElementById('profile-dropdown-container'); // Use container for click logic
+
+            if (btn && menu) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = menu.classList.contains('hidden');
+                    if (isHidden) {
+                        menu.classList.remove('hidden');
+                        requestAnimationFrame(() => {
+                            menu.classList.remove('dropdown-leave', 'dropdown-leave-active');
+                            menu.classList.add('dropdown-enter');
+                            requestAnimationFrame(() => menu.classList.add('dropdown-enter-active'));
+                        });
+                    } else {
+                        closeDropdown(menu);
+                    }
+                });
+
+                // Use the container to handle outside clicks more reliably
+                window.addEventListener('click', (e) => {
+                    if (!container.contains(e.target)) {
+                        closeDropdown(menu);
+                    }
+                });
+                menu.addEventListener('click', (e) => e.stopPropagation());
+            }
+
+            function closeDropdown(menu) {
+                if (menu.classList.contains('hidden')) return;
+                menu.classList.remove('dropdown-enter', 'dropdown-enter-active');
+                menu.classList.add('dropdown-leave');
+                requestAnimationFrame(() => menu.classList.add('dropdown-leave-active'));
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                    menu.classList.remove('dropdown-leave', 'dropdown-leave-active');
+                }, 75);
+            }
+            
+            // LOGOUT CONFIRMATION DIALOG (NEW)
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                closeDropdown(menu); // Close the dropdown menu immediately
+                
+                Swal.fire({
+                    title: 'Are you sure you want to log out?',
+                    text: "This action will end your current session.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#DC2626', 
+                    cancelButtonColor: '#6B7280', 
+                    confirmButtonText: 'Log out',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Logging out...',
+                            icon: 'info',
+                            showConfirmButton: false,
+                            timer: 1000
+                        }).then(() => {
+                            // Final logout action
+                            window.location.href = 'Homee.html'; 
+                        });
+                    }
+                });
+            });
+        }
+
+        // Fetch Data
+        function fetchAppointments() {
+            loadingMsg.classList.remove('hidden');
+            document.getElementById('no-active-msg').classList.add('hidden');
+            document.getElementById('no-history-msg').classList.add('hidden');
+            activeBody.innerHTML = '';
+            historyBody.innerHTML = '';
+
+            fetch(`${API_BASE_URL}/user-appointments?user_id=${userId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    loadingMsg.classList.add('hidden');
+                    renderTables(data);
+                })
+                .catch(err => {
+                    console.error("Error fetching appointments:", err);
+                    loadingMsg.innerText = "Error loading data. Is the server running? Check console.";
+                });
+        }
+
+        // Render Tables
+        function renderTables(appointments) {
+            let activeCount = 0;
+            let historyCount = 0;
+
+            if (!appointments || appointments.length === 0) {
+                document.getElementById('no-active-msg').classList.remove('hidden');
+                document.getElementById('no-history-msg').classList.remove('hidden');
+                return;
+            }
+
+            appointments.forEach(apt => {
+                const status = apt.status || 'Pending'; 
+                
+                if (status === 'Pending' || status === 'Approved') {
+                    activeCount++;
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 transition duration-150';
+                    row.dataset.status = status;
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-bold text-gray-900">${formatDate(apt.appointment_date)}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-700 font-medium">${apt.reason || apt.service}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${getStatusBadge(status)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            ${status === 'Pending' ? 
+                                `<button onclick="cancelAppointment(${apt.id})" class="text-red-500 hover:text-red-700 text-sm font-bold hover:bg-red-50 px-3 py-1 rounded transition">Cancel</button>` : 
+                                `<span class="text-gray-400 text-xs italic">Non-cancellable</span>`
+                            }
+                        </td>
+                    `;
+                    activeBody.appendChild(row);
+                } else {
+                    historyCount++;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${formatDate(apt.appointment_date)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${apt.reason || apt.service}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(status)}</td>
+                    `;
+                    historyBody.appendChild(row);
+                }
+            });
+
+            document.getElementById('no-active-msg').classList.toggle('hidden', activeCount > 0);
+            document.getElementById('no-history-msg').classList.toggle('hidden', historyCount > 0);
+        }
+
+        // Cancel Appointment
+        window.cancelAppointment = function(id) { // Exposed to window scope for onclick
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to cancel this appointment? It will move to history.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`${API_BASE_URL}/cancel-appointment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ appointment_id: id })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to cancel appointment on server.');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Cancelled!', 'Your appointment has been cancelled.', 'success');
+                            fetchAppointments(); 
+                        } else {
+                            Swal.fire('Error', data.message || 'Could not cancel.', 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Cancellation Error:', err);
+                        Swal.fire('Error', 'Server failed to process cancellation.', 'error');
+                    });
+                }
+            })
+        }
+
+        function getStatusBadge(status) {
+            if (status === 'Approved') return `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200"><span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2"></span>Approved</span>`;
+            if (status === 'Pending') return `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-700 border border-yellow-200"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-2 animate-pulse"></span>Pending</span>`;
+            if (status === 'Completed') return `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">Completed</span>`;
+            if (status === 'Cancelled') return `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200 line-through">Cancelled</span>`;
+            return `<span class="text-gray-500 text-xs">${status}</span>`;
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return '-';
+            // Ensure compatibility by parsing the date string correctly
+            const date = new Date(dateString);
+            if (isNaN(date)) return dateString.split('T')[0]; // Fallback to simple date string if invalid
+            
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function filterActiveTable(filterValue) {
+            const rows = document.querySelectorAll('#active-appointments-body tr');
+            let visibleCount = 0;
+            rows.forEach(row => {
+                if (filterValue === 'all' || row.dataset.status === filterValue) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            // Update the "No appointments" message based on the filter result
+            document.getElementById('no-active-msg').classList.toggle('hidden', visibleCount > 0);
+        }
+
+        // --- SYNC PROFILE (Uses profile_picture) ---
+        function syncHeaderProfile() {
+            const userId = localStorage.getItem('userId') || '1';
+            fetch(`http://localhost:8080/get-profile?user_id=${userId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to fetch user profile for sync.');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success && data.user) {
+                        const user = data.user;
+                        const defaultImg = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+                        const imgUrl = user.profile_picture || defaultImg;
+                        
+                        // FIX: Concatenate first_name and last_name for display
+                        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+
+                        // Update Images
+                        document.querySelectorAll('#header-profile-img').forEach(img => {
+                            img.src = imgUrl;
+                        });
+
+                        // Update Name (Used in the expanded user menu trigger)
+                        document.getElementById('header-user-name').textContent = user.first_name || 'User'; 
+                        
+                        // Update Dropdown Email
+                        document.getElementById('dropdown-user-email').textContent = user.email || 'N/A';
+                    }
+                })
+                .catch(err => console.error("Sync error:", err));
+        }
+        // Run immediately
+        document.addEventListener('DOMContentLoaded', syncHeaderProfile);
+        
+        // ===============================================
+        //  CHATBOT FUNCTIONALITY
+        // ===============================================
+        function setupChatbot() {
+            // ===============================================
+            //  DATA (English + Filipino)
+            // ===============================================
+            const data = {
+                en: [
+                    { q: "What are the health center hours?", a: "We are open from 8AM to 5PM." },
+                    { q: "How to get a medical certificate?", a: "Request at the front desk. Bring a valid ID." },
+                    { q: "Do you offer free checkups?", a: "Yes, free checkups are available daily." },
+                    { q: "Is vaccination available?", a: "Vaccines are available depending on schedule." },
+                    { q: "Where is the health center located?", a: "Beside the barangay hall." },
+                    { q: "Do you accept emergencies?", a: "Minor emergencies only." },
+                    { q: "How to get immunization record?", a: "Go to records section and bring old card." },
+                    { q: "What services are offered?", a: "Checkups, vaccines, prenatal and consultation." },
+                    { q: "Is a midwife on duty?", a: "Yes, every day." },
+                    { q: "Do I need an appointment?", a: "Walk-ins are accepted." }
+                ],
+
+                fil: [
+                    { q: "Ano ang oras ng health center?", a: "Bukas kami 8AM hanggang 5PM." },
+                    { q: "Paano kumuha ng medical certificate?", a: "Humingi sa front desk. Magdala ng valid ID." },
+                    { q: "May libre bang checkup?", a: "Oo, araw-araw meron." },
+                    { q: "Available ba ang bakuna?", a: "Depende sa iskedyul ang bakuna." },
+                    { q: "Saan ang health center?", a: "Katabi ng barangay hall." },
+                    { q: "Tumatanggap ba ng emergency?", a: "Minor emergencies lang." },
+                    { q: "Paano kunin ang immunization record?", a: "Pumunta sa records section at dalhin ang lumang card." },
+                    { q: "Anong serbisyo ang meron?", a: "Checkup, bakuna, prenatal, konsultasyon." },
+                    { q: "May midwife ba?", a: "Oo, araw-araw." },
+                    { q: "Kailangan ba ng appointment?", a: "Pwede ang walk-in." }
+                ]
+            };
+
+            let lang = "en"; // default language
+
+            // ===============================================
+            //  UI ELEMENTS
+            // ===============================================
+            const chatbotBtn = document.getElementById("chatbotBtn");
+            const chatbotModal = document.getElementById("chatbotModal");
+            const toggleLangBtn = document.getElementById("toggleLangBtn");
+            const presetSelect = document.getElementById("presetSelect");
+            const chatBox = document.getElementById("chatBox");
+            const typingIndicator = document.getElementById("typingIndicator");
+
+            // ===============================================
+            //  OPEN/CLOSE CHATBOT
+            // ===============================================
+            chatbotBtn.onclick = () => {
+                chatbotModal.classList.toggle("hidden");
+                loadPresetQuestions();
+                loadChatHistory();
+            };
+
+            // ===============================================
+            //  LOAD PREDEFINED QUESTIONS (DROPDOWN)
+            // ===============================================
+            function loadPresetQuestions() {
+                presetSelect.innerHTML = '<option value="">Select a common question...</option>';
+
+                data[lang].forEach(item => {
+                    const option = document.createElement("option");
+                    option.value = item.q;
+                    option.textContent = item.q;
+                    presetSelect.appendChild(option);
+                });
+            }
+
+            // Handle dropdown selection
+            presetSelect.onchange = () => {
+                const val = presetSelect.value;
+                if (!val) return;
+
+                const item = data[lang].find(i => i.q === val);
+                if (item) {
+                    addMessage(item.q, item.a);
+                }
+                presetSelect.value = ""; // Reset
+            };
+
+            // ===============================================
+            //  CHAT BUBBLES + SAVE HISTORY
+            // ===============================================
+            function addMessage(userMsg, botMsg) {
+                // Append user bubble
+                chatBox.innerHTML += `
+                    <div class="flex justify-end animation-fade-in">
+                        <div class="bg-teal-600 text-white p-3 rounded-lg rounded-tr-none max-w-[80%] shadow-sm text-sm">
+                            ${userMsg}
+                        </div>
+                    </div>
+                `;
+
+                // Typing animation
+                typingIndicator.classList.remove("hidden");
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                setTimeout(() => {
+                    typingIndicator.classList.add("hidden");
+
+                    // Append bot bubble
+                    chatBox.innerHTML += `
+                        <div class="flex justify-start items-start gap-2 animation-fade-in">
+                            <div class="flex-shrink-0 w-10 h-10 bg-white rounded-full flex items-center justify-center border border-teal-200 overflow-hidden shadow-sm">
+                                <img src="Images/aiavatar.png" alt="AI Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[80%] text-sm">
+                                ${botMsg}
+                            </div>
+                        </div>
+                    `;
+
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    saveChatHistory();
+
+                }, 600);
+            }
+
+            // ===============================================
+            //  USER SEND MESSAGE
+            // ===============================================
+
+            // Add Enter key support
+
+            // ===============================================
+            //  LANGUAGE TOGGLE
+            // ===============================================
+            toggleLangBtn.onclick = () => {
+                lang = lang === "en" ? "fil" : "en";
+                toggleLangBtn.textContent = lang === "en" ? "🇺🇸 English" : "🇵🇭 Filipino";
+                loadPresetQuestions();
+            };
+
+            // ===============================================
+            //  SAVE + LOAD CHAT HISTORY
+            // ===============================================
+            function saveChatHistory() {
+                localStorage.setItem("chat_history", chatBox.innerHTML);
+            }
+
+            function loadChatHistory() {
+                const history = localStorage.getItem("chat_history");
+                if (history) chatBox.innerHTML = history;
+            }
+        }
+    </script>
+</body>
+</html>
