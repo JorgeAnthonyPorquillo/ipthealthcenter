@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Inquiries - BHCMS</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Heroicons -->
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/solid.js"></script>
+    <script type="module" src="https://unpkg.com/heroicons@2.1.1/dist/outline.js"></script>
+    
+    <style>
+        /* Apply Inter font globally */
+        html {
+            font-family: 'Inter', sans-serif;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        html::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* --- Collapsible Sidebar Styles (Keep existing) --- */
+        #sidebar-nav::-webkit-scrollbar { width: 6px; }
+        #sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 3px; }
+        #sidebar-nav::-webkit-scrollbar-track { background: #2d3748; }
+        #sidebar-nav { scrollbar-width: thin; scrollbar-color: #4a5568 #2d3748; }
+        #sidebar {
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+            #sidebar { width: 5rem; z-index: 50; }
+            #main-content { margin-left: 5rem; }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: none; opacity: 0; }
+            .sidebar-link-container, .sidebar-header { justify-content: center; }
+            #content-menu, #user-menu { display: none !important; }
+            .sidebar-header a svg { width: 2rem; height: 2rem; }
+            #sidebar:hover { width: 16rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+            #sidebar:hover ~ #main-content { margin-left: 5rem; }
+            #sidebar:hover .sidebar-text, #sidebar:hover .sidebar-header-text, #sidebar:hover .sidebar-dropdown-arrow { display: inline-block; opacity: 1; transition-delay: 0.1s; }
+            #sidebar:hover .sidebar-link-container, #sidebar:hover .sidebar-header { justify-content: flex-start; }
+            #sidebar:hover #content-menu, #sidebar:hover #user-menu { display: block !important; }
+            #sidebar:hover .sidebar-header a svg { width: 2rem; height: 2rem; }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar { width: 16rem; transform: translateX(-100%); z-index: 60; }
+            #main-content { margin-left: 0; }
+            body.sidebar-open #sidebar { transform: translateX(0); }
+            .sidebar-text, .sidebar-header-text, .sidebar-dropdown-arrow { display: inline-block; opacity: 1; }
+            .sidebar-link-container, .sidebar-header { justify-content: flex-start; }
+            #sidebar-backdrop { transition: opacity 0.3s ease-in-out; }
+            body:not(.sidebar-open) #sidebar-backdrop { opacity: 0; pointer-events: none; }
+            body.sidebar-open #sidebar-backdrop { opacity: 1; pointer-events: auto; }
+        }
+        
+        /* Modal Transitions */
+        .modal { transition: opacity 0.2s ease, visibility 0.2s ease; }
+        .modal-panel { transition: transform 0.2s ease, opacity 0.2s ease; }
+
+        /* --- New Inquiry List Styles --- */
+        .inquiry-card {
+            transition: all 0.2s ease;
+        }
+        .inquiry-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Custom Scrollbar for Chat */
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+        .chat-scroll::-webkit-scrollbar-track { background-color: transparent; }
+
+        /* Chat Bubbles */
+        .bubble-user {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-bottom-left-radius: 2px;
+        }
+        .bubble-admin {
+            background-color: #0d9488; /* Teal 600 */
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* Tab Animation */
+        .tab-underline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background-color: #0d9488;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="flex h-screen bg-gray-50">
+
+        <!-- ========================================== -->
+        <!-- SIDEBAR (UNCHANGED)                        -->
+        <!-- ========================================== -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 flex flex-col h-screen bg-gray-800 text-gray-200">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header flex items-center p-4 h-16 border-b border-gray-700 flex-shrink-0">
+                <a href="AdminDashboard.html" class="flex items-center space-x-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-teal-400 flex-shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                    </svg>
+                    <span class="text-xl font-bold text-white sidebar-header-text whitespace-nowrap">
+                        Admin
+                    </span>
+                </a>
+                <button id="sidebar-close-btn" class="hidden ml-auto p-1 text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <ul class="py-4">
+                    <li>
+                        <a href="AdminDashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Appointment.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zM5.25 6.75c-.621 0-1.125.504-1.125 1.125V18a1.125 1.125 0 001.125 1.125h13.5A1.125 1.125 0 0019.875 18V7.875c0-.621-.504-1.125-1.125-1.125H5.25z" clip-rule="evenodd" />
+                                    <path d="M10.5 12a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Appointments</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="PatientRecords.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path d="M11.7 2.25c.218-.579 1.02-.579 1.238 0l.4 1.063a.75.75 0 00.728.529h1.096c.606 0 1.01.657.733 1.183l-.9.45a.75.75 0 00-.27.803l.4 1.063c.218.579-.188 1.272-.733 1.183h-1.096a.75.75 0 00-.728.529l-.4 1.063c-.218.579-1.02.579-1.238 0l-.4-1.063a.75.75 0 00-.728-.529H7.94c-.606 0-1.01-.657-.733-1.183l.9-.45a.75.75 0 00.27-.803l-.4-1.063c-.218-.579.188-1.272.733-1.183h1.096a.75.75 0 00.728.529l.4-1.063z" />
+                                    <path fill-rule="evenodd" d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-1.5c-4.142 0-7.5-3.358-7.5-7.5s3.358-7.5 7.5-7.5 7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Patient Records</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="MedicalInventory.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M5.25 2.25a.75.75 0 01.75.75v1.5H18V3a.75.75 0 011.5 0v1.5H21a.75.75 0 01.75.75v16.5a.75.75 0 01-.75.75H3a.75.75 0 01-.75-.75V5.25a.75.75 0 01.75-.75H4.5V3a.75.75 0 01.75-.75zm0 9v6.75h13.5V11.25H5.25zm0-7.5v6h13.5v-6H5.25z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Inventory</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Reports.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Reports</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Inquiries.html" class="flex items-center px-4 py-3 bg-teal-600 text-white font-semibold">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Inquiries</span>
+                            </span>
+                        </a>
+                    </li>
+
+                    <li>
+                <a href="Healthstatistics.html" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span class="sidebar-link-container flex items-center w-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.433.09.9.158 1.417.158A6.721 6.721 0 0018 20.72a6.707 6.707 0 001.196.924c.23.16.49.29.766.392A6.715 6.715 0 0021 18.75a6.715 6.715 0 00-2.234-5.02c.088-.45.134-.91.134-1.38C18.9 9.868 15.933 7 12 7S5.1 9.868 5.1 12.3c0 .47.046.93.134 1.38A6.715 6.715 0 003 18.75c0 .613.081 1.21.234 1.77.276-.102.536-.232.766-.392zM12 8.5c3.19 0 5.89 2.494 5.89 5.55 0 .28-.02.556-.059.828a.75.75 0 01-.84.69c-.201-.023-.393-.053-.575-.09a.75.75 0 01-.6-.82c.046-.28.076-.564.076-.858 0-2.24-1.99-4.05-4.442-4.05-2.452 0-4.442 1.81-4.442 4.05 0 .294.03.578.076.858a.75.75 0 01-.6.82c-.182.037-.374.067-.575.09a.75.75 0 01-.84-.69.923.923 0 01-.059-.828C6.11 10.994 8.81 8.5 12 8.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="sidebar-text whitespace-nowrap">Statistics</span>
+                    </span>
+                </a>
+            </li>
+                    
+                    <li class="px-4 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">
+                        Management
+                    </li>
+                    
+                    <li>
+                        <button id="content-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-6.75a.75.75 0 01-.75-.75V3z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">Site Content</span>
+                            </span>
+                            <svg id="content-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul id="content-menu" class="hidden bg-gray-700">
+                            <li><a href="AdminAnnouncement.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Announcements</a></li>
+                            <li><a href="AdminServices.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Services</a></li>
+                            <li><a href="AdminFAQS.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">FAQs</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button id="user-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span class="sidebar-link-container flex items-center w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-3 flex-shrink-0">
+                                    <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="sidebar-text whitespace-nowrap">User Management</span>
+                            </span>
+                            <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform duration-200 sidebar-dropdown-arrow">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul id="user-menu" class="hidden bg-gray-700">
+                            <li><a href="DoctorsProfile.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Staff</a></li>
+                            <li><a href="AdminResidents.html" class="block px-10 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white sidebar-text">Residents</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Main Content Wrapper -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- ========================================== -->
+            <!-- HEADER (UNCHANGED)                         -->
+            <!-- ========================================== -->
+            <header class="h-16 bg-white shadow-sm border-b border-gray-200 flex items-center justify-between px-6 z-30 flex-shrink-0">
+                <!-- Mobile Menu Toggle (lg:hidden) -->
+                <button id="sidebar-open-btn" class="lg:hidden p-1 text-gray-600 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <!-- Page Title -->
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-semibold text-gray-800">Inquiries</h1>
+                    <p class="text-sm text-gray-500">Manage messages from the public contact form.</p>
+                </div>
+                
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Notifications -->
+                    <button class="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-700 relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <!-- Notification Badge -->
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- 3. User Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profile-toggle" class="flex items-center space-x-2">
+                            <img src="https://placehold.co/40x40/a5f3fc/083344?text=A" alt="Admin" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                        </button>
+                        <!-- Profile Dropdown Menu -->
+                        <div id="profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                            <a href="AdminProfile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="AdminSettings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="admin_login.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ========================================== -->
+            <!-- MAIN CONTENT AREA (REDESIGNED)             -->
+            <!-- ========================================== -->
+            <main class="flex-1 overflow-y-auto p-4 lg:p-8">
+                
+                <!-- Top Section: Stats & Quick Log -->
+                <div class="flex flex-col md:flex-row gap-6 mb-8">
+                    <!-- Stat 1 -->
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Unread Inquiries</p>
+                            <h2 class="text-2xl font-bold text-gray-900" id="kpi-count-new">0</h2>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2 -->
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">In Progress</p>
+                            <h2 class="text-2xl font-bold text-gray-900" id="kpi-count-progress">0</h2>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3 -->
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="p-3 bg-green-50 text-green-600 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Resolved Today</p>
+                            <h2 class="text-2xl font-bold text-gray-900" id="kpi-count-resolved">0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Layout Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Left Column: Inbox List -->
+                    <div class="lg:col-span-2 space-y-6">
+                        
+                        <!-- Toolbar (Tabs + Search) -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            
+                            <!-- Tabs -->
+                            <div class="bg-white p-1 rounded-lg border border-gray-200 inline-flex shadow-sm">
+                                <button class="inquiry-tab-btn px-4 py-2 text-sm font-medium rounded-md transition-colors active bg-teal-50 text-teal-700" data-tab="new">
+                                    New <span id="tab-count-new" class="ml-1.5 bg-teal-200 text-teal-800 text-xs font-bold px-1.5 py-0.5 rounded-full">0</span>
+                                </button>
+                                <button class="inquiry-tab-btn px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md transition-colors" data-tab="progress">
+                                    In Progress <span id="tab-count-progress" class="ml-1.5 bg-gray-200 text-gray-600 text-xs font-bold px-1.5 py-0.5 rounded-full">0</span>
+                                </button>
+                                <button class="inquiry-tab-btn px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md transition-colors" data-tab="archived">
+                                    Archived
+                                </button>
+                            </div>
+
+                            <!-- Search -->
+                            <div class="relative w-full sm:w-64">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="inquiry-search" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 focus:ring-1 focus:ring-teal-500 focus:border-teal-500 sm:text-sm shadow-sm transition duration-150 ease-in-out" placeholder="Search sender or subject...">
+                            </div>
+                        </div>
+
+                        <!-- Inquiry List (Cards) -->
+                        <div id="inquiry-list-container" class="space-y-3">
+                            <!-- Cards will be injected here via JS -->
+                            <div class="p-12 text-center text-gray-400">Loading inquiries...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Sidebar & Activity -->
+                    <div class="space-y-6">
+                        
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h3>
+                            <div class="grid grid-cols-1 gap-3">
+                                <button data-modal-target="log-inquiry-modal" class="flex items-center justify-center gap-2 w-full p-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    Log Walk-in Inquiry
+                                </button>
+                                <a href="PatientRecords.html" class="flex items-center justify-center gap-2 w-full p-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A1.875 1.875 0 0 1 18 22.5h-12a1.875 1.875 0 0 1-1.499-2.382Z" />
+                                    </svg>
+                                    Find Patient Record
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Timeline -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Recent Activity</h3>
+                            <div class="flow-root">
+                                <ul id="recent-activity-list" role="list" class="-mb-8">
+                                    <!-- JS populated -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- 
+    ============================================================
+    MODALS
+    ============================================================
+    -->
+
+    <!-- Modal 1: View/Reply to Inquiry (Redesigned) -->
+    <div id="view-inquiry-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900 bg-opacity-40 hidden backdrop-blur-sm">
+        <div class="modal-panel w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex items-start justify-between bg-white z-10">
+                <div class="flex items-center gap-4">
+                    <div id="modal-avatar" class="w-12 h-12 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-lg shadow-inner"></div>
+                    <div>
+                        <h3 id="modal-subject" class="text-lg font-bold text-gray-900 leading-tight">Subject</h3>
+                        <p class="text-sm text-gray-500 mt-1">From <span id="modal-sender-name" class="font-medium text-gray-800">Sender</span> &lt;<span id="modal-sender-email">email</span>&gt;</p>
+                    </div>
+                </div>
+                <button data-modal-close="view-inquiry-modal" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <!-- Tool Bar -->
+            <div class="bg-gray-50 px-6 py-2 border-b border-gray-100 flex gap-2">
+                <button id="modal-archive-btn" class="text-xs font-medium bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 hover:text-gray-800 flex items-center gap-1 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg> Archive
+                </button>
+                <button id="modal-move-new-btn" class="text-xs font-medium bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 hover:text-gray-800 transition">Mark as New</button>
+                <button id="modal-move-progress-btn" class="text-xs font-medium bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 hover:text-gray-800 transition">Mark In Progress</button>
+                <button data-modal-target="assign-staff-modal" class="text-xs font-medium bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-100 hover:text-gray-800 flex items-center gap-1 transition ml-auto">
+                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg> Assign
+                </button>
+                <button data-modal-target="delete-confirm-modal" class="text-xs font-medium bg-white border border-red-100 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 transition">Delete</button>
+            </div>
+
+            <!-- Chat History -->
+            <div id="modal-chat-history" class="chat-scroll flex-1 overflow-y-auto p-6 space-y-6 bg-white">
+                <!-- Bubbles injected here -->
+            </div>
+            
+            <!-- Reply Box -->
+            <div class="p-4 bg-gray-50 border-t border-gray-200">
+                <form id="modal-reply-form" class="relative">
+                    <textarea id="modal-reply-textarea" rows="3" class="w-full p-4 pr-14 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none text-sm shadow-sm" placeholder="Write your reply..."></textarea>
+                    <button type="submit" class="absolute bottom-3 right-3 p-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal 2: Log New Inquiry -->
+    <div id="log-inquiry-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900 bg-opacity-40 hidden backdrop-blur-sm">
+        <div class="modal-panel w-full max-w-lg bg-white rounded-2xl shadow-2xl">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-bold text-gray-800">Log New Inquiry</h3>
+                <button data-modal-close="log-inquiry-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="log-inquiry-form" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Name</label>
+                        <input type="text" name="log-name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Contact Info</label>
+                        <input type="text" name="log-contact" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Subject</label>
+                    <input type="text" name="log-subject" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Details</label>
+                    <textarea name="log-body" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"></textarea>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 shadow-sm transition">Save Inquiry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal 3: Confirm Delete -->
+    <div id="delete-confirm-modal" class="modal fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900 bg-opacity-60 hidden backdrop-blur-sm">
+        <div class="modal-panel w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 text-center">
+                <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Delete Inquiry?</h3>
+                <p class="text-gray-500 mt-2 text-sm">This action cannot be undone. Are you sure you want to proceed?</p>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-center gap-3 border-t border-gray-100">
+                <button data-modal-close="delete-confirm-modal" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 text-sm">Cancel</button>
+                <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 text-sm shadow-sm">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal 4: Assign Staff -->
+    <div id="assign-staff-modal" class="modal fixed inset-0 z-[110] flex items-center justify-center p-4 bg-gray-900 bg-opacity-60 hidden backdrop-blur-sm">
+        <div class="modal-panel w-full max-w-sm bg-white rounded-2xl shadow-xl">
+            <form id="assign-form">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Assign Inquiry</h3>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Staff Member</label>
+                    <select id="assign-staff-select" class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                        <option value="">Unassigned</option>
+                        <option value="dr-oki">Dr. May S. Oki (Midwife)</option>
+                        <option value="nurse-reyes">Nurse Josefa Reyes</option>
+                        <option value="dr-nepo">Dr. Richard Nepomuceno</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3 rounded-b-2xl border-t border-gray-100">
+                    <button type="button" data-modal-close="assign-staff-modal" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 text-sm">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 text-sm shadow-sm">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed top-5 right-5 z-[200] flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg bg-gray-900 text-white transform translate-x-full transition-transform duration-300 ease-out">
+        <svg id="toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-green-400">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+        </svg>
+        <span id="toast-message" class="text-sm font-medium">Notification</span>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Mock Data ---
+            let currentInquiryId = null;
+            let currentTab = 'new';
+            let recentActivity = [
+                { action: 'Replied to', subject: 'Dental Service Inquiry', user: 'Admin', time: '2m ago' },
+                { action: 'Archived', subject: 'Suggestion for operating hours', user: 'Admin', time: '1h ago' },
+                { action: 'Assigned', subject: 'Senior Citizen Flu Shot', user: 'Admin', time: '3h ago' },
+            ];
+            
+            let staffMembers = {
+                'dr-oki': { name: 'Dr. May Oki', color: 'bg-pink-100 text-pink-700' },
+                'nurse-reyes': { name: 'Nurse Josefa', color: 'bg-blue-100 text-blue-700' },
+                'dr-nepo': { name: 'Dr. Nepomuceno', color: 'bg-green-100 text-green-700' },
+                'admin': { name: 'Admin', color: 'bg-gray-100 text-gray-700' }
+            };
+
+            let mockInquiries = [
+                { id: 1, name: 'Ronald Dacanay', email: 'ronald.dacanay@example.com', subject: 'Question about Vaccination Schedule', messages: [{ from: 'user', text: "Hi, I was wondering if the flu vaccine is available for walk-ins this week? My son needs his booster.", timestamp: '2025-11-18T09:15:00Z' }], status: 'new', assignee: null },
+                { id: 2, name: 'Cheska Villa', email: 'cheska.villa@example.com', subject: 'Dental Service Inquiry', messages: [{ from: 'user', text: "Good day, is the free dental cleaning (pasta) available for non-residents?", timestamp: '2025-11-17T15:30:00Z' }], status: 'new', assignee: null },
+                { id: 3, name: 'Jubylyn Bergado', email: 'jubylyn.bergado@example.com', subject: 'Feedback on Service', messages: [{ from: 'user', text: "I just want to commend Nurse Josefa Reyes for being so accommodating...", timestamp: '2025-11-15T11:20:00Z' }, { from: 'admin', text: "Thank you so much for your kind feedback, Jubylyn!", timestamp: '2025-11-15T14:00:00Z' }], status: 'progress', assignee: 'nurse-reyes' },
+                { id: 4, name: 'Pedro Gomez', email: 'pedro.gomez@example.com', subject: 'Prenatal Checkup Schedule', messages: [{ from: 'user', text: 'Hello. My wife is pregnant and we are new to the barangay. How can we schedule her first prenatal checkup?', timestamp: '2025-11-17T08:00:00Z' }], status: 'new', assignee: null },
+                { id: 5, name: 'Elena Ramos', email: 'elena.ramos@example.com', subject: 'Lost Patient ID', messages: [{ from: 'user', text: 'I lost my Barangay Health Center Patient ID. How can I request a new one?', timestamp: '2025-11-14T10:00:00Z' }], status: 'progress', assignee: 'admin' },
+                { id: 6, name: 'Anonymous Resident', email: 'anon@example.com', subject: 'Suggestion for operating hours', messages: [{ from: 'user', text: 'I hope you can extend your hours until 7 PM on weekdays.', timestamp: '2025-11-12T17:00:00Z' }], status: 'archived', assignee: 'admin' },
+                { id: 7, name: 'Spam User', email: 'spam@example.com', subject: '!!! V1AGRA CHEAP !!!', messages: [{ from: 'user', text: 'Buy now and get 50% off.', timestamp: '2025-11-18T10:00:00Z' }], status: 'new', assignee: null },
+                { id: 8, name: 'Robert Tan', email: 'robert.tan@example.com', subject: 'Senior Citizen Flu Shot', messages: [{ from: 'user', text: 'I am 68 years old. Am I eligible for the free flu shot?', timestamp: '2025-11-16T14:22:00Z' }], status: 'progress', assignee: 'nurse-reyes' },
+            ];
+            
+            // --- DOM Elements ---
+            const filterContainer = document.querySelector('.inline-flex'); // Tab container
+            const listContainer = document.getElementById('inquiry-list-container');
+            const searchInput = document.getElementById('inquiry-search');
+            
+            // KPI & Activity
+            const kpiCountNew = document.getElementById('kpi-count-new');
+            const kpiCountProgress = document.getElementById('kpi-count-progress');
+            const kpiCountResolved = document.getElementById('kpi-count-resolved');
+            const tabCountNew = document.getElementById('tab-count-new');
+            const tabCountProgress = document.getElementById('tab-count-progress');
+            const activityList = document.getElementById('recent-activity-list');
+            
+            // Modals
+            const viewModal = document.getElementById('view-inquiry-modal');
+            const modalAvatar = document.getElementById('modal-avatar');
+            const modalSubject = document.getElementById('modal-subject');
+            const modalSenderName = document.getElementById('modal-sender-name');
+            const modalSenderEmail = document.getElementById('modal-sender-email');
+            const modalChatHistory = document.getElementById('modal-chat-history');
+            const modalReplyForm = document.getElementById('modal-reply-form');
+            const modalReplyTextarea = document.getElementById('modal-reply-textarea');
+            
+            // Action Buttons
+            const modalArchiveBtn = document.getElementById('modal-archive-btn');
+            const modalMoveNewBtn = document.getElementById('modal-move-new-btn');
+            const modalMoveProgressBtn = document.getElementById('modal-move-progress-btn');
+            const logInquiryForm = document.getElementById('log-inquiry-form');
+            const assignForm = document.getElementById('assign-form');
+            const assignSelect = document.getElementById('assign-staff-select');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            // --- Utility Functions ---
+            function getInitials(name) {
+                return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            }
+            
+            function getAvatarColor(name) {
+                const colors = ['bg-red-100 text-red-700', 'bg-orange-100 text-orange-700', 'bg-amber-100 text-amber-700', 'bg-green-100 text-green-700', 'bg-emerald-100 text-emerald-700', 'bg-teal-100 text-teal-700', 'bg-cyan-100 text-cyan-700', 'bg-sky-100 text-sky-700', 'bg-blue-100 text-blue-700', 'bg-indigo-100 text-indigo-700', 'bg-violet-100 text-violet-700', 'bg-purple-100 text-purple-700', 'bg-fuchsia-100 text-fuchsia-700', 'bg-pink-100 text-pink-700', 'bg-rose-100 text-rose-700'];
+                const charCodeSum = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                return colors[charCodeSum % colors.length];
+            }
+            
+            function formatTimestamp(isoString) {
+                const date = new Date(isoString);
+                const now = new Date();
+                const diff = (now - date) / 1000;
+                
+                if (diff < 60) return 'Just now';
+                if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+                if (diff < 604800) return `${Math.floor(diff/86400)}d ago`;
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
+            
+            function formatChatTimestamp(isoString) {
+                const date = new Date(isoString);
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+            }
+
+            function updateCounts() {
+                const newCount = mockInquiries.filter(m => m.status === 'new').length;
+                const progressCount = mockInquiries.filter(m => m.status === 'progress').length;
+                
+                kpiCountNew.textContent = newCount;
+                kpiCountProgress.textContent = progressCount;
+                // kpiCountResolved is static for now
+                
+                tabCountNew.textContent = newCount;
+                tabCountProgress.textContent = progressCount;
+
+                tabCountNew.classList.toggle('hidden', newCount === 0);
+                tabCountProgress.classList.toggle('hidden', progressCount === 0);
+            }
+
+            function showToast(message, isError = false) {
+                toastMessage.textContent = message;
+                if (isError) {
+                    toastIcon.classList.remove('text-green-400');
+                    toastIcon.classList.add('text-red-400');
+                } else {
+                    toastIcon.classList.remove('text-red-400');
+                    toastIcon.classList.add('text-green-400');
+                }
+                toast.classList.add('translate-x-0');
+                toast.classList.remove('translate-x-full');
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full');
+                    toast.classList.remove('translate-x-0');
+                }, 3000);
+            }
+
+            // --- Rendering ---
+            function renderInquiryList() {
+                listContainer.innerHTML = '';
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                const filteredInquiries = mockInquiries
+                    .filter(m => m.status === currentTab)
+                    .filter(m => m.name.toLowerCase().includes(searchTerm) || m.subject.toLowerCase().includes(searchTerm))
+                    .sort((a, b) => new Date(b.messages[b.messages.length-1].timestamp) - new Date(a.messages[a.messages.length-1].timestamp));
+
+                if (filteredInquiries.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No inquiries found</h3>
+                            <p class="mt-1 text-sm text-gray-500">No messages found in this category.</p>
+                        </div>`;
+                    return;
+                }
+                
+                filteredInquiries.forEach(inquiry => {
+                    // Create Card
+                    const card = document.createElement('div');
+                    card.className = "inquiry-card bg-white p-5 rounded-xl border border-gray-200 cursor-pointer flex gap-4 items-start";
+                    
+                    const lastMessage = inquiry.messages[inquiry.messages.length - 1];
+                    const initials = getInitials(inquiry.name);
+                    const colorClass = getAvatarColor(inquiry.name);
+                    
+                    let assigneeBadge = '';
+                    if (inquiry.assignee) {
+                        const staff = staffMembers[inquiry.assignee];
+                        assigneeBadge = `<div class="mt-2 flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-100 self-start">
+                            <span class="w-2 h-2 rounded-full bg-teal-500"></span> Assigned to ${staff.name}
+                        </div>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-full ${colorClass} flex items-center justify-center font-bold text-sm border border-white shadow-sm">
+                                ${initials}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-baseline mb-1">
+                                <h4 class="text-sm font-bold text-gray-900 truncate">${inquiry.name}</h4>
+                                <span class="text-xs text-gray-400 font-medium whitespace-nowrap ml-2">${formatTimestamp(lastMessage.timestamp)}</span>
+                            </div>
+                            <p class="text-sm font-medium text-gray-800 truncate mb-1">${inquiry.subject}</p>
+                            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">${lastMessage.text}</p>
+                            ${assigneeBadge}
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => openViewModal(inquiry.id));
+                    listContainer.appendChild(card);
+                });
+            }
+
+            function renderActivity() {
+                activityList.innerHTML = '';
+                recentActivity.forEach((activity, index) => {
+                    const isLast = index === recentActivity.length - 1;
+                    const pb = isLast ? '' : 'pb-8';
+                    const iconColor = activity.action.includes('Archived') ? 'bg-gray-400' : 'bg-teal-500';
+                    
+                    const html = `
+                    <li class="relative ${pb}">
+                        ${!isLast ? '<span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>' : ''}
+                        <div class="relative flex space-x-3">
+                            <div>
+                                <span class="h-8 w-8 rounded-full ${iconColor} flex items-center justify-center ring-8 ring-white">
+                                    <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                <div>
+                                    <p class="text-sm text-gray-500"><span class="font-medium text-gray-900">${activity.user}</span> ${activity.action} <span class="font-medium text-gray-900">${activity.subject}</span></p>
+                                </div>
+                                <div class="text-right text-xs whitespace-nowrap text-gray-400">
+                                    <time>${activity.time}</time>
+                                </div>
+                            </div>
+                        </div>
+                    </li>`;
+                    activityList.insertAdjacentHTML('beforeend', html);
+                });
+            }
+
+            function updateActivity(action, subject) {
+                recentActivity.unshift({ action, subject, user: 'Admin', time: 'Just now' });
+                if (recentActivity.length > 5) recentActivity.pop();
+                renderActivity();
+            }
+
+            // --- Modal Logic ---
+            function openViewModal(id) {
+                const inquiry = mockInquiries.find(m => m.id === id);
+                if (!inquiry) return;
+                
+                currentInquiryId = id;
+                
+                // Auto-move to progress if new
+                if (inquiry.status === 'new') {
+                    inquiry.status = 'progress';
+                    updateCounts();
+                    renderInquiryList(); // Refresh list background
+                }
+
+                // Populate Header
+                modalAvatar.className = `w-12 h-12 rounded-full ${getAvatarColor(inquiry.name)} text-white font-bold flex items-center justify-center text-lg shadow-sm`;
+                modalAvatar.textContent = getInitials(inquiry.name);
+                modalSubject.textContent = inquiry.subject;
+                modalSenderName.textContent = inquiry.name;
+                modalSenderEmail.textContent = inquiry.email;
+                
+                // Toggle Buttons based on status
+                modalArchiveBtn.classList.toggle('hidden', inquiry.status === 'archived');
+                modalMoveNewBtn.classList.toggle('hidden', inquiry.status === 'new');
+                modalMoveProgressBtn.classList.toggle('hidden', inquiry.status === 'progress');
+
+                // Render Chat
+                modalChatHistory.innerHTML = '';
+                let lastDate = null;
+
+                inquiry.messages.forEach(msg => {
+                    // Date Separator if needed
+                    const msgDate = new Date(msg.timestamp).toLocaleDateString();
+                    if (msgDate !== lastDate) {
+                        const separator = document.createElement('div');
+                        separator.className = "flex items-center justify-center my-4";
+                        separator.innerHTML = `<span class="px-3 py-1 bg-gray-100 text-gray-500 text-xs rounded-full font-medium">${msgDate}</span>`;
+                        modalChatHistory.appendChild(separator);
+                        lastDate = msgDate;
+                    }
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `flex ${msg.from === 'user' ? 'justify-start' : 'justify-end'}`;
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = `max-w-[80%] p-3 rounded-xl shadow-sm relative ${msg.from === 'user' ? 'bubble-user rounded-bl-none' : 'bubble-admin rounded-br-none'}`;
+                    
+                    bubble.innerHTML = `
+                        <p class="text-sm leading-relaxed whitespace-pre-wrap">${msg.text}</p>
+                        <div class="text-[10px] opacity-70 mt-1 text-right">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    `;
+                    
+                    wrapper.appendChild(bubble);
+                    modalChatHistory.appendChild(wrapper);
+                });
+
+                openModal('view-inquiry-modal');
+                modalChatHistory.scrollTop = modalChatHistory.scrollHeight;
+            }
+
+            // --- Event Listeners ---
+            
+            // Search
+            searchInput.addEventListener('input', renderInquiryList);
+
+            // Tabs
+            filterContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.inquiry-tab-btn');
+                if (!btn) return;
+                
+                // Visual toggle
+                document.querySelectorAll('.inquiry-tab-btn').forEach(b => {
+                    b.classList.remove('bg-teal-50', 'text-teal-700', 'active');
+                    b.classList.add('text-gray-500');
+                    // Reset badges styles
+                    const badge = b.querySelector('span');
+                    if(badge) {
+                        badge.classList.remove('bg-teal-200', 'text-teal-800');
+                        badge.classList.add('bg-gray-200', 'text-gray-600');
+                    }
+                });
+                
+                btn.classList.add('bg-teal-50', 'text-teal-700', 'active');
+                btn.classList.remove('text-gray-500');
+                 const badge = btn.querySelector('span');
+                if(badge) {
+                    badge.classList.remove('bg-gray-200', 'text-gray-600');
+                    badge.classList.add('bg-teal-200', 'text-teal-800');
+                }
+
+                currentTab = btn.dataset.tab;
+                renderInquiryList();
+            });
+
+            // Reply Form
+            modalReplyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = modalReplyTextarea.value.trim();
+                if (!text || !currentInquiryId) return;
+
+                const inquiry = mockInquiries.find(m => m.id === currentInquiryId);
+                inquiry.messages.push({ from: 'admin', text, timestamp: new Date().toISOString() });
+                
+                // Add to view instantly
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex justify-end`;
+                wrapper.innerHTML = `
+                    <div class="max-w-[80%] p-3 rounded-xl shadow-sm relative bubble-admin rounded-br-none animate-pulse">
+                         <p class="text-sm leading-relaxed whitespace-pre-wrap">${text}</p>
+                         <div class="text-[10px] opacity-70 mt-1 text-right">Just now</div>
+                    </div>`;
+                modalChatHistory.appendChild(wrapper);
+                modalChatHistory.scrollTop = modalChatHistory.scrollHeight;
+                
+                // Remove pulse after delay
+                setTimeout(() => wrapper.querySelector('.bubble-admin').classList.remove('animate-pulse'), 500);
+
+                modalReplyTextarea.value = '';
+                showToast('Reply sent');
+                updateActivity('Replied to', inquiry.subject);
+                renderInquiryList();
+            });
+
+            // Log New Form
+            logInquiryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(logInquiryForm);
+                const newInquiry = {
+                    id: Date.now(),
+                    name: formData.get('log-name'),
+                    email: formData.get('log-contact'),
+                    subject: formData.get('log-subject'),
+                    messages: [{ from: 'user', text: formData.get('log-body'), timestamp: new Date().toISOString() }],
+                    status: 'new',
+                    assignee: null
+                };
+                mockInquiries.unshift(newInquiry);
+                updateCounts();
+                if (currentTab === 'new') renderInquiryList();
+                closeModal('log-inquiry-modal');
+                logInquiryForm.reset();
+                showToast('New inquiry logged');
+            });
+
+            // Status Actions
+            function updateStatus(newStatus) {
+                const inquiry = mockInquiries.find(m => m.id === currentInquiryId);
+                if (inquiry) {
+                    inquiry.status = newStatus;
+                    closeModal('view-inquiry-modal');
+                    updateCounts();
+                    renderInquiryList();
+                    showToast(`Moved to ${newStatus}`);
+                }
+            }
+            
+            modalArchiveBtn.addEventListener('click', () => updateStatus('archived'));
+            modalMoveNewBtn.addEventListener('click', () => updateStatus('new'));
+            modalMoveProgressBtn.addEventListener('click', () => updateStatus('progress'));
+
+            // Delete
+            confirmDeleteBtn.addEventListener('click', () => {
+                mockInquiries = mockInquiries.filter(m => m.id !== currentInquiryId);
+                closeModal('delete-confirm-modal');
+                closeModal('view-inquiry-modal');
+                updateCounts();
+                renderInquiryList();
+                showToast('Inquiry deleted', true);
+            });
+
+            // Assign
+            assignForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const staffId = assignSelect.value;
+                const inquiry = mockInquiries.find(m => m.id === currentInquiryId);
+                
+                if (inquiry && staffId) {
+                    inquiry.assignee = staffId;
+                    const staffName = staffMembers[staffId].name;
+                    updateActivity('Assigned', inquiry.subject);
+                    showToast(`Assigned to ${staffName}`);
+                } else if (inquiry) {
+                    inquiry.assignee = null;
+                    showToast('Inquiry unassigned');
+                }
+                
+                renderInquiryList();
+                closeModal('assign-staff-modal');
+                // If viewing, update UI badge if we had one? No need, list updates.
+            });
+
+            // --- Generic Modal & Sidebar Setup (Standard) ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+            
+            if (sidebarOpenBtn) sidebarOpenBtn.addEventListener('click', () => document.body.classList.add('sidebar-open'));
+            if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', () => document.body.classList.remove('sidebar-open'));
+            
+            // Dropdowns (Reuse logic)
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileMenu = document.getElementById('profile-menu');
+            if(profileToggle && profileMenu) {
+                profileToggle.addEventListener('click', () => profileMenu.classList.toggle('hidden'));
+                document.addEventListener('click', (e) => {
+                     if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) profileMenu.classList.add('hidden');
+                });
+            }
+            function setupDropdown(toggleId, menuId) {
+                const toggle = document.getElementById(toggleId);
+                const menu = document.getElementById(menuId);
+                if (toggle && menu) {
+                    toggle.addEventListener('click', (e) => {
+                         e.preventDefault();
+                         if(window.innerWidth < 1024) menu.classList.toggle('hidden');
+                    });
+                     if (window.innerWidth >= 1024) {
+                        const li = toggle.closest('li');
+                        li.addEventListener('mouseenter', () => { if(sidebar.matches(':hover')) menu.classList.remove('hidden'); });
+                        li.addEventListener('mouseleave', () => menu.classList.add('hidden'));
+                    }
+                }
+            }
+            setupDropdown('content-toggle', 'content-menu');
+            setupDropdown('user-toggle', 'user-menu');
+
+            // Modal System
+            const modals = {};
+            document.querySelectorAll('.modal').forEach(m => modals[m.id] = m);
+            
+            window.openModal = function(id) {
+                const modal = modals[id];
+                if(modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            window.closeModal = function(id) {
+                const modal = modals[id];
+                if(modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    if (!document.querySelector('.modal.flex')) document.body.style.overflow = 'auto';
+                }
+            }
+            
+            document.querySelectorAll('[data-modal-target]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Pre-fill assign if opening that modal
+                    if(btn.dataset.modalTarget === 'assign-staff-modal' && currentInquiryId) {
+                         const inquiry = mockInquiries.find(m => m.id === currentInquiryId);
+                         if(inquiry) assignSelect.value = inquiry.assignee || "";
+                    }
+                    openModal(btn.dataset.modalTarget);
+                });
+            });
+            document.querySelectorAll('[data-modal-close]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    closeModal(btn.dataset.modalClose);
+                });
+            });
+            // Click outside to close
+            document.querySelectorAll('.modal').forEach(m => {
+                m.addEventListener('click', (e) => { if(e.target === m) closeModal(m.id); });
+            });
+            // Esc key
+            window.addEventListener('keydown', (e) => {
+                if(e.key === 'Escape') document.querySelectorAll('.modal.flex').forEach(m => closeModal(m.id));
+            });
+
+            // Initial Render
+            renderInquiryList();
+            renderActivity();
+            updateCounts();
+        });
+    </script>
+</body>
+</html>
